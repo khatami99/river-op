@@ -8,11 +8,39 @@ use App\Models\ItemInspeksi;
 use App\Models\TemuanKondisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
+    public function uploadFoto(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('foto_laporan', $filename, 'public');
+            $url = Storage::url($path);
+
+            return response()->json([
+                'status' => 'success',
+                'url' => $url
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'url' => null,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function sync(Request $request)
     {
+        // ... semua kode sync yang sudah ada, tidak berubah sama sekali
         $request->validate([
             'laporan' => 'required|array',
             'laporan.*.uuid' => 'required|uuid',
@@ -110,7 +138,7 @@ class LaporanController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'SSinkronisasi gagal: ' . $e->getMessage(),
+                'message' => 'Sinkronisasi gagal: ' . $e->getMessage(),
                 'synced_uuids' => []
             ], 500);
         }
