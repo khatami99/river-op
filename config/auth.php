@@ -42,6 +42,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Dashboard dinas: session auth, terpisah dari token Sanctum milik juru sungai.
+        'staf' => [
+            'driver' => 'session',
+            'provider' => 'staf_dinas',
+        ],
     ],
 
     /*
@@ -65,6 +71,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'staf_dinas' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\StafDinas::class,
         ],
 
         // 'users' => [

@@ -1,0 +1,96 @@
+@extends('layouts.app')
+
+@section('judul', 'Wilayah Sungai')
+@section('subjudul', $wilayah->total() . ' sungai terdaftar')
+
+@php
+    $kelasInput = 'w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+@endphp
+
+@section('konten')
+
+    <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
+        <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
+        <div class="flex flex-wrap items-center gap-2">
+            <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama atau kode sungai"
+                   class="{{ $kelasInput }} max-w-md flex-1">
+            <button type="submit" class="rounded-xl bg-sungai-600 px-4 py-2 text-[13px] font-bold text-white transition hover:bg-sungai-700">
+                Cari
+            </button>
+            @if ($filter['cari'])
+                <a href="{{ route('wilayah.index') }}" class="rounded-xl px-3 py-2 text-[13px] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700">
+                    Reset
+                </a>
+            @endif
+        </div>
+    </form>
+
+    <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+        @if ($wilayah->isEmpty())
+            <x-kosong judul="Tidak ada wilayah sungai yang cocok" pesan="Coba ubah kata kunci pencarian."/>
+        @else
+            <div class="overflow-x-auto scrollbar-halus">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <th class="px-5 py-3">Nama Sungai</th>
+                            <th class="px-5 py-3">Kode</th>
+                            <th class="px-5 py-3">Kabupaten</th>
+                            <th class="px-5 py-3 text-center">Juru</th>
+                            <th class="px-5 py-3 text-center">Laporan</th>
+                            <th class="px-5 py-3">Status</th>
+                            <th class="px-5 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-[13.5px]">
+                        @foreach ($wilayah as $sungai)
+                            <tr class="transition hover:bg-slate-50">
+                                <td class="px-5 py-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sungai-50">
+                                            <svg class="h-4 w-4 text-sungai-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0"/>
+                                            </svg>
+                                        </span>
+                                        <span class="font-semibold text-slate-800">{{ $sungai->nama_sungai }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-3 font-medium text-slate-500">{{ $sungai->kode_sungai }}</td>
+                                <td class="px-5 py-3 text-slate-500">{{ $sungai->kabupaten?->nama ?? '-' }}</td>
+                                <td class="px-5 py-3 text-center">
+                                    <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
+                                        {{ $sungai->juru_sungai_count }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3 text-center">
+                                    <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
+                                        {{ $sungai->laporan_op_count }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <x-lencana :warna="$sungai->aktif ? 'normal' : 'netral'">
+                                        {{ $sungai->aktif ? 'Aktif' : 'Nonaktif' }}
+                                    </x-lencana>
+                                </td>
+                                <td class="whitespace-nowrap px-5 py-3 text-right">
+                                    <a href="{{ route('wilayah.show', $sungai) }}"
+                                       class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-sungai-600 transition hover:bg-sungai-50">
+                                        Detail
+                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($wilayah->hasPages())
+                <div class="border-t border-slate-100 px-5 py-3">{{ $wilayah->links() }}</div>
+            @endif
+        @endif
+    </div>
+
+@endsection

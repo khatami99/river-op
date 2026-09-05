@@ -116,6 +116,8 @@ class LaporanController extends Controller
                                     'koordinat_lng' => $temuanData['koordinat_lng'] ?? null,
                                     'keterangan' => $temuanData['keterangan'] ?? null,
                                     'foto' => $temuanData['foto'] ?? null,
+                                    'foto_2' => $temuanData['foto_2'] ?? null,
+                                    'foto_3' => $temuanData['foto_3'] ?? null,
                                 ]);
                             }
                         }

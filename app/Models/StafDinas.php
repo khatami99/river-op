@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Staf dinas hanya mengakses dashboard web lewat session auth.
+ * Sengaja tidak memakai HasApiTokens supaya token Sanctum miliknya
+ * tidak bisa dipakai menembak endpoint API milik juru sungai.
+ */
 class StafDinas extends Authenticatable
 {
-    use HasApiTokens, SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'staf_dinas';
 
@@ -28,4 +32,9 @@ class StafDinas extends Authenticatable
         'password' => 'hashed',
         'aktif' => 'boolean',
     ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

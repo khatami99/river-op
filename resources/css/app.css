@@ -6,6 +6,64 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Biru sungai — diambil dari gelombang pada logo aplikasi */
+    --color-sungai-50: #eff8ff;
+    --color-sungai-100: #daeefe;
+    --color-sungai-200: #bee2fd;
+    --color-sungai-300: #91d1fc;
+    --color-sungai-400: #5db8f8;
+    --color-sungai-500: #1b9ce6;
+    --color-sungai-600: #127cc4;
+    --color-sungai-700: #12639e;
+    --color-sungai-800: #145482;
+    --color-sungai-900: #16466c;
+    --color-sungai-950: #0a2c48;
+
+    /* Emas — satu-satunya warna yang hadir di logo provinsi dan logo aplikasi */
+    --color-emas-50: #fdf8ec;
+    --color-emas-100: #faedca;
+    --color-emas-200: #f4d992;
+    --color-emas-300: #edc25c;
+    --color-emas-400: #e8ac35;
+    --color-emas-500: #d4a017;
+    --color-emas-600: #b87d12;
+    --color-emas-700: #935c13;
+    --color-emas-800: #7a4a17;
+    --color-emas-900: #683e18;
+
+    /* Hijau — dari perisai logo provinsi, dipakai untuk kondisi normal */
+    --color-hijau-50: #eefbf3;
+    --color-hijau-100: #d6f5e1;
+    --color-hijau-500: #16a34a;
+    --color-hijau-600: #0f7a3d;
+    --color-hijau-700: #0d6132;
+
+    /* Merah — dari bingkai logo provinsi, dipakai untuk kondisi bermasalah */
+    --color-bata-50: #fef2f3;
+    --color-bata-100: #fde3e5;
+    --color-bata-500: #e0304a;
+    --color-bata-600: #c8102e;
+    --color-bata-700: #a50e26;
+}
+
+/* Scrollbar tipis agar panel dalam shell tidak terlihat berat */
+@layer utilities {
+    .scrollbar-halus {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-slate-300) transparent;
+    }
+    .scrollbar-halus::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .scrollbar-halus::-webkit-scrollbar-thumb {
+        background-color: var(--color-slate-300);
+        border-radius: 9999px;
+    }
+    .scrollbar-halus::-webkit-scrollbar-track {
+        background: transparent;
+    }
 }
