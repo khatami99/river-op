@@ -8,6 +8,10 @@
 @section('judul', $baru ? 'Tambah DAS' : 'Ubah DAS')
 @section('subjudul', $baru ? 'Daerah aliran sungai sebagai wilayah kerja juru' : $das->nama_das)
 
+@push('kepala')
+    @vite('resources/js/peta.js')
+@endpush
+
 @section('konten')
 
     <x-kartu-form
@@ -43,6 +47,37 @@
             <textarea id="deskripsi" name="deskripsi" rows="3" class="{{ $ki }}"
                       placeholder="Keterangan singkat mengenai DAS ini">{{ old('deskripsi', $das->deskripsi) }}</textarea>
         </x-kolom>
+
+        {{-- Titik pada peta --}}
+        <div class="border-t border-slate-100 pt-4">
+            <div class="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+                <label class="text-[13px] font-semibold text-slate-700">Titik pada Peta</label>
+                <div class="flex items-center gap-2">
+                    <span id="label-koordinat" class="text-[12px] font-medium tabular-nums text-slate-500">
+                        @if ($das->punyaKoordinat())
+                            {{ number_format($das->koordinat_lat, 5) }}, {{ number_format($das->koordinat_lng, 5) }}
+                        @else
+                            Belum ditentukan
+                        @endif
+                    </span>
+                    <button type="button" id="hapus-koordinat"
+                            class="{{ $das->punyaKoordinat() ? '' : 'hidden' }} rounded-lg px-2 py-1 text-[12px] font-bold text-bata-600 transition hover:bg-bata-50">
+                        Hapus titik
+                    </button>
+                </div>
+            </div>
+
+            <div id="peta-pilih" class="h-64 w-full overflow-hidden rounded-xl ring-1 ring-slate-200"></div>
+
+            <input type="hidden" id="koordinat_lat" name="koordinat_lat" value="{{ old('koordinat_lat', $das->koordinat_lat) }}">
+            <input type="hidden" id="koordinat_lng" name="koordinat_lng" value="{{ old('koordinat_lng', $das->koordinat_lng) }}">
+
+            <p class="mt-1.5 text-[12px] text-slate-400">
+                Klik pada peta untuk menentukan letak DAS ini. Boleh dikosongkan, tetapi
+                DAS tanpa titik tidak akan muncul di halaman Peta DAS.
+            </p>
+            @error('koordinat_lat')<p class="mt-1.5 text-[12px] font-medium text-bata-600">{{ $message }}</p>@enderror
+        </div>
 
         <label class="flex items-center gap-2.5 border-t border-slate-100 pt-4 text-[13.5px] text-slate-700">
             <input type="checkbox" name="aktif" value="1" @checked(old('aktif', $das->aktif ?? true))

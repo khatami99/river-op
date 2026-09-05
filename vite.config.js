@@ -5,7 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            // peta.js dipisah agar Leaflet hanya dimuat pada halaman yang memakainya
+            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/peta.js'],
             refresh: true,
         }),
         tailwindcss(),

@@ -105,6 +105,8 @@ class DasWebController extends Controller
             ],
             'wilayah_sungai_id' => ['required', 'exists:wilayah_sungai,id'],
             'deskripsi' => ['nullable', 'string'],
+            'koordinat_lat' => ['nullable', 'numeric', 'between:-90,90', 'required_with:koordinat_lng'],
+            'koordinat_lng' => ['nullable', 'numeric', 'between:-180,180', 'required_with:koordinat_lat'],
         ], [], [
             'nama_das' => 'nama DAS',
             'kode_das' => 'kode DAS',

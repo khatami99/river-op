@@ -42,17 +42,28 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 - [x] **Kolom `ada_masalah` pada `temuan_kondisi`.** Sebelumnya penilaian ini
       harus membaca kolom JSON baris per baris di PHP sehingga rekap tidak bisa
       diagregasi SQL. Penandanya kini disimpan saat sinkronisasi.
+- [x] **Peta DAS** memakai Leaflet dan OpenStreetMap. Titik tiap DAS ditentukan
+      admin dengan mengklik peta pada formulir DAS. Klik penanda memunculkan juru
+      yang bertugas, ringkasan laporan, dan tombol tambah juru. Warna penanda
+      menandakan ada tidaknya temuan bermasalah.
+- [x] **Tambah juru langsung dari halaman DAS**, dengan DAS terpilih otomatis.
 
 ---
 
 ## Prioritas sedang
 
 - [ ] **Aplikasi Android belum menangkap GPS sama sekali.** Kolom `koordinat_lat`
-      dan `koordinat_lng` ada di basis data tetapi selalu kosong: aplikasi
-      meng-hardcode `null`, tidak meminta izin lokasi, dan tidak memuat pustaka
-      lokasi apa pun. Dashboard sudah siap menampilkan koordinat sebagai tautan
-      ke Google Maps begitu datanya ada, tetapi penangkapannya harus dikerjakan
-      lebih dulu di sisi Android. Ini juga menjadi prasyarat fitur peta.
+      dan `koordinat_lng` pada laporan selalu kosong: aplikasi meng-hardcode
+      `null`, tidak meminta izin lokasi, dan tidak memuat pustaka lokasi apa pun.
+      Dashboard sudah siap menampilkan koordinat sebagai tautan ke Google Maps
+      begitu datanya ada. Ini prasyarat **peta sebaran laporan** — berbeda dari
+      Peta DAS yang sudah selesai dan tidak bergantung pada GPS.
+
+- [ ] **Batas wilayah DAS pada peta.** Peta DAS saat ini memakai satu titik per
+      DAS. Menggambar batas wilayah yang sebenarnya memerlukan data geospasial
+      resmi berupa shapefile atau GeoJSON, misalnya dari BIG atau KLHK. Batas
+      sengaja tidak digambar sendiri karena batas yang keliru lebih berbahaya
+      bagi sistem instansi daripada tidak ada peta sama sekali.
 
 - [ ] **Export Excel sungguhan (`.xlsx`).** Saat ini export berupa CSV. Terbuka dengan
       baik di Excel, tetapi bukan berkas Excel asli. Perlu menambah dependensi

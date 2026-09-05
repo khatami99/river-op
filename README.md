@@ -100,6 +100,7 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | DAS | `/das` | Daftar daerah aliran sungai beserta juru yang bertugas |
 | Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
 | Rekapitulasi | `/rekap` | Rekap per DAS, daftar juru belum melapor, export |
+| Peta DAS | `/peta` | Sebaran DAS, juru yang bertugas, dan ringkasannya |
 | Pengguna | `/staf` | Manajemen akun staf dinas — hanya admin |
 
 ### Peran staf dinas
@@ -238,9 +239,15 @@ Export PDF sesuai blangko resmi, export `.xlsx` sungguhan, audit log,
 monitoring sinkronisasi, dan peta sebaran laporan. Rincian beserta
 alasannya ada di [TODO.md](TODO.md).
 
-Peta menunggu satu prasyarat: aplikasi Android belum menangkap koordinat
-GPS sama sekali, sehingga kolom `koordinat_lat` dan `koordinat_lng` masih
-selalu kosong.
+**Peta DAS sudah ada**, memakai Leaflet dan OpenStreetMap. Titik tiap DAS
+ditentukan admin dengan mengklik peta pada formulir DAS. Yang belum ada
+adalah dua hal berbeda:
+
+- **Peta sebaran laporan**, menunggu aplikasi Android menangkap koordinat
+  GPS — saat ini `koordinat_lat` dan `koordinat_lng` pada laporan selalu kosong.
+- **Batas wilayah DAS**, memerlukan data geospasial resmi berupa shapefile
+  atau GeoJSON. Batas tidak digambar sendiri karena batas yang keliru lebih
+  berbahaya daripada tidak ada peta.
 
 ---
 

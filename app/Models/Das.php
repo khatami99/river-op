@@ -23,12 +23,21 @@ class Das extends Model
         'nama_das',
         'kode_das',
         'deskripsi',
+        'koordinat_lat',
+        'koordinat_lng',
         'aktif',
     ];
 
     protected $casts = [
         'aktif' => 'boolean',
+        'koordinat_lat' => 'decimal:7',
+        'koordinat_lng' => 'decimal:7',
     ];
+
+    public function punyaKoordinat(): bool
+    {
+        return $this->koordinat_lat !== null && $this->koordinat_lng !== null;
+    }
 
     public function wilayahSungai(): BelongsTo
     {
