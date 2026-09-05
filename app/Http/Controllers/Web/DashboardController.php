@@ -25,7 +25,7 @@ class DashboardController extends Controller
         $sudahLapor = $idSudahLapor->count();
         $belumLapor = max($juruAktif - $sudahLapor, 0);
 
-        $juruBelumLapor = JuruSungai::with('wilayahSungai')
+        $juruBelumLapor = JuruSungai::with('das')
             ->where('aktif', true)
             ->whereNotIn('id', $idSudahLapor)
             ->orderBy('nama')
@@ -33,7 +33,7 @@ class DashboardController extends Controller
 
         $persentase = $juruAktif > 0 ? (int) round($sudahLapor / $juruAktif * 100) : 0;
 
-        $laporanTerbaru = LaporanOp::with(['juruSungai', 'wilayahSungai'])
+        $laporanTerbaru = LaporanOp::with(['juruSungai', 'das'])
             ->latest('synced_at')
             ->limit(8)
             ->get();

@@ -3,7 +3,7 @@
 @use('App\Support\Bulan')
 
 @section('judul', $juru->nama)
-@section('subjudul', $juru->wilayahSungai?->nama_sungai ?? 'Wilayah belum diatur')
+@section('subjudul', $juru->das?->nama_das ?? 'DAS belum diatur')
 
 @section('aksi-header')
     <a href="{{ route('juru.index') }}"
@@ -38,8 +38,9 @@
                     $data = [
                         'NIP' => $juru->nip ?: '-',
                         'Username' => $juru->username,
-                        'Wilayah Sungai' => $juru->wilayahSungai?->nama_sungai ?? '-',
-                        'Kabupaten' => $juru->wilayahSungai?->kabupaten?->nama ?? '-',
+                        'DAS' => $juru->das?->nama_das ?? '-',
+                        'Wilayah Sungai' => $juru->das?->wilayahSungai?->nama_sungai ?? '-',
+                        'Kabupaten' => $juru->das?->wilayahSungai?->kabupaten?->nama ?? '-',
                     ];
                 @endphp
                 @foreach ($data as $label => $nilai)
@@ -106,7 +107,7 @@
                         <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
                             <th class="px-5 py-3">Tanggal</th>
                             <th class="px-5 py-3">Periode</th>
-                            <th class="px-5 py-3">Wilayah Sungai</th>
+                            <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3 text-center">Bangunan</th>
                             <th class="px-5 py-3"></th>
                         </tr>
@@ -120,7 +121,7 @@
                                 <td class="whitespace-nowrap px-5 py-3 text-slate-500">
                                     {{ Bulan::singkat($item->bulan) }} {{ $item->tahun }}
                                 </td>
-                                <td class="px-5 py-3 text-slate-500">{{ $item->wilayahSungai?->nama_sungai ?? '-' }}</td>
+                                <td class="px-5 py-3 text-slate-500">{{ $item->das?->nama_das ?? '-' }}</td>
                                 <td class="px-5 py-3 text-center">
                                     <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
                                         {{ $item->item_inspeksi_count }}

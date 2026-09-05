@@ -28,6 +28,8 @@ class AuthController extends Controller
 
         $token = $juruSungai->createToken('juru_sungai_token')->plainTextToken;
 
+        $juruSungai->load('das');
+
         return response()->json([
             'message' => 'Login berhasil.',
             'token' => $token,
@@ -36,7 +38,8 @@ class AuthController extends Controller
                 'nama' => $juruSungai->nama,
                 'nip' => $juruSungai->nip,
                 'username' => $juruSungai->username,
-                'wilayah_sungai_id' => $juruSungai->wilayah_sungai_id,
+                'das_id' => $juruSungai->das_id,
+                'nama_das' => $juruSungai->das?->nama_das,
             ]
         ]);
     }

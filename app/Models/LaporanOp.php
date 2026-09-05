@@ -16,7 +16,7 @@ class LaporanOp extends Model
     protected $fillable = [
         'uuid',
         'juru_sungai_id',
-        'wilayah_sungai_id',
+        'das_id',
         'tanggal_inspeksi',
         'bulan',
         'tahun',
@@ -44,9 +44,9 @@ class LaporanOp extends Model
         return $this->belongsTo(JuruSungai::class, 'juru_sungai_id');
     }
 
-    public function wilayahSungai(): BelongsTo
+    public function das(): BelongsTo
     {
-        return $this->belongsTo(WilayahSungai::class, 'wilayah_sungai_id');
+        return $this->belongsTo(Das::class, 'das_id');
     }
 
     public function itemInspeksi(): HasMany

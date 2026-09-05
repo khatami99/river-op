@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@use('App\Support\Bulan')
-
 @section('judul', $wilayah->nama_sungai)
 @section('subjudul', $wilayah->kabupaten?->nama ?? 'Kabupaten belum diatur')
 
@@ -19,7 +17,6 @@
 
     <div class="grid gap-3.5 lg:grid-cols-3">
 
-        {{-- Informasi sungai --}}
         <div class="relative overflow-hidden rounded-2xl bg-sungai-950 p-5">
             <svg class="pointer-events-none absolute -bottom-6 -right-8 w-56 opacity-20" viewBox="0 0 400 120" fill="none">
                 <path d="M0 40c40-24 80-24 120 0s80 24 120 0 80-24 120 0 80 24 120 0" stroke="#5db8f8" stroke-width="9" stroke-linecap="round"/>
@@ -27,14 +24,16 @@
             </svg>
 
             <div class="relative">
-                <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Informasi Sungai</p>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Wilayah Sungai</p>
                 <p class="mt-1.5 text-lg font-extrabold text-white">{{ $wilayah->nama_sungai }}</p>
 
                 <dl class="mt-4 space-y-3 border-t border-white/10 pt-4">
                     @php
                         $info = [
-                            'Kode Sungai' => $wilayah->kode_sungai,
+                            'Kode' => $wilayah->kode_sungai,
                             'Kabupaten' => $wilayah->kabupaten?->nama ?? '-',
+                            'Jumlah DAS' => $wilayah->das_count,
+                            'Jumlah Juru' => $wilayah->juru_sungai_count,
                             'Total Laporan' => $wilayah->laporan_op_count,
                         ];
                     @endphp
@@ -62,92 +61,39 @@
             </div>
         </div>
 
-        {{-- Juru bertugas --}}
+        {{-- DAS di bawah wilayah sungai ini --}}
         <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70 lg:col-span-2">
             <div class="flex items-center justify-between px-5 py-4">
-                <h2 class="text-sm font-bold text-sungai-950">Juru Sungai Bertugas</h2>
-                <x-lencana warna="sungai">{{ $wilayah->juruSungai->count() }} orang</x-lencana>
+                <h2 class="text-sm font-bold text-sungai-950">Daerah Aliran Sungai</h2>
+                <x-lencana warna="sungai">{{ $wilayah->das->count() }} DAS</x-lencana>
             </div>
 
-            @if ($wilayah->juruSungai->isEmpty())
-                <x-kosong judul="Belum ada juru ditugaskan" pesan="Sungai ini belum memiliki juru sungai."/>
+            @if ($wilayah->das->isEmpty())
+                <x-kosong judul="Belum ada DAS" pesan="Wilayah sungai ini belum memiliki DAS."/>
             @else
                 <ul class="divide-y divide-slate-100 border-t border-slate-100">
-                    @foreach ($wilayah->juruSungai as $orang)
+                    @foreach ($wilayah->das as $item)
                         <li>
-                            <a href="{{ route('juru.show', $orang) }}" class="flex items-center gap-3 px-5 py-3 transition hover:bg-slate-50">
-                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sungai-50 text-[12px] font-extrabold text-sungai-700">
-                                    {{ strtoupper(substr($orang->nama, 0, 1)) }}
+                            <a href="{{ route('das.show', $item) }}" class="flex items-center gap-3 px-5 py-3 transition hover:bg-slate-50">
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sungai-50">
+                                    <svg class="h-4 w-4 text-sungai-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0"/>
+                                    </svg>
                                 </span>
                                 <div class="min-w-0 flex-1">
-                                    <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $orang->nama }}</p>
-                                    <p class="truncate text-[12px] text-slate-400">{{ $orang->nip ?: $orang->username }}</p>
+                                    <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $item->nama_das }}</p>
+                                    <p class="truncate text-[12px] text-slate-400">{{ $item->kode_das }}</p>
                                 </div>
-                                <x-lencana :warna="$orang->aktif ? 'normal' : 'netral'">
-                                    {{ $orang->aktif ? 'Aktif' : 'Nonaktif' }}
-                                </x-lencana>
+                                <div class="flex shrink-0 items-center gap-4 text-[12px] text-slate-500">
+                                    <span><span class="font-bold tabular-nums text-slate-700">{{ $item->juru_sungai_count }}</span> juru</span>
+                                    <span><span class="font-bold tabular-nums text-slate-700">{{ $item->laporan_op_count }}</span> laporan</span>
+                                </div>
                             </a>
                         </li>
                     @endforeach
                 </ul>
             @endif
         </div>
-    </div>
-
-    {{-- Laporan di sungai ini --}}
-    <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
-        <div class="px-5 py-4">
-            <h2 class="text-sm font-bold text-sungai-950">Laporan di Sungai Ini</h2>
-        </div>
-
-        @if ($laporan->isEmpty())
-            <x-kosong judul="Belum ada laporan" pesan="Laporan untuk sungai ini akan muncul di sini."/>
-        @else
-            <div class="overflow-x-auto scrollbar-halus">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                            <th class="px-5 py-3">Tanggal</th>
-                            <th class="px-5 py-3">Juru Sungai</th>
-                            <th class="px-5 py-3">Periode</th>
-                            <th class="px-5 py-3 text-center">Bangunan</th>
-                            <th class="px-5 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 text-[13.5px]">
-                        @foreach ($laporan as $item)
-                            <tr class="transition hover:bg-slate-50">
-                                <td class="whitespace-nowrap px-5 py-3 font-semibold tabular-nums text-slate-700">
-                                    {{ optional($item->tanggal_inspeksi)->format('d/m/Y') ?? '-' }}
-                                </td>
-                                <td class="px-5 py-3 font-semibold text-slate-800">{{ $item->juruSungai?->nama ?? '-' }}</td>
-                                <td class="whitespace-nowrap px-5 py-3 text-slate-500">
-                                    {{ Bulan::singkat($item->bulan) }} {{ $item->tahun }}
-                                </td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
-                                        {{ $item->item_inspeksi_count }}
-                                    </span>
-                                </td>
-                                <td class="whitespace-nowrap px-5 py-3 text-right">
-                                    <a href="{{ route('laporan.show', $item) }}"
-                                       class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-sungai-600 transition hover:bg-sungai-50">
-                                        Detail
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            @if ($laporan->hasPages())
-                <div class="border-t border-slate-100 px-5 py-3">{{ $laporan->links() }}</div>
-            @endif
-        @endif
     </div>
 
 @endsection

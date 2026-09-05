@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class WilayahSungai extends Model
 {
@@ -30,13 +31,19 @@ class WilayahSungai extends Model
         return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
     }
 
-    public function juruSungai(): HasMany
+    public function das(): HasMany
     {
-        return $this->hasMany(JuruSungai::class, 'wilayah_sungai_id');
+        return $this->hasMany(Das::class, 'wilayah_sungai_id');
     }
 
-    public function laporanOp(): HasMany
+    /** Juru sungai kini bernaung di bawah DAS, bukan langsung di wilayah sungai. */
+    public function juruSungai(): HasManyThrough
     {
-        return $this->hasMany(LaporanOp::class, 'wilayah_sungai_id');
+        return $this->hasManyThrough(JuruSungai::class, Das::class, 'wilayah_sungai_id', 'das_id');
+    }
+
+    public function laporanOp(): HasManyThrough
+    {
+        return $this->hasManyThrough(LaporanOp::class, Das::class, 'wilayah_sungai_id', 'das_id');
     }
 }

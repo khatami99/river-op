@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\DasWebController;
 use App\Http\Controllers\Web\JuruSungaiWebController;
 use App\Http\Controllers\Web\LaporanWebController;
 use App\Http\Controllers\Web\LoginController;
@@ -25,6 +26,9 @@ Route::middleware('auth:staf')->group(function () {
 
     Route::get('/juru', [JuruSungaiWebController::class, 'index'])->name('juru.index');
     Route::get('/juru/{juru}', [JuruSungaiWebController::class, 'show'])->name('juru.show');
+
+    Route::get('/das', [DasWebController::class, 'index'])->name('das.index');
+    Route::get('/das/{das}', [DasWebController::class, 'show'])->name('das.show');
 
     Route::get('/wilayah', [WilayahSungaiWebController::class, 'index'])->name('wilayah.index');
     Route::get('/wilayah/{wilayah}', [WilayahSungaiWebController::class, 'show'])->name('wilayah.show');

@@ -11,7 +11,7 @@ class WilayahSungaiWebController extends Controller
     public function index(Request $request)
     {
         $wilayah = WilayahSungai::with('kabupaten')
-            ->withCount(['juruSungai', 'laporanOp'])
+            ->withCount(['das', 'juruSungai', 'laporanOp'])
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->string('cari')->toString();
                 $q->where(fn ($sub) => $sub->where('nama_sungai', 'like', "%{$cari}%")
@@ -29,18 +29,9 @@ class WilayahSungaiWebController extends Controller
 
     public function show(WilayahSungai $wilayah)
     {
-        $wilayah->load(['kabupaten', 'juruSungai']);
-        $wilayah->loadCount('laporanOp');
+        $wilayah->load(['kabupaten', 'das' => fn ($q) => $q->withCount(['juruSungai', 'laporanOp'])->orderBy('nama_das')]);
+        $wilayah->loadCount(['das', 'juruSungai', 'laporanOp']);
 
-        $laporan = $wilayah->laporanOp()
-            ->with('juruSungai')
-            ->withCount('itemInspeksi')
-            ->orderByDesc('tanggal_inspeksi')
-            ->paginate(15);
-
-        return view('wilayah.show', [
-            'wilayah' => $wilayah,
-            'laporan' => $laporan,
-        ]);
+        return view('wilayah.show', ['wilayah' => $wilayah]);
     }
 }

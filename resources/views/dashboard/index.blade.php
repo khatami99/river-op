@@ -157,7 +157,7 @@
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $item->juruSungai?->nama ?? '-' }}</p>
-                                    <p class="truncate text-[12px] text-slate-400">{{ $item->wilayahSungai?->nama_sungai ?? '-' }}</p>
+                                    <p class="truncate text-[12px] text-slate-400">{{ $item->das?->nama_das ?? '-' }}</p>
                                 </div>
                                 <svg class="h-4 w-4 shrink-0 text-slate-300" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -197,7 +197,7 @@
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $orang->nama }}</p>
-                                    <p class="truncate text-[12px] text-slate-400">{{ $orang->wilayahSungai?->nama_sungai ?? '-' }}</p>
+                                    <p class="truncate text-[12px] text-slate-400">{{ $orang->das?->nama_das ?? '-' }}</p>
                                 </div>
                                 <svg class="h-4 w-4 shrink-0 text-slate-300" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>

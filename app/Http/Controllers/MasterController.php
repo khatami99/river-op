@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Das;
 use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use App\Models\JenisBangunan;
@@ -16,6 +17,7 @@ class MasterController extends Controller
     {
         $kabupaten = Kabupaten::where('aktif', 1)->get();
         $wilayahSungai = WilayahSungai::where('aktif', 1)->get();
+        $das = Das::where('aktif', 1)->orderBy('nama_das')->get();
         $jenisBangunan = JenisBangunan::where('aktif', 1)->orderBy('urutan')->get();
         $bagianBangunan = BagianBangunan::where('aktif', 1)->orderBy('urutan')->get();
         $pilihanKondisi = PilihanKondisi::where('aktif', 1)->orderBy('urutan')->get();
@@ -26,6 +28,7 @@ class MasterController extends Controller
             'data' => [
                 'kabupaten' => $kabupaten,
                 'wilayah_sungai' => $wilayahSungai,
+                'das' => $das,
                 'jenis_bangunan' => $jenisBangunan,
                 'bagian_bangunan' => $bagianBangunan,
                 'pilihan_kondisi' => $pilihanKondisi,
@@ -37,7 +40,7 @@ class MasterController extends Controller
     {
         $juruSungai = $request->user();
 
-        $juruSungai->load('wilayahSungai.kabupaten');
+        $juruSungai->load('das.wilayahSungai.kabupaten');
 
         return response()->json([
             'success' => true,

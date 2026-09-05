@@ -10,21 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-sungai-100 via-sungai-50 to-emas-50 lg:h-screen lg:overflow-hidden">
+<body class="bg-white lg:h-screen lg:overflow-hidden">
 
 @php
     $menu = [
         ['rute' => 'dashboard',     'aktif' => 'dashboard', 'label' => 'Dashboard',      'ikon' => 'M3.5 11.5 12 4l8.5 7.5M6 10v9a1 1 0 001 1h3v-5h4v5h3a1 1 0 001-1v-9'],
         ['rute' => 'laporan.index', 'aktif' => 'laporan.*', 'label' => 'Laporan OP',     'ikon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l5.4 5.4a1 1 0 01.3.7V19a2 2 0 01-2 2z'],
         ['rute' => 'juru.index',    'aktif' => 'juru.*',    'label' => 'Juru Sungai',    'ikon' => 'M17 20h5v-2a3 3 0 00-5.4-1.9M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.9M7 20H2v-2a3 3 0 015.4-1.9M7 20v-2c0-.7.1-1.3.4-1.9m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
-        ['rute' => 'wilayah.index', 'aktif' => 'wilayah.*', 'label' => 'Wilayah Sungai', 'ikon' => 'M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0'],
+        ['rute' => 'das.index',     'aktif' => 'das.*',     'label' => 'DAS',            'ikon' => 'M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0'],
+        ['rute' => 'wilayah.index', 'aktif' => 'wilayah.*', 'label' => 'Wilayah Sungai', 'ikon' => 'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
     ];
     $staf = auth('staf')->user();
 @endphp
 
-<div class="lg:h-screen lg:p-3">
-    <div class="flex min-h-screen flex-col overflow-hidden bg-white shadow-2xl shadow-sungai-950/10
-                lg:h-full lg:flex-row lg:rounded-[26px]">
+<div class="flex min-h-screen flex-col overflow-hidden bg-white lg:h-screen lg:flex-row">
 
         {{-- Rel navigasi --}}
         <aside class="hidden w-[248px] shrink-0 flex-col bg-sungai-950 lg:flex">
@@ -124,7 +123,6 @@
                 </p>
             </main>
         </div>
-    </div>
 </div>
 
 </body>

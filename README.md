@@ -97,7 +97,8 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | Detail laporan | `/laporan/{id}` | Tampilan gaya blangko OP beserta galeri foto |
 | Export | `/laporan/export` | Unduh CSV mengikuti filter yang sedang aktif |
 | Juru sungai | `/juru` | Daftar juru dan kalender kepatuhan 12 bulan |
-| Wilayah sungai | `/wilayah` | Daftar sungai beserta juru yang bertugas |
+| DAS | `/das` | Daftar daerah aliran sungai beserta juru yang bertugas |
+| Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
 
 ---
 
@@ -149,10 +150,11 @@ API dan dashboard berbagi satu aplikasi, tetapi autentikasinya sengaja dipisah:
 ```
 kabupaten
     └── wilayah_sungai
-            ├── juru_sungai
-            └── laporan_op
-                    └── item_inspeksi
-                            └── temuan_kondisi
+            └── das
+                    ├── juru_sungai
+                    └── laporan_op
+                            └── item_inspeksi
+                                    └── temuan_kondisi
 
 jenis_bangunan (OP-01.a s/d OP-01.n)
     └── bagian_bangunan
@@ -160,6 +162,12 @@ jenis_bangunan (OP-01.a s/d OP-01.n)
 
 staf_dinas
 ```
+
+**Mengapa ada tingkat DAS.** Hanya ada satu wilayah sungai yang menjadi wewenang
+Provinsi Kalimantan Selatan, yaitu Wilayah Sungai Cengal. Pembagian tugas juru
+sungai dilakukan per DAS (Daerah Aliran Sungai) di bawahnya, sehingga juru dan
+laporan menunjuk ke `das`, bukan langsung ke `wilayah_sungai`. Tabel wilayah
+sungai tetap dipertahankan karena wilayah sungai baru bisa muncul di kemudian hari.
 
 Satu laporan mewakili satu kunjungan dan dapat memuat banyak bangunan, termasuk
 beberapa bangunan berjenis sama yang dibedakan lewat kolom `nama_bangunan`.

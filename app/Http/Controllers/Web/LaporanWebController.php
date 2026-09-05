@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
-use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -14,7 +14,7 @@ class LaporanWebController extends Controller
     public function index(Request $request)
     {
         $laporan = $this->queryTerfilter($request)
-            ->with(['juruSungai', 'wilayahSungai'])
+            ->with(['juruSungai', 'das'])
             ->withCount('itemInspeksi')
             ->orderByDesc('tanggal_inspeksi')
             ->orderByDesc('id')
@@ -23,7 +23,7 @@ class LaporanWebController extends Controller
 
         return view('laporan.index', [
             'laporan' => $laporan,
-            'daftarWilayah' => WilayahSungai::orderBy('nama_sungai')->get(),
+            'daftarDas' => Das::orderBy('nama_das')->get(),
             'daftarJuru' => JuruSungai::orderBy('nama')->get(),
             'daftarTahun' => $this->daftarTahun(),
             'filter' => $this->filterAktif($request),
@@ -34,7 +34,7 @@ class LaporanWebController extends Controller
     {
         $laporan->load([
             'juruSungai',
-            'wilayahSungai.kabupaten',
+            'das.wilayahSungai.kabupaten',
             'itemInspeksi.jenisBangunan',
             'itemInspeksi.temuanKondisi.bagianBangunan',
         ]);
@@ -45,7 +45,7 @@ class LaporanWebController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $laporan = $this->queryTerfilter($request)
-            ->with(['juruSungai', 'wilayahSungai.kabupaten', 'itemInspeksi.temuanKondisi'])
+            ->with(['juruSungai', 'das.wilayahSungai.kabupaten', 'itemInspeksi.temuanKondisi'])
             ->orderByDesc('tanggal_inspeksi')
             ->get();
 
@@ -58,7 +58,7 @@ class LaporanWebController extends Controller
             fwrite($keluaran, "\xEF\xBB\xBF");
 
             fputcsv($keluaran, [
-                'Tanggal Inspeksi', 'Juru Sungai', 'NIP', 'Wilayah Sungai', 'Kabupaten',
+                'Tanggal Inspeksi', 'Juru Sungai', 'NIP', 'DAS', 'Wilayah Sungai', 'Kabupaten',
                 'Cuaca', 'Debit Air', 'Jumlah Bangunan', 'Jumlah Temuan',
                 'Temuan Bermasalah', 'Catatan Umum', 'Kendala', 'Disinkronkan',
             ], ';');
@@ -71,8 +71,9 @@ class LaporanWebController extends Controller
                     optional($item->tanggal_inspeksi)->format('d/m/Y'),
                     $item->juruSungai?->nama,
                     $item->juruSungai?->nip,
-                    $item->wilayahSungai?->nama_sungai,
-                    $item->wilayahSungai?->kabupaten?->nama ?? '',
+                    $item->das?->nama_das,
+                    $item->das?->wilayahSungai?->nama_sungai ?? '',
+                    $item->das?->wilayahSungai?->kabupaten?->nama ?? '',
                     ucfirst($item->cuaca ?? ''),
                     ucfirst($item->debit_air ?? ''),
                     $item->itemInspeksi->count(),
@@ -95,13 +96,13 @@ class LaporanWebController extends Controller
         return LaporanOp::query()
             ->when($request->filled('bulan'), fn ($q) => $q->where('bulan', $request->integer('bulan')))
             ->when($request->filled('tahun'), fn ($q) => $q->where('tahun', $request->integer('tahun')))
-            ->when($request->filled('wilayah_sungai_id'), fn ($q) => $q->where('wilayah_sungai_id', $request->integer('wilayah_sungai_id')))
+            ->when($request->filled('das_id'), fn ($q) => $q->where('das_id', $request->integer('das_id')))
             ->when($request->filled('juru_sungai_id'), fn ($q) => $q->where('juru_sungai_id', $request->integer('juru_sungai_id')))
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->string('cari')->toString();
                 $q->where(function ($sub) use ($cari) {
                     $sub->whereHas('juruSungai', fn ($j) => $j->where('nama', 'like', "%{$cari}%"))
-                        ->orWhereHas('wilayahSungai', fn ($w) => $w->where('nama_sungai', 'like', "%{$cari}%"));
+                        ->orWhereHas('das', fn ($d) => $d->where('nama_das', 'like', "%{$cari}%"));
                 });
             });
     }
@@ -111,7 +112,7 @@ class LaporanWebController extends Controller
         return [
             'bulan' => $request->input('bulan'),
             'tahun' => $request->input('tahun'),
-            'wilayah_sungai_id' => $request->input('wilayah_sungai_id'),
+            'das_id' => $request->input('das_id'),
             'juru_sungai_id' => $request->input('juru_sungai_id'),
             'cari' => $request->input('cari'),
         ];

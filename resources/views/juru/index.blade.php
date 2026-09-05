@@ -17,11 +17,11 @@
                 <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama, NIP, atau username" class="{{ $kelasInput }}">
             </div>
             <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Wilayah Sungai</label>
-                <select name="wilayah_sungai_id" class="{{ $kelasInput }}">
-                    <option value="">Semua sungai</option>
-                    @foreach ($daftarWilayah as $w)
-                        <option value="{{ $w->id }}" @selected((string) $filter['wilayah_sungai_id'] === (string) $w->id)>{{ $w->nama_sungai }}</option>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
+                <select name="das_id" class="{{ $kelasInput }}">
+                    <option value="">Semua DAS</option>
+                    @foreach ($daftarDas as $w)
+                        <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->nama_das }}</option>
                     @endforeach
                 </select>
             </div>
@@ -48,7 +48,7 @@
                         <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
                             <th class="px-5 py-3">Nama</th>
                             <th class="px-5 py-3">NIP</th>
-                            <th class="px-5 py-3">Wilayah Sungai</th>
+                            <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3 text-center">Laporan</th>
                             <th class="px-5 py-3">Status</th>
                             <th class="px-5 py-3"></th>
@@ -66,7 +66,7 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-3 tabular-nums text-slate-500">{{ $orang->nip ?: '-' }}</td>
-                                <td class="px-5 py-3 text-slate-500">{{ $orang->wilayahSungai?->nama_sungai ?? '-' }}</td>
+                                <td class="px-5 py-3 text-slate-500">{{ $orang->das?->nama_das ?? '-' }}</td>
                                 <td class="px-5 py-3 text-center">
                                     <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
                                         {{ $orang->laporan_op_count }}

@@ -5,31 +5,20 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\WilayahSungai;
 
+/**
+ * Hanya ada satu wilayah sungai yang menjadi wewenang Provinsi Kalimantan
+ * Selatan, yaitu Wilayah Sungai Cengal. Pembagian tugas juru sungai dilakukan
+ * per DAS di bawahnya, lihat DasSeeder.
+ */
 class WilayahSungaiSeeder extends Seeder
 {
     public function run(): void
     {
         WilayahSungai::create([
             'kabupaten_id' => 1,
-            'nama_sungai' => 'Sungai Tabanio',
-            'kode_sungai' => 'WS-TABA-01',
-            'deskripsi' => 'Aliran sungai utama di Kabupaten Tanah Laut',
-            'aktif' => true,
-        ]);
-
-        WilayahSungai::create([
-            'kabupaten_id' => 2,
-            'nama_sungai' => 'Sungai Batulicin',
-            'kode_sungai' => 'WS-BLIN-02',
-            'deskripsi' => 'Aliran sungai utama di Kabupaten Tanah Bumbu',
-            'aktif' => true,
-        ]);
-
-        WilayahSungai::create([
-            'kabupaten_id' => 3,
-            'nama_sungai' => 'Sungai Cantung',
-            'kode_sungai' => 'WS-CANT-03',
-            'deskripsi' => 'Aliran sungai utama di Kabupaten Kotabaru',
+            'nama_sungai' => 'Wilayah Sungai Cengal',
+            'kode_sungai' => 'WS-CENGAL',
+            'deskripsi' => 'Satu-satunya wilayah sungai yang menjadi wewenang Provinsi Kalimantan Selatan.',
             'aktif' => true,
         ]);
     }

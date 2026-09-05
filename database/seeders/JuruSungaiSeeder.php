@@ -11,7 +11,7 @@ class JuruSungaiSeeder extends Seeder
     public function run(): void
     {
         JuruSungai::create([
-            'wilayah_sungai_id' => 1,
+            'das_id' => 1,
             'nama' => 'Ahmad Junaidi',
             'nip' => '198501012010121001',
             'username' => 'ahmad_juru',
@@ -20,7 +20,7 @@ class JuruSungaiSeeder extends Seeder
         ]);
 
         JuruSungai::create([
-            'wilayah_sungai_id' => 2,
+            'das_id' => 2,
             'nama' => 'Bambang Setiawan',
             'nip' => '198805122013011002',
             'username' => 'bambang_juru',
@@ -29,7 +29,7 @@ class JuruSungaiSeeder extends Seeder
         ]);
 
         JuruSungai::create([
-            'wilayah_sungai_id' => 3,
+            'das_id' => 3,
             'nama' => 'Candra Wijaya',
             'nip' => '199109202015031003',
             'username' => 'candra_juru',

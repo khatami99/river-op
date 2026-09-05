@@ -15,7 +15,7 @@ class JuruSungai extends Authenticatable
     protected $table = 'juru_sungai';
 
     protected $fillable = [
-        'wilayah_sungai_id',
+        'das_id',
         'nama',
         'nip',
         'username',
@@ -32,9 +32,9 @@ class JuruSungai extends Authenticatable
         'aktif' => 'boolean',
     ];
 
-    public function wilayahSungai(): BelongsTo
+    public function das(): BelongsTo
     {
-        return $this->belongsTo(WilayahSungai::class, 'wilayah_sungai_id');
+        return $this->belongsTo(Das::class, 'das_id');
     }
 
     public function laporanOp(): HasMany

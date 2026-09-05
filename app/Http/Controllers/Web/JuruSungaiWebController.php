@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
-use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
 
 class JuruSungaiWebController extends Controller
 {
     public function index(Request $request)
     {
-        $juru = JuruSungai::with('wilayahSungai')
+        $juru = JuruSungai::with('das')
             ->withCount('laporanOp')
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->string('cari')->toString();
@@ -20,29 +20,29 @@ class JuruSungaiWebController extends Controller
                     ->orWhere('nip', 'like', "%{$cari}%")
                     ->orWhere('username', 'like', "%{$cari}%"));
             })
-            ->when($request->filled('wilayah_sungai_id'), fn ($q) => $q->where('wilayah_sungai_id', $request->integer('wilayah_sungai_id')))
+            ->when($request->filled('das_id'), fn ($q) => $q->where('das_id', $request->integer('das_id')))
             ->orderBy('nama')
             ->paginate(20)
             ->withQueryString();
 
         return view('juru.index', [
             'juru' => $juru,
-            'daftarWilayah' => WilayahSungai::orderBy('nama_sungai')->get(),
+            'daftarDas' => Das::orderBy('nama_das')->get(),
             'filter' => [
                 'cari' => $request->input('cari'),
-                'wilayah_sungai_id' => $request->input('wilayah_sungai_id'),
+                'das_id' => $request->input('das_id'),
             ],
         ]);
     }
 
     public function show(Request $request, JuruSungai $juru)
     {
-        $juru->load('wilayahSungai.kabupaten');
+        $juru->load('das.wilayahSungai.kabupaten');
 
         $tahun = (int) $request->input('tahun', now()->year);
 
         $laporan = LaporanOp::where('juru_sungai_id', $juru->id)
-            ->with('wilayahSungai')
+            ->with('das')
             ->withCount('itemInspeksi')
             ->orderByDesc('tanggal_inspeksi')
             ->paginate(15)

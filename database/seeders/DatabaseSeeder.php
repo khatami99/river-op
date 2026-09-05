@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             KabupatenSeeder::class,
             JenisBangunanSeeder::class,
             WilayahSungaiSeeder::class,
+            DasSeeder::class,
             JuruSungaiSeeder::class,
             StafDinasSeeder::class,
         ]);

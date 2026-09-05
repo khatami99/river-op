@@ -46,11 +46,11 @@
             </div>
 
             <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Wilayah Sungai</label>
-                <select name="wilayah_sungai_id" class="{{ $kelasInput }}">
-                    <option value="">Semua sungai</option>
-                    @foreach ($daftarWilayah as $w)
-                        <option value="{{ $w->id }}" @selected((string) $filter['wilayah_sungai_id'] === (string) $w->id)>{{ $w->nama_sungai }}</option>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
+                <select name="das_id" class="{{ $kelasInput }}">
+                    <option value="">Semua DAS</option>
+                    @foreach ($daftarDas as $w)
+                        <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->nama_das }}</option>
                     @endforeach
                 </select>
             </div>
@@ -96,7 +96,7 @@
                         <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
                             <th class="px-5 py-3">Tanggal</th>
                             <th class="px-5 py-3">Juru Sungai</th>
-                            <th class="px-5 py-3">Wilayah Sungai</th>
+                            <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3">Periode</th>
                             <th class="px-5 py-3 text-center">Bangunan</th>
                             <th class="px-5 py-3">Cuaca</th>
@@ -117,7 +117,7 @@
                                         <span class="font-semibold text-slate-800">{{ $item->juruSungai?->nama ?? '-' }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3 text-slate-500">{{ $item->wilayahSungai?->nama_sungai ?? '-' }}</td>
+                                <td class="px-5 py-3 text-slate-500">{{ $item->das?->nama_das ?? '-' }}</td>
                                 <td class="whitespace-nowrap px-5 py-3 text-slate-500">
                                     {{ Bulan::singkat($item->bulan) }} {{ $item->tahun }}
                                 </td>

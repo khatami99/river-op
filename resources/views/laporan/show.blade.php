@@ -41,9 +41,9 @@
                     <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Identitas Laporan</p>
                     <p class="mt-1.5 text-xl font-extrabold text-white">{{ $laporan->juruSungai?->nama ?? '-' }}</p>
                     <p class="text-[13px] text-sungai-200/70">
-                        {{ $laporan->wilayahSungai?->nama_sungai ?? '-' }}
-                        @if ($laporan->wilayahSungai?->kabupaten?->nama)
-                            &middot; {{ $laporan->wilayahSungai->kabupaten->nama }}
+                        {{ $laporan->das?->nama_das ?? '-' }}
+                        @if ($laporan->das?->wilayahSungai?->kabupaten?->nama)
+                            &middot; {{ $laporan->das->wilayahSungai->kabupaten->nama }}
                         @endif
                     </p>
                 </div>

@@ -65,7 +65,7 @@ class LaporanController extends Controller
                 $laporanOp = LaporanOp::create([
                     'uuid' => $uuid,
                     'juru_sungai_id' => $juruSungai->id,
-                    'wilayah_sungai_id' => $laporanData['wilayah_sungai_id'] ?? $juruSungai->wilayah_sungai_id,
+                    'das_id' => $laporanData['das_id'] ?? $juruSungai->das_id,
                     'tanggal_inspeksi' => $laporanData['tanggal_inspeksi'],
                     'bulan' => $laporanData['bulan'],
                     'tahun' => $laporanData['tahun'],
