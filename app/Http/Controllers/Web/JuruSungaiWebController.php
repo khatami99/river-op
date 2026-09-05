@@ -65,11 +65,17 @@ class JuruSungaiWebController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        // Bila dibuka dari halaman DAS, DAS-nya langsung terpilih dan
+        // setelah disimpan admin dikembalikan ke halaman DAS tersebut.
+        $juru = new JuruSungai(['aktif' => true]);
+        $juru->das_id = $request->integer('das_id') ?: null;
+
         return view('juru.form', [
-            'juru' => new JuruSungai(['aktif' => true]),
+            'juru' => $juru,
             'daftarDas' => Das::where('aktif', true)->orderBy('nama_das')->get(),
+            'kembaliKeDas' => $request->integer('das_id') ?: null,
         ]);
     }
 
@@ -78,9 +84,13 @@ class JuruSungaiWebController extends Controller
         $data = $this->validasi($request);
         $data['aktif'] = $request->boolean('aktif');
 
-        JuruSungai::create($data);
+        $juru = JuruSungai::create($data);
 
-        return redirect()->route('juru.index')->with('sukses', 'Juru sungai berhasil ditambahkan.');
+        $tujuan = $request->filled('kembali_ke_das')
+            ? route('das.show', $request->integer('kembali_ke_das'))
+            : route('juru.index');
+
+        return redirect()->to($tujuan)->with('sukses', "Juru sungai {$juru->nama} berhasil ditambahkan.");
     }
 
     public function edit(JuruSungai $juru)
@@ -88,6 +98,7 @@ class JuruSungaiWebController extends Controller
         return view('juru.form', [
             'juru' => $juru,
             'daftarDas' => Das::where('aktif', true)->orderBy('nama_das')->get(),
+            'kembaliKeDas' => null,
         ]);
     }
 

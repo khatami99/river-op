@@ -63,9 +63,20 @@
         </div>
 
         <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70 lg:col-span-2">
-            <div class="flex items-center justify-between px-5 py-4">
-                <h2 class="text-sm font-bold text-sungai-950">Juru Sungai Bertugas</h2>
-                <x-lencana warna="sungai">{{ $das->juruSungai->count() }} orang</x-lencana>
+            <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-4">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-sm font-bold text-sungai-950">Juru Sungai Bertugas</h2>
+                    <x-lencana warna="sungai">{{ $das->juruSungai->count() }} orang</x-lencana>
+                </div>
+                @if (auth('staf')->user()?->isAdmin())
+                    <a href="{{ route('juru.create', ['das_id' => $das->id]) }}"
+                       class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-[13px] font-bold text-slate-700 transition hover:bg-slate-200">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/>
+                        </svg>
+                        Tambah Juru ke DAS Ini
+                    </a>
+                @endif
             </div>
 
             @if ($das->juruSungai->isEmpty())

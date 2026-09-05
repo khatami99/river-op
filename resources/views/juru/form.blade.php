@@ -17,6 +17,10 @@
         :batal="route('juru.index')"
         :labelSimpan="$baru ? 'Simpan Juru' : 'Simpan Perubahan'">
 
+        @if ($kembaliKeDas)
+            <input type="hidden" name="kembali_ke_das" value="{{ $kembaliKeDas }}">
+        @endif
+
         <x-kolom label="Nama Lengkap" nama="nama" :wajib="true">
             <input id="nama" name="nama" type="text" class="{{ $ki }}"
                    value="{{ old('nama', $juru->nama) }}" required>
