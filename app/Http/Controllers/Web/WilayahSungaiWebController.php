@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class WilayahSungaiWebController extends Controller
 {
@@ -33,5 +35,71 @@ class WilayahSungaiWebController extends Controller
         $wilayah->loadCount(['das', 'juruSungai', 'laporanOp']);
 
         return view('wilayah.show', ['wilayah' => $wilayah]);
+    }
+
+    public function create()
+    {
+        return view('wilayah.form', [
+            'wilayah' => new WilayahSungai(['aktif' => true]),
+            'daftarKabupaten' => Kabupaten::orderBy('nama')->get(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $this->validasi($request);
+        $data['aktif'] = $request->boolean('aktif');
+
+        WilayahSungai::create($data);
+
+        return redirect()->route('wilayah.index')->with('sukses', 'Wilayah sungai berhasil ditambahkan.');
+    }
+
+    public function edit(WilayahSungai $wilayah)
+    {
+        return view('wilayah.form', [
+            'wilayah' => $wilayah,
+            'daftarKabupaten' => Kabupaten::orderBy('nama')->get(),
+        ]);
+    }
+
+    public function update(Request $request, WilayahSungai $wilayah)
+    {
+        $data = $this->validasi($request, $wilayah);
+        $data['aktif'] = $request->boolean('aktif');
+
+        $wilayah->update($data);
+
+        return redirect()->route('wilayah.index')->with('sukses', 'Data wilayah sungai diperbarui.');
+    }
+
+    public function destroy(WilayahSungai $wilayah)
+    {
+        if ($wilayah->das()->exists()) {
+            return back()->withErrors([
+                'hapus' => 'Wilayah sungai ini masih memiliki DAS sehingga tidak dapat dihapus. Hapus atau pindahkan DAS-nya lebih dulu.',
+            ]);
+        }
+
+        $wilayah->delete();
+
+        return redirect()->route('wilayah.index')->with('sukses', 'Wilayah sungai dihapus.');
+    }
+
+    private function validasi(Request $request, ?WilayahSungai $wilayah = null): array
+    {
+        return $request->validate([
+            'nama_sungai' => ['required', 'string', 'max:150'],
+            'kode_sungai' => [
+                'required', 'string', 'max:30',
+                Rule::unique('wilayah_sungai', 'kode_sungai')->ignore($wilayah?->id)->whereNull('deleted_at'),
+            ],
+            'kabupaten_id' => ['required', 'exists:kabupaten,id'],
+            'deskripsi' => ['nullable', 'string'],
+        ], [], [
+            'nama_sungai' => 'nama wilayah sungai',
+            'kode_sungai' => 'kode',
+            'kabupaten_id' => 'kabupaten',
+        ]);
     }
 }

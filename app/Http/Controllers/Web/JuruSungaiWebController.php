@@ -7,6 +7,7 @@ use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class JuruSungaiWebController extends Controller
 {
@@ -61,6 +62,78 @@ class JuruSungaiWebController extends Controller
             'tahun' => $tahun,
             'bulanTerlapor' => $bulanTerlapor,
             'daftarTahun' => $this->daftarTahun(),
+        ]);
+    }
+
+    public function create()
+    {
+        return view('juru.form', [
+            'juru' => new JuruSungai(['aktif' => true]),
+            'daftarDas' => Das::where('aktif', true)->orderBy('nama_das')->get(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $this->validasi($request);
+        $data['aktif'] = $request->boolean('aktif');
+
+        JuruSungai::create($data);
+
+        return redirect()->route('juru.index')->with('sukses', 'Juru sungai berhasil ditambahkan.');
+    }
+
+    public function edit(JuruSungai $juru)
+    {
+        return view('juru.form', [
+            'juru' => $juru,
+            'daftarDas' => Das::where('aktif', true)->orderBy('nama_das')->get(),
+        ]);
+    }
+
+    public function update(Request $request, JuruSungai $juru)
+    {
+        $data = $this->validasi($request, $juru);
+        $data['aktif'] = $request->boolean('aktif');
+
+        // Password hanya diganti bila diisi, supaya mengubah data lain
+        // tidak memaksa admin mengetik ulang password juru.
+        if (blank($data['password'] ?? null)) {
+            unset($data['password']);
+        }
+
+        $juru->update($data);
+
+        return redirect()->route('juru.index')->with('sukses', 'Data juru sungai diperbarui.');
+    }
+
+    public function destroy(JuruSungai $juru)
+    {
+        if ($juru->laporanOp()->exists()) {
+            return back()->withErrors([
+                'hapus' => 'Juru ini sudah memiliki laporan sehingga tidak dapat dihapus. Nonaktifkan saja agar riwayatnya tetap utuh.',
+            ]);
+        }
+
+        $juru->delete();
+
+        return redirect()->route('juru.index')->with('sukses', 'Juru sungai dihapus.');
+    }
+
+    private function validasi(Request $request, ?JuruSungai $juru = null): array
+    {
+        return $request->validate([
+            'nama' => ['required', 'string', 'max:100'],
+            'nip' => ['nullable', 'string', 'max:30'],
+            'username' => [
+                'required', 'string', 'max:50',
+                Rule::unique('juru_sungai', 'username')->ignore($juru?->id)->whereNull('deleted_at'),
+            ],
+            'password' => [$juru ? 'nullable' : 'required', 'string', 'min:6', 'max:255'],
+            'das_id' => ['required', 'exists:das,id'],
+        ], [], [
+            'nip' => 'NIP',
+            'das_id' => 'DAS',
         ]);
     }
 

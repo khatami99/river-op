@@ -3,12 +3,30 @@
 @section('judul', 'Juru Sungai')
 @section('subjudul', $juru->total() . ' juru terdaftar')
 
+@section('aksi-header')
+    @if (auth('staf')->user()?->isAdmin())
+        <a href="{{ route('juru.create') }}"
+           class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/>
+            </svg>
+            Tambah Juru
+        </a>
+    @endif
+@endsection
+
 @php
     $kelasInput = 'w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
     $adaFilter = collect($filter)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty();
 @endphp
 
 @section('konten')
+
+    @error('hapus')
+        <div class="mb-3.5 rounded-2xl bg-bata-50 px-4 py-3 text-[13px] font-medium text-bata-700 ring-1 ring-bata-500/20">
+            {{ $message }}
+        </div>
+    @enderror
 
     <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
         <div class="grid gap-3 sm:grid-cols-3">
@@ -79,12 +97,24 @@
                                 </td>
                                 <td class="whitespace-nowrap px-5 py-3 text-right">
                                     <a href="{{ route('juru.show', $orang) }}"
-                                       class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-sungai-600 transition hover:bg-sungai-50">
+                                       class="inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-sungai-600 transition hover:bg-sungai-50">
                                         Detail
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                        </svg>
                                     </a>
+                                    @if (auth('staf')->user()?->isAdmin())
+                                        <a href="{{ route('juru.edit', $orang) }}"
+                                           class="inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-slate-600 transition hover:bg-slate-100">
+                                            Ubah
+                                        </a>
+                                        <form method="POST" action="{{ route('juru.destroy', $orang) }}" class="inline"
+                                              onsubmit="return confirm('Hapus juru {{ $orang->nama }}?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-bata-600 transition hover:bg-bata-50">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

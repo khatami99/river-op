@@ -99,6 +99,24 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | Juru sungai | `/juru` | Daftar juru dan kalender kepatuhan 12 bulan |
 | DAS | `/das` | Daftar daerah aliran sungai beserta juru yang bertugas |
 | Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
+| Pengguna | `/staf` | Manajemen akun staf dinas — hanya admin |
+
+### Peran staf dinas
+
+| | Admin | Viewer |
+|---|---|---|
+| Melihat laporan, juru, DAS, wilayah | ✅ | ✅ |
+| Export | ✅ | ✅ |
+| Menambah, mengubah, menghapus data master | ✅ | ❌ |
+| Manajemen akun staf | ✅ | ❌ |
+
+Pembatasan ditegakkan middleware `admin` pada rute, bukan sekadar menyembunyikan
+tombol, sehingga permintaan yang ditembak langsung tetap ditolak dengan 403.
+
+Penghapusan ditolak selama data masih dipakai: juru yang sudah memiliki laporan,
+DAS yang masih dipegang juru, dan wilayah sungai yang masih menaungi DAS. Untuk
+kasus itu gunakan penonaktifan agar riwayat tetap utuh. Admin juga tidak dapat
+menghapus, menurunkan peran, atau menonaktifkan akunnya sendiri.
 
 ---
 

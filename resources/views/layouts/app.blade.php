@@ -20,7 +20,13 @@
         ['rute' => 'das.index',     'aktif' => 'das.*',     'label' => 'DAS',            'ikon' => 'M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0'],
         ['rute' => 'wilayah.index', 'aktif' => 'wilayah.*', 'label' => 'Wilayah Sungai', 'ikon' => 'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
     ];
+
     $staf = auth('staf')->user();
+
+    // Manajemen pengguna hanya relevan bagi admin.
+    if ($staf?->isAdmin()) {
+        $menu[] = ['rute' => 'staf.index', 'aktif' => 'staf.*', 'label' => 'Pengguna', 'ikon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'];
+    }
 @endphp
 
 <div class="flex min-h-screen flex-col overflow-hidden bg-white lg:h-screen lg:flex-row">

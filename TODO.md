@@ -20,20 +20,20 @@ payload sync, master data, dan label di layar juru.
 
 ---
 
-## Prioritas tinggi
+## Selesai 28 Agu 2026
 
-- [ ] **Tegakkan pembatasan role.** Kolom `role` (`admin` / `viewer`) sudah ada dan
-      ditampilkan di sidebar, tetapi tidak pernah diperiksa di controller mana pun.
-      Akibatnya akun `viewer` memiliki akses yang sama persis dengan `admin`.
-      Berisiko karena tampak aman padahal tidak.
+- [x] **Pembatasan role ditegakkan.** Middleware `admin` menjaga seluruh rute
+      perubahan data. Viewer tetap dapat melihat laporan tetapi menerima 403 saat
+      mencoba menulis, termasuk bila permintaan ditembak langsung tanpa lewat tombol.
+- [x] **CRUD Juru Sungai**, lengkap dengan pemilihan DAS wilayah kerja.
+- [x] **CRUD DAS** dan **CRUD Wilayah Sungai**.
+- [x] **Manajemen pengguna staf dinas**, dengan pengaman: admin tidak dapat
+      menghapus, menurunkan peran, atau menonaktifkan akunnya sendiri, dan
+      administrator aktif terakhir tidak dapat dihapus.
 
-- [ ] **CRUD Juru Sungai.** Admin dinas harus dapat menambah, mengubah, menonaktifkan
-      juru, dan menentukan wilayah kerjanya. Saat ini juru hanya bisa dibuat lewat seeder.
-
-- [ ] **CRUD Wilayah Sungai.** Tetap dibuat meski saat ini hanya ada satu wilayah sungai
-      wewenang provinsi, karena bisa bertambah di kemudian hari.
-
-- [ ] **Manajemen pengguna staf dinas.** Belum ada cara menambah akun staf selain seeder.
+Penghapusan ditolak bila data masih dipakai — juru yang sudah punya laporan, DAS
+yang masih dipegang juru, dan wilayah sungai yang masih menaungi DAS. Dalam kasus
+itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ---
 
