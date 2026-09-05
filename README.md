@@ -197,8 +197,8 @@ Setiap temuan menyimpan sampai tiga foto: `foto`, `foto_2`, dan `foto_3`.
 ## Akun Default (Development)
 
 **Juru Sungai:**
-| Username | Password | Wilayah |
-|----------|----------|---------|
+| Username | Password | DAS |
+|----------|----------|-----|
 | ahmad_juru | password | Sungai Tabanio (Tanah Laut) |
 | bambang_juru | password | Sungai Batulicin (Tanah Bumbu) |
 | candra_juru | password | Sungai Cantung (Kotabaru) |
@@ -234,8 +234,13 @@ Token didefinisikan di `resources/css/app.css`.
 
 ### Belum dikerjakan
 
-Export PDF sesuai blangko resmi, rekapitulasi per wilayah, audit log,
-monitoring sinkronisasi, manajemen pengguna, dan peta sebaran laporan.
+Export PDF sesuai blangko resmi, export `.xlsx` sungguhan, audit log,
+monitoring sinkronisasi, dan peta sebaran laporan. Rincian beserta
+alasannya ada di [TODO.md](TODO.md).
+
+Peta menunggu satu prasyarat: aplikasi Android belum menangkap koordinat
+GPS sama sekali, sehingga kolom `koordinat_lat` dan `koordinat_lng` masih
+selalu kosong.
 
 ---
 
