@@ -127,7 +127,20 @@
                             </p>
                         </div>
                     </div>
-                    <x-lencana warna="netral">{{ $item->temuanKondisi->count() }} bagian diperiksa</x-lencana>
+                    <div class="flex flex-wrap items-center gap-2">
+                        @if ($item->koordinat_lat && $item->koordinat_lng)
+                            <a href="https://www.google.com/maps?q={{ $item->koordinat_lat }},{{ $item->koordinat_lng }}"
+                               target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center gap-1.5 rounded-full bg-sungai-50 px-2.5 py-0.5 text-xs font-semibold text-sungai-700 ring-1 ring-inset ring-sungai-500/20 transition hover:bg-sungai-100">
+                                <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.7 16.7 12 22l-5.7-5.3a8 8 0 1111.4 0z"/>
+                                    <circle cx="12" cy="11" r="2.5"/>
+                                </svg>
+                                {{ number_format($item->koordinat_lat, 5) }}, {{ number_format($item->koordinat_lng, 5) }}
+                            </a>
+                        @endif
+                        <x-lencana warna="netral">{{ $item->temuanKondisi->count() }} bagian diperiksa</x-lencana>
+                    </div>
                 </div>
 
                 @if (count($fotoBangunan))
@@ -167,6 +180,18 @@
                                         @endforeach
                                     </div>
                                 </div>
+
+                                @if ($temuan->koordinat_lat && $temuan->koordinat_lng)
+                                    <a href="https://www.google.com/maps?q={{ $temuan->koordinat_lat }},{{ $temuan->koordinat_lng }}"
+                                       target="_blank" rel="noopener noreferrer"
+                                       class="mt-2 inline-flex items-center gap-1.5 text-[12px] font-semibold text-sungai-600 transition hover:text-sungai-800">
+                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.7 16.7 12 22l-5.7-5.3a8 8 0 1111.4 0z"/>
+                                            <circle cx="12" cy="11" r="2.5"/>
+                                        </svg>
+                                        {{ number_format($temuan->koordinat_lat, 5) }}, {{ number_format($temuan->koordinat_lng, 5) }}
+                                    </a>
+                                @endif
 
                                 @if ($temuan->tindakan_diperlukan || $temuan->keterangan)
                                     <div class="mt-2.5 space-y-1 text-[13px] leading-relaxed">

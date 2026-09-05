@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\DasWebController;
 use App\Http\Controllers\Web\JuruSungaiWebController;
 use App\Http\Controllers\Web\LaporanWebController;
 use App\Http\Controllers\Web\LoginController;
+use App\Http\Controllers\Web\RekapWebController;
 use App\Http\Controllers\Web\StafDinasWebController;
 use App\Http\Controllers\Web\WilayahSungaiWebController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::middleware('auth:staf')->group(function () {
     Route::get('/laporan', [LaporanWebController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/export', [LaporanWebController::class, 'export'])->name('laporan.export');
     Route::get('/laporan/{laporan}', [LaporanWebController::class, 'show'])->name('laporan.show');
+
+    Route::get('/rekap', [RekapWebController::class, 'index'])->name('rekap.index');
+    Route::get('/rekap/export', [RekapWebController::class, 'export'])->name('rekap.export');
 
     Route::get('/juru', [JuruSungaiWebController::class, 'index'])->name('juru.index');
     Route::get('/das', [DasWebController::class, 'index'])->name('das.index');

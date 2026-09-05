@@ -111,6 +111,7 @@ class LaporanController extends Controller
                                     'item_inspeksi_id' => $itemInspeksi->id,
                                     'bagian_bangunan_id' => $temuanData['bagian_bangunan_id'],
                                     'kondisi_ditemukan' => $temuanData['kondisi_ditemukan'] ?? null,
+                                    'ada_masalah' => TemuanKondisi::nilaiAdaMasalah($temuanData['kondisi_ditemukan'] ?? []),
                                     'tindakan_diperlukan' => $temuanData['tindakan_diperlukan'] ?? null,
                                     'koordinat_lat' => $temuanData['koordinat_lat'] ?? null,
                                     'koordinat_lng' => $temuanData['koordinat_lng'] ?? null,

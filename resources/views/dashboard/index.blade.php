@@ -108,19 +108,33 @@
             <p class="mt-1.5 text-[12px] font-medium text-slate-400">terdaftar di sistem</p>
         </div>
 
-        {{-- Total laporan --}}
-        <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
+        {{-- Laporan bermasalah --}}
+        <a href="{{ route('laporan.index', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+           class="rounded-2xl p-5 ring-1 transition hover:ring-2
+                  {{ $laporanBermasalah > 0 ? 'bg-bata-50 ring-bata-500/20 hover:ring-bata-500/40' : 'bg-white ring-slate-200/70 hover:ring-slate-300' }}">
             <div class="flex items-center justify-between">
-                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Total Laporan</p>
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100">
-                    <svg class="h-4 w-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l5.4 5.4a1 1 0 01.3.7V19a2 2 0 01-2 2z"/>
-                    </svg>
+                <p class="text-[11px] font-bold uppercase tracking-widest {{ $laporanBermasalah > 0 ? 'text-bata-700/70' : 'text-slate-400' }}">
+                    Laporan Bermasalah
+                </p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg {{ $laporanBermasalah > 0 ? 'bg-bata-100' : 'bg-hijau-50' }}">
+                    @if ($laporanBermasalah > 0)
+                        <svg class="h-4 w-4 text-bata-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>
+                        </svg>
+                    @else
+                        <svg class="h-4 w-4 text-hijau-600" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    @endif
                 </span>
             </div>
-            <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums text-sungai-950">{{ $totalLaporanPeriode }}</p>
-            <p class="mt-1.5 text-[12px] font-medium text-slate-400">masuk periode ini</p>
-        </div>
+            <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $laporanBermasalah > 0 ? 'text-bata-600' : 'text-hijau-600' }}">
+                {{ $laporanBermasalah }}
+            </p>
+            <p class="mt-1.5 text-[12px] font-medium {{ $laporanBermasalah > 0 ? 'text-bata-700/60' : 'text-slate-400' }}">
+                dari {{ $totalLaporanPeriode }} laporan periode ini
+            </p>
+        </a>
     </div>
 
     {{-- Dua panel bawah --}}

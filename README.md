@@ -99,6 +99,7 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | Juru sungai | `/juru` | Daftar juru dan kalender kepatuhan 12 bulan |
 | DAS | `/das` | Daftar daerah aliran sungai beserta juru yang bertugas |
 | Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
+| Rekapitulasi | `/rekap` | Rekap per DAS, daftar juru belum melapor, export |
 | Pengguna | `/staf` | Manajemen akun staf dinas — hanya admin |
 
 ### Peran staf dinas

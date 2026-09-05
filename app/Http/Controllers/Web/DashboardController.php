@@ -42,6 +42,13 @@ class DashboardController extends Controller
             ->where('tahun', $tahun)
             ->count();
 
+        // Berapa laporan periode ini yang memuat temuan tidak normal —
+        // pertanyaan ketiga yang harus terjawab dalam hitungan detik.
+        $laporanBermasalah = LaporanOp::where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->whereHas('itemInspeksi.temuanKondisi', fn ($q) => $q->where('ada_masalah', true))
+            ->count();
+
         return view('dashboard.index', [
             'bulan' => $bulan,
             'tahun' => $tahun,
@@ -52,6 +59,7 @@ class DashboardController extends Controller
             'juruBelumLapor' => $juruBelumLapor,
             'laporanTerbaru' => $laporanTerbaru,
             'totalLaporanPeriode' => $totalLaporanPeriode,
+            'laporanBermasalah' => $laporanBermasalah,
             'daftarTahun' => $this->daftarTahun(),
         ]);
     }

@@ -13,6 +13,7 @@ class TemuanKondisi extends Model
         'item_inspeksi_id',
         'bagian_bangunan_id',
         'kondisi_ditemukan',
+        'ada_masalah',
         'tindakan_diperlukan',
         'koordinat_lat',
         'koordinat_lng',
@@ -24,6 +25,7 @@ class TemuanKondisi extends Model
 
     protected $casts = [
         'kondisi_ditemukan' => 'array',
+        'ada_masalah' => 'boolean',
         'koordinat_lat' => 'decimal:7',
         'koordinat_lng' => 'decimal:7',
     ];
@@ -57,8 +59,22 @@ class TemuanKondisi extends Model
 
     public function adaMasalah(): bool
     {
-        foreach ($this->kondisiList() as $kondisi) {
-            if (strcasecmp($kondisi, 'Normal') !== 0) {
+        return (bool) $this->ada_masalah;
+    }
+
+    /**
+     * Menilai kondisi mentah dari aplikasi juru. Dipakai saat sinkronisasi
+     * untuk mengisi kolom ada_masalah, agar rekapitulasi bisa diagregasi SQL.
+     */
+    public static function nilaiAdaMasalah(mixed $kondisi): bool
+    {
+        $daftar = is_array($kondisi)
+            ? $kondisi
+            : explode(',', (string) $kondisi);
+
+        foreach ($daftar as $item) {
+            $item = trim((string) $item);
+            if ($item !== '' && strcasecmp($item, 'Normal') !== 0) {
                 return true;
             }
         }

@@ -35,27 +35,31 @@ Penghapusan ditolak bila data masih dipakai — juru yang sudah punya laporan, D
 yang masih dipegang juru, dan wilayah sungai yang masih menaungi DAS. Dalam kasus
 itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
+- [x] **Rekapitulasi per DAS** beserta baris total, daftar juru belum melapor,
+      dan export CSV-nya. Seluruh angka diagregasi lewat SQL.
+- [x] **Ringkasan laporan bermasalah di dashboard**, sehingga pertanyaan
+      "ada laporan bermasalah tidak?" akhirnya terjawab dalam hitungan detik.
+- [x] **Kolom `ada_masalah` pada `temuan_kondisi`.** Sebelumnya penilaian ini
+      harus membaca kolom JSON baris per baris di PHP sehingga rekap tidak bisa
+      diagregasi SQL. Penandanya kini disimpan saat sinkronisasi.
+
 ---
 
 ## Prioritas sedang
 
-- [ ] **Tampilkan koordinat GPS di halaman detail.** Kolom `koordinat_lat` dan
-      `koordinat_lng` sudah terisi di `item_inspeksi` dan `temuan_kondisi`, tetapi
-      tidak pernah ditampilkan. Paling murah dikerjakan.
-
-- [ ] **Ringkasan temuan bermasalah di dashboard.** Dashboard baru menjawab dua
-      pertanyaan: berapa yang sudah lapor, dan siapa yang belum. Pertanyaan ketiga —
-      "ada laporan bermasalah tidak?" — belum terjawab; angkanya baru muncul di
-      halaman detail masing-masing laporan.
-
-- [ ] **Rekapitulasi per wilayah.** Tabel sudah/belum melapor per sungai beserta totalnya.
+- [ ] **Aplikasi Android belum menangkap GPS sama sekali.** Kolom `koordinat_lat`
+      dan `koordinat_lng` ada di basis data tetapi selalu kosong: aplikasi
+      meng-hardcode `null`, tidak meminta izin lokasi, dan tidak memuat pustaka
+      lokasi apa pun. Dashboard sudah siap menampilkan koordinat sebagai tautan
+      ke Google Maps begitu datanya ada, tetapi penangkapannya harus dikerjakan
+      lebih dulu di sisi Android. Ini juga menjadi prasyarat fitur peta.
 
 - [ ] **Export Excel sungguhan (`.xlsx`).** Saat ini export berupa CSV. Terbuka dengan
-      baik di Excel, tetapi bukan berkas Excel asli.
+      baik di Excel, tetapi bukan berkas Excel asli. Perlu menambah dependensi
+      seperti `maatwebsite/excel` atau `openspout/openspout`.
 
 - [ ] **Export PDF** sesuai format blangko OP resmi, untuk kebutuhan cetak dan arsip.
-
-- [ ] **Export daftar juru yang belum melapor.**
+      Perlu contoh blangko aslinya lebih dulu agar tata letaknya tepat.
 
 ---
 
