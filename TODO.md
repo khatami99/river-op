@@ -1,7 +1,7 @@
 # TODO — Sistem Informasi OP Sungai
 
 Daftar pekerjaan yang belum selesai, diurutkan dari yang paling mendesak.
-Diperbarui 28 Agustus 2026.
+Diperbarui 6 September 2026.
 
 ---
 
@@ -50,14 +50,24 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ---
 
+## Selesai 6 Sep 2026
+
+- [x] **Penangkapan GPS di aplikasi Android.** Sebelumnya koordinat di-hardcode
+      `null`, tanpa izin lokasi maupun pustaka lokasi. Kini titik diambil saat
+      juru mencatat sebuah bangunan, ditampilkan beserta akurasinya, dan dapat
+      diulang bila gagal. Pengambilan dibatasi 20 detik dan selalu mengembalikan
+      hasil, sehingga layar juru tidak menggantung saat sinyal buruk di lapangan.
+      Titik disimpan per bangunan, bukan per temuan, karena temuan berada di
+      bangunan yang sama. Jalur datanya sudah diuji sampai muncul di dashboard
+      sebagai tautan ke Google Maps.
+
+---
+
 ## Prioritas sedang
 
-- [ ] **Aplikasi Android belum menangkap GPS sama sekali.** Kolom `koordinat_lat`
-      dan `koordinat_lng` pada laporan selalu kosong: aplikasi meng-hardcode
-      `null`, tidak meminta izin lokasi, dan tidak memuat pustaka lokasi apa pun.
-      Dashboard sudah siap menampilkan koordinat sebagai tautan ke Google Maps
-      begitu datanya ada. Ini prasyarat **peta sebaran laporan** — berbeda dari
-      Peta DAS yang sudah selesai dan tidak bergantung pada GPS.
+- [ ] **Peta sebaran laporan.** Koordinat bangunan kini sudah tertangkap
+      aplikasi Android, sehingga prasyaratnya terpenuhi. Tinggal menampilkan
+      titik-titik laporan pada peta, terpisah dari Peta DAS yang sudah ada.
 
 - [ ] **Batas wilayah DAS pada peta.** Peta DAS saat ini memakai satu titik per
       DAS. Menggambar batas wilayah yang sebenarnya memerlukan data geospasial
@@ -83,9 +93,6 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
       mengirim laporan status secara terpisah — jadi ini bukan sekadar pekerjaan di sisi web.
 
 - [ ] **Audit log.** Jejak perubahan data untuk kebutuhan pertanggungjawaban.
-
-- [ ] **Peta sebaran laporan.** Koordinat sudah tersimpan; tinggal penyajiannya.
-      Sengaja ditunda agar kompleksitas tidak melonjak.
 
 - [ ] **Notifikasi** ke juru saat sinkronisasi berhasil atau gagal.
 
