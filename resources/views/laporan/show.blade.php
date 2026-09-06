@@ -24,12 +24,32 @@
     </div>
 @endsection
 
+@push('kepala')
+    @vite('resources/js/peta.js')
+@endpush
+
 @section('konten')
 
     @php
         $semuaTemuan = $laporan->itemInspeksi->flatMap->temuanKondisi;
         $jumlahBermasalah = $semuaTemuan->filter(fn ($t) => $t->adaMasalah())->count();
         $fotoLokasi = array_values(array_filter([$laporan->foto_lokasi_1, $laporan->foto_lokasi_2]));
+
+        // Titik bangunan untuk peta. Laporan lama dari sebelum aplikasi juru
+        // menangkap GPS tidak punya koordinat, jadi petanya tidak ditampilkan.
+        $titikBangunan = collect();
+        foreach ($laporan->itemInspeksi as $urutan => $bangunan) {
+            if ($bangunan->koordinat_lat !== null && $bangunan->koordinat_lng !== null) {
+                $titikBangunan->push([
+                    'nomor' => $urutan + 1,
+                    'nama' => $bangunan->jenisBangunan?->nama ?? 'Bangunan',
+                    'label' => $bangunan->nama_bangunan,
+                    'lat' => (float) $bangunan->koordinat_lat,
+                    'lng' => (float) $bangunan->koordinat_lng,
+                    'bermasalah' => $bangunan->temuanKondisi->contains(fn ($t) => $t->adaMasalah()),
+                ]);
+            }
+        }
     @endphp
 
     {{-- Ringkasan atas --}}
@@ -99,6 +119,20 @@
                          onclick="bukaFoto(this.src)">
                 @endforeach
             </div>
+        </div>
+    @endif
+
+    {{-- Peta lokasi bangunan --}}
+    @if ($titikBangunan->isNotEmpty())
+        <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+            <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-4">
+                <h2 class="text-sm font-bold text-sungai-950">Lokasi Bangunan</h2>
+                <span class="text-[12px] text-slate-400">
+                    {{ $titikBangunan->count() }} dari {{ $laporan->itemInspeksi->count() }} bangunan bertitik
+                </span>
+            </div>
+            <div id="peta-laporan" class="h-80 w-full border-t border-slate-100"
+                 data-titik="{{ $titikBangunan->toJson() }}"></div>
         </div>
     @endif
 

@@ -166,5 +166,41 @@ function siapkanPemilihKoordinat() {
     });
 }
 
+/* ---------- Peta lokasi bangunan pada satu laporan ---------- */
+function siapkanPetaLaporan() {
+    const wadah = document.getElementById('peta-laporan');
+    if (!wadah) return;
+
+    const titik = JSON.parse(wadah.dataset.titik || '[]');
+    if (!titik.length) return;
+
+    const peta = petaDasar(wadah, [titik[0].lat, titik[0].lng], 14);
+
+    titik.forEach((t) => {
+        const warna = t.bermasalah ? '#c8102e' : '#127cc4';
+        const judul = [t.nama, t.label].filter(Boolean).join(' — ');
+
+        L.marker([t.lat, t.lng], { icon: penanda(warna, t.nomor) })
+            .addTo(peta)
+            .bindPopup(
+                `<strong>Bangunan ${t.nomor}</strong><br>${judul}<br>` +
+                `<span style="color:#64748b">${t.lat.toFixed(5)}, ${t.lng.toFixed(5)}</span>`
+            );
+    });
+
+    // Pandangan selalu diatur ulang setelah ukuran dihitung, termasuk saat
+    // titiknya hanya satu. Tanpa itu Leaflet tidak menggambar ulang dan
+    // petaknya hanya terisi di sebagian kontainer.
+    requestAnimationFrame(() => {
+        peta.invalidateSize();
+        if (titik.length > 1) {
+            peta.fitBounds(titik.map((t) => [t.lat, t.lng]), { padding: [50, 50], maxZoom: 16 });
+        } else {
+            peta.setView([titik[0].lat, titik[0].lng], 15);
+        }
+    });
+}
+
 siapkanPetaDas();
 siapkanPemilihKoordinat();
+siapkanPetaLaporan();
