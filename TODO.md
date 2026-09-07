@@ -1,7 +1,7 @@
 # TODO — Sistem Informasi OP Sungai
 
 Daftar pekerjaan yang belum selesai, diurutkan dari yang paling mendesak.
-Diperbarui 6 September 2026.
+Diperbarui 7 September 2026.
 
 ---
 
@@ -63,17 +63,67 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ---
 
+## Selesai 7 Sep 2026
+
+- [x] **62 DAS resmi diseed** sesuai daftar "Nama DAS" pada Peta Wilayah Sungai
+      Cengal-Batulicin (Lampiran V.87, Kode WS 04.10.B), bernomor 001-062.
+      Nama wilayah sungainya ikut dibetulkan menjadi **WS Cengal-Batulicin**
+      dengan kode **04.10.B**; sebelumnya tersimpan "WS Cengal" karangan seeder
+      lama, lengkap dengan satu DAS yang bahkan tidak berada di wilayah sungai
+      ini.
+
+- [x] **Kabupaten dipindah dari wilayah sungai ke DAS, banyak-ke-banyak.**
+      Sebelumnya kabupaten menempel di wilayah sungai, padahal WS
+      Cengal-Batulicin membentang di Kotabaru, Tanah Bumbu, dan Tanah Laut —
+      jadi nilainya pasti salah untuk sebagian data. Satu DAS pun bisa
+      melintasi dua kabupaten, karena batas DAS mengikuti punggung bukit
+      sedangkan batas kabupaten digambar manusia. Admin dapat mengoreksinya
+      lewat formulir DAS.
+
+      **Jangan dipakai menghitung.** DAS yang melintasi dua kabupaten akan
+      terhitung dua kali. Angka per kabupaten baru sahih bila sudah ada poligon
+      batas wilayah dan dinilai dari titik GPS tiap bangunan.
+
+- [x] **Koordinat DAS diisi untuk 16 DAS**, sisanya sengaja dibiarkan kosong.
+      Sifatnya perkiraan dengan ketelitian sekitar sepuluh kilometer, dan di
+      formulir kini dilabeli "Titik Perkiraan" agar tidak dibaca sebagai data
+      resmi. DAS adalah wilayah, bukan titik.
+
+- [x] **Data contoh** lewat `LaporanContohSeeder`: 6 juru, 23 laporan, 64
+      bangunan bertitik, tersebar Juni-September 2026 di sekitar DAS
+      masing-masing. Menghapus seluruh laporan lebih dulu dan tidak berjalan di
+      produksi. Jangan dijalankan bila sudah ada laporan sungguhan.
+
+- [x] **Dua bug peta diperbaiki.** Pandangan peta dihitung sebelum kontainernya
+      selesai diukur sehingga penanda menumpuk di pojok; kini dipasang ulang
+      setiap kontainer berubah ukuran, dan berhenti memaksa begitu pengguna
+      menggeser sendiri. Roda mouse juga tidak lagi membajak gulir halaman —
+      zoom roda baru aktif setelah petanya diklik.
+
+---
+
 ## Prioritas sedang
 
-- [ ] **Peta sebaran laporan.** Koordinat bangunan kini sudah tertangkap
-      aplikasi Android, sehingga prasyaratnya terpenuhi. Tinggal menampilkan
-      titik-titik laporan pada peta, terpisah dari Peta DAS yang sudah ada.
+- [ ] **Peta sebaran laporan.** Prasyaratnya sudah lengkap: koordinat
+      tertangkap aplikasi Android, dan data contoh sudah menyebar di 6 DAS
+      sehingga hasilnya langsung bisa dinilai. Tinggal menampilkan seluruh
+      titik bangunan dalam satu peta yang dapat disaring per periode, per DAS,
+      per jenis bangunan, dan hanya yang bermasalah. Satu titik mewakili satu
+      bangunan, bukan satu laporan, karena GPS-nya memang direkam per bangunan.
 
-- [ ] **Batas wilayah DAS pada peta.** Peta DAS saat ini memakai satu titik per
-      DAS. Menggambar batas wilayah yang sebenarnya memerlukan data geospasial
-      resmi berupa shapefile atau GeoJSON, misalnya dari BIG atau KLHK. Batas
-      sengaja tidak digambar sendiri karena batas yang keliru lebih berbahaya
-      bagi sistem instansi daripada tidak ada peta sama sekali.
+- [ ] **Batas wilayah DAS dan WS pada peta.** Keduanya wilayah, bukan titik.
+      Perlu shapefile atau GeoJSON resmi — dapat diminta ke BWS Kalimantan III
+      selaku pengelola WS Cengal-Batulicin, BPDAS wilayah Kalsel, atau diunduh
+      dari Ina-Geoportal (BIG). Peta lampiran yang sudah ada membuktikan
+      berkasnya memang ada, sebab garis batasnya dicetak dari data geospasial.
+
+      Setelah dapat: titik DAS turun menjadi cadangan, titik GPS bangunan bisa
+      dicocokkan otomatis ke DAS-nya sehingga juru yang salah pilih DAS
+      ketahuan sendiri, dan urusan kabupaten selesai karena bisa dinilai per
+      titik. Poligon mentah perlu disederhanakan dulu agar peta tidak berat.
+
+      Batas sengaja tidak digambar sendiri karena batas yang keliru lebih
+      berbahaya bagi sistem instansi daripada tidak ada peta sama sekali.
 
 - [ ] **Export Excel sungguhan (`.xlsx`).** Saat ini export berupa CSV. Terbuka dengan
       baik di Excel, tetapi bukan berkas Excel asli. Perlu menambah dependensi

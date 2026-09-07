@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -37,6 +38,27 @@ class Das extends Model
     public function punyaKoordinat(): bool
     {
         return $this->koordinat_lat !== null && $this->koordinat_lng !== null;
+    }
+
+    /**
+     * Batas DAS mengikuti punggung bukit, sedangkan batas kabupaten digambar
+     * manusia, jadi satu DAS bisa melintasi lebih dari satu kabupaten.
+     * Nilainya label saja — jangan dipakai menjumlahkan laporan per kabupaten,
+     * karena DAS lintas kabupaten akan terhitung berulang.
+     */
+    public function kabupaten(): BelongsToMany
+    {
+        return $this->belongsToMany(Kabupaten::class, 'das_kabupaten', 'das_id', 'kabupaten_id')
+            ->withTimestamps()
+            ->orderBy('nama');
+    }
+
+    /** Daftar nama kabupaten siap tampil, atau tanda hubung bila belum diisi. */
+    public function labelKabupaten(): string
+    {
+        $nama = $this->kabupaten->pluck('nama');
+
+        return $nama->isEmpty() ? '-' : $nama->join(', ');
     }
 
     public function wilayahSungai(): BelongsTo

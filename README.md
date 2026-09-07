@@ -168,13 +168,12 @@ API dan dashboard berbagi satu aplikasi, tetapi autentikasinya sengaja dipisah:
 ## Struktur Database
 
 ```
-kabupaten
-    └── wilayah_sungai
-            └── das
-                    ├── juru_sungai
-                    └── laporan_op
-                            └── item_inspeksi
-                                    └── temuan_kondisi
+wilayah_sungai
+    └── das ──── das_kabupaten ──── kabupaten
+            ├── juru_sungai
+            └── laporan_op
+                    └── item_inspeksi
+                            └── temuan_kondisi
 
 jenis_bangunan (OP-01.a s/d OP-01.n)
     └── bagian_bangunan
@@ -184,10 +183,27 @@ staf_dinas
 ```
 
 **Mengapa ada tingkat DAS.** Hanya ada satu wilayah sungai yang menjadi wewenang
-Provinsi Kalimantan Selatan, yaitu Wilayah Sungai Cengal. Pembagian tugas juru
-sungai dilakukan per DAS (Daerah Aliran Sungai) di bawahnya, sehingga juru dan
-laporan menunjuk ke `das`, bukan langsung ke `wilayah_sungai`. Tabel wilayah
-sungai tetap dipertahankan karena wilayah sungai baru bisa muncul di kemudian hari.
+Provinsi Kalimantan Selatan, yaitu WS Cengal-Batulicin (Kode WS 04.10.B), yang
+menaungi 62 DAS. Pembagian tugas juru sungai dilakukan per DAS (Daerah Aliran
+Sungai), sehingga juru dan laporan menunjuk ke `das`, bukan langsung ke
+`wilayah_sungai`. Tabel wilayah sungai tetap dipertahankan karena wilayah sungai
+baru bisa muncul di kemudian hari — menambahkannya cukup lewat menu, tanpa ubah kode.
+
+**Mengapa kabupaten menempel di DAS dan boleh lebih dari satu.** Batas DAS
+mengikuti punggung bukit, sedangkan batas kabupaten digambar manusia, jadi satu
+DAS bisa melintasi dua kabupaten. Sebelumnya kabupaten menempel di wilayah
+sungai, dan itu keliru: WS Cengal-Batulicin sendiri membentang di Kotabaru,
+Tanah Bumbu, dan Tanah Laut.
+
+Nilai ini **label, bukan angka** — jangan dipakai menjumlahkan laporan per
+kabupaten, karena DAS lintas kabupaten akan terhitung dua kali. Perhitungan per
+kabupaten baru sahih bila sudah ada poligon batas wilayah dan dinilai dari titik
+GPS tiap bangunan.
+
+**Titik DAS itu perkiraan.** DAS adalah wilayah, bukan titik. Koordinat pada
+`das` semata-mata pegangan agar DAS dapat ditandai dan diklik di peta, dengan
+ketelitian sekitar sepuluh kilometer, dan boleh dikosongkan. Dari 62 DAS, baru
+16 yang terisi.
 
 Satu laporan mewakili satu kunjungan dan dapat memuat banyak bangunan, termasuk
 beberapa bangunan berjenis sama yang dibedakan lewat kolom `nama_bangunan`.
@@ -200,9 +216,12 @@ Setiap temuan menyimpan sampai tiga foto: `foto`, `foto_2`, dan `foto_3`.
 **Juru Sungai:**
 | Username | Password | DAS |
 |----------|----------|-----|
-| ahmad_juru | password | Sungai Tabanio (Tanah Laut) |
-| bambang_juru | password | Sungai Batulicin (Tanah Bumbu) |
-| candra_juru | password | Sungai Cantung (Kotabaru) |
+| ahmad_juru | password | DAS Sampanahan |
+| bambang_juru | password | DAS Cantung |
+| candra_juru | password | DAS Batulicin |
+| dedi_juru | password | DAS Kusan |
+| eko_juru | password | DAS Satui |
+| fajar_juru | password | DAS Kintap |
 
 **Staf Dinas:**
 | Username | Password | Role |
@@ -239,15 +258,15 @@ Export PDF sesuai blangko resmi, export `.xlsx` sungguhan, audit log,
 monitoring sinkronisasi, dan peta sebaran laporan. Rincian beserta
 alasannya ada di [TODO.md](TODO.md).
 
-**Peta DAS sudah ada**, memakai Leaflet dan OpenStreetMap. Titik tiap DAS
-ditentukan admin dengan mengklik peta pada formulir DAS. Yang belum ada
-adalah dua hal berbeda:
+**Peta DAS** dan **peta lokasi bangunan pada detail laporan** sudah ada,
+memakai Leaflet dan OpenStreetMap tanpa kunci API maupun tagihan. Yang belum:
 
-- **Peta sebaran laporan**, menunggu aplikasi Android menangkap koordinat
-  GPS — saat ini `koordinat_lat` dan `koordinat_lng` pada laporan selalu kosong.
-- **Batas wilayah DAS**, memerlukan data geospasial resmi berupa shapefile
-  atau GeoJSON. Batas tidak digambar sendiri karena batas yang keliru lebih
-  berbahaya daripada tidak ada peta.
+- **Peta sebaran laporan**, yaitu seluruh bangunan dari seluruh laporan dalam
+  satu peta yang dapat disaring. Prasyaratnya sudah terpenuhi sejak aplikasi
+  Android menangkap GPS.
+- **Batas wilayah DAS dan WS**, memerlukan shapefile atau GeoJSON resmi.
+  Batas tidak digambar sendiri karena batas yang keliru lebih berbahaya
+  daripada tidak ada peta.
 
 ---
 

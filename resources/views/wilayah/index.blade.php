@@ -85,7 +85,6 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-3 font-medium text-slate-500">{{ $sungai->kode_sungai }}</td>
-                                <td class="px-5 py-3 text-slate-500">{{ $sungai->kabupaten?->nama ?? '-' }}</td>
                                 <td class="px-5 py-3 text-center">
                                     <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-sungai-50 px-1.5 text-[12px] font-bold tabular-nums text-sungai-700">
                                         {{ $sungai->das_count }}

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
@@ -15,7 +14,6 @@ class WilayahSungai extends Model
     protected $table = 'wilayah_sungai';
 
     protected $fillable = [
-        'kabupaten_id',
         'nama_sungai',
         'kode_sungai',
         'deskripsi',
@@ -25,11 +23,6 @@ class WilayahSungai extends Model
     protected $casts = [
         'aktif' => 'boolean',
     ];
-
-    public function kabupaten(): BelongsTo
-    {
-        return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
-    }
 
     public function das(): HasMany
     {

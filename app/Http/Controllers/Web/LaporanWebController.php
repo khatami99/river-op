@@ -34,7 +34,8 @@ class LaporanWebController extends Controller
     {
         $laporan->load([
             'juruSungai',
-            'das.wilayahSungai.kabupaten',
+            'das.wilayahSungai',
+            'das.kabupaten',
             'itemInspeksi.jenisBangunan',
             'itemInspeksi.temuanKondisi.bagianBangunan',
         ]);
@@ -45,7 +46,8 @@ class LaporanWebController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $laporan = $this->queryTerfilter($request)
-            ->with(['juruSungai', 'das.wilayahSungai.kabupaten', 'itemInspeksi.temuanKondisi'])
+            ->with(['juruSungai', 'das.wilayahSungai',
+            'das.kabupaten', 'itemInspeksi.temuanKondisi'])
             ->orderByDesc('tanggal_inspeksi')
             ->get();
 
@@ -73,7 +75,7 @@ class LaporanWebController extends Controller
                     $item->juruSungai?->nip,
                     $item->das?->nama_das,
                     $item->das?->wilayahSungai?->nama_sungai ?? '',
-                    $item->das?->wilayahSungai?->kabupaten?->nama ?? '',
+                    $item->das?->labelKabupaten() ?? '',
                     ucfirst($item->cuaca ?? ''),
                     ucfirst($item->debit_air ?? ''),
                     $item->itemInspeksi->count(),

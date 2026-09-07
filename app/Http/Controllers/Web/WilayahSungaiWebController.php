@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -12,8 +11,7 @@ class WilayahSungaiWebController extends Controller
 {
     public function index(Request $request)
     {
-        $wilayah = WilayahSungai::with('kabupaten')
-            ->withCount(['das', 'juruSungai', 'laporanOp'])
+        $wilayah = WilayahSungai::withCount(['das', 'juruSungai', 'laporanOp'])
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->string('cari')->toString();
                 $q->where(fn ($sub) => $sub->where('nama_sungai', 'like', "%{$cari}%")
@@ -31,7 +29,7 @@ class WilayahSungaiWebController extends Controller
 
     public function show(WilayahSungai $wilayah)
     {
-        $wilayah->load(['kabupaten', 'das' => fn ($q) => $q->withCount(['juruSungai', 'laporanOp'])->orderBy('nama_das')]);
+        $wilayah->load(['das' => fn ($q) => $q->withCount(['juruSungai', 'laporanOp'])->orderBy('nama_das')]);
         $wilayah->loadCount(['das', 'juruSungai', 'laporanOp']);
 
         return view('wilayah.show', ['wilayah' => $wilayah]);
@@ -41,7 +39,6 @@ class WilayahSungaiWebController extends Controller
     {
         return view('wilayah.form', [
             'wilayah' => new WilayahSungai(['aktif' => true]),
-            'daftarKabupaten' => Kabupaten::orderBy('nama')->get(),
         ]);
     }
 
@@ -59,7 +56,6 @@ class WilayahSungaiWebController extends Controller
     {
         return view('wilayah.form', [
             'wilayah' => $wilayah,
-            'daftarKabupaten' => Kabupaten::orderBy('nama')->get(),
         ]);
     }
 
@@ -94,12 +90,10 @@ class WilayahSungaiWebController extends Controller
                 'required', 'string', 'max:30',
                 Rule::unique('wilayah_sungai', 'kode_sungai')->ignore($wilayah?->id)->whereNull('deleted_at'),
             ],
-            'kabupaten_id' => ['required', 'exists:kabupaten,id'],
             'deskripsi' => ['nullable', 'string'],
         ], [], [
             'nama_sungai' => 'nama wilayah sungai',
             'kode_sungai' => 'kode',
-            'kabupaten_id' => 'kabupaten',
         ]);
     }
 }

@@ -38,7 +38,7 @@ class JuruSungaiWebController extends Controller
 
     public function show(Request $request, JuruSungai $juru)
     {
-        $juru->load('das.wilayahSungai.kabupaten');
+        $juru->load('das.wilayahSungai', 'das.kabupaten');
 
         $tahun = (int) $request->input('tahun', now()->year);
 

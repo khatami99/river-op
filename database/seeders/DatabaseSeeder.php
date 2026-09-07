@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             DasSeeder::class,
             JuruSungaiSeeder::class,
             StafDinasSeeder::class,
+            LaporanContohSeeder::class,
         ]);
     }
 }

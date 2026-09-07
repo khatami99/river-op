@@ -40,7 +40,7 @@
                         'Username' => $juru->username,
                         'DAS' => $juru->das?->nama_das ?? '-',
                         'Wilayah Sungai' => $juru->das?->wilayahSungai?->nama_sungai ?? '-',
-                        'Kabupaten' => $juru->das?->wilayahSungai?->kabupaten?->nama ?? '-',
+                        'Kabupaten' => $juru->das?->labelKabupaten() ?? '-',
                     ];
                 @endphp
                 @foreach ($data as $label => $nilai)

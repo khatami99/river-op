@@ -19,19 +19,46 @@ function penanda(warna, isi) {
 }
 
 function petaDasar(elemen, pusat, zoom) {
-    const peta = L.map(elemen, { scrollWheelZoom: true }).setView(pusat, zoom);
+    const peta = L.map(elemen, { scrollWheelZoom: false }).setView(pusat, zoom);
+
+    // Peta ini duduk di tengah halaman yang panjang. Bila roda mouse langsung
+    // memperbesar peta, pengguna yang cuma ingin menggulir halaman malah
+    // mengubah pandangan peta tanpa sengaja. Roda baru aktif setelah petanya
+    // diklik, dan mati lagi begitu penunjuk keluar.
+    peta.on('click', () => peta.scrollWheelZoom.enable());
+    elemen.addEventListener('mouseleave', () => peta.scrollWheelZoom.disable());
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; Kontributor OpenStreetMap',
     }).addTo(peta);
 
     // Modul ini berjalan sebelum tata letak selesai, sehingga Leaflet sempat
-    // mengira kontainernya lebih kecil: petak abu-abu muncul dan fitBounds
-    // meleset. Ukurannya dihitung ulang begitu kontainer berubah.
+    // mengira kontainernya lebih kecil. Akibatnya bukan cuma petak abu-abu:
+    // pandangan ikut dihitung terhadap ukuran yang salah, dan penanda
+    // menumpuk di pojok. Menghitung ulang ukuran saja tidak cukup, karena
+    // Leaflet mempertahankan titik tengah lama — pandangannya harus dipasang
+    // ulang setelah ukurannya benar.
+    peta.aturPandangan = () => peta.setView(pusat, zoom);
+
+    // Begitu pengguna menggeser atau memperbesar peta, pandangan tidak boleh
+    // dipaksa kembali. Sejak saat itu peta menjadi miliknya.
+    // Ditangkap dari DOM, bukan dari kejadian Leaflet: fitBounds dan setView
+    // milik program sendiri juga memicu zoomstart, sehingga peta akan langsung
+    // dikira sudah disentuh dan tidak pernah dipasang ulang.
+    let disentuh = false;
+    const tandaiDisentuh = () => { disentuh = true; };
+    elemen.addEventListener('pointerdown', tandaiDisentuh);
+    elemen.addEventListener('wheel', tandaiDisentuh);
+
+    const segarkan = () => {
+        peta.invalidateSize();
+        if (! disentuh) peta.aturPandangan();
+    };
+
     if (typeof ResizeObserver !== 'undefined') {
-        new ResizeObserver(() => peta.invalidateSize()).observe(elemen);
+        new ResizeObserver(segarkan).observe(elemen);
     }
-    requestAnimationFrame(() => peta.invalidateSize());
+    requestAnimationFrame(segarkan);
 
     return peta;
 }
@@ -49,16 +76,13 @@ function siapkanPetaDas() {
 
     const peta = petaDasar(wadah, PUSAT_KALSEL, 8);
 
-    // Dijalankan setelah invalidateSize agar batas pandang dihitung
-    // terhadap ukuran kontainer yang sebenarnya.
+    // Diserahkan ke petaDasar supaya batas pandang selalu dihitung ulang
+    // setiap kontainernya berubah ukuran, bukan sekali saja di awal.
     if (berkoordinat.length) {
-        requestAnimationFrame(() => {
-            peta.invalidateSize();
-            peta.fitBounds(berkoordinat.map((d) => [d.lat, d.lng]), {
-                padding: [60, 60],
-                maxZoom: 11,
-            });
-        });
+        peta.aturPandangan = () => peta.fitBounds(
+            berkoordinat.map((d) => [d.lat, d.lng]),
+            { padding: [60, 60], maxZoom: 11 }
+        );
     }
 
     const panel = document.getElementById('panel-das');
@@ -188,17 +212,14 @@ function siapkanPetaLaporan() {
             );
     });
 
-    // Pandangan selalu diatur ulang setelah ukuran dihitung, termasuk saat
-    // titiknya hanya satu. Tanpa itu Leaflet tidak menggambar ulang dan
-    // petaknya hanya terisi di sebagian kontainer.
-    requestAnimationFrame(() => {
-        peta.invalidateSize();
+    // Satu titik tetap perlu setView, bukan fitBounds, supaya zoom-nya masuk akal.
+    peta.aturPandangan = () => {
         if (titik.length > 1) {
             peta.fitBounds(titik.map((t) => [t.lat, t.lng]), { padding: [50, 50], maxZoom: 16 });
         } else {
             peta.setView([titik[0].lat, titik[0].lng], 15);
         }
-    });
+    };
 }
 
 siapkanPetaDas();

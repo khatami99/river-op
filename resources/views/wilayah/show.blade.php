@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('judul', $wilayah->nama_sungai)
-@section('subjudul', $wilayah->kabupaten?->nama ?? 'Kabupaten belum diatur')
+@section('subjudul', $wilayah->kode_sungai)
 
 @section('aksi-header')
     <a href="{{ route('wilayah.index') }}"
@@ -31,7 +31,6 @@
                     @php
                         $info = [
                             'Kode' => $wilayah->kode_sungai,
-                            'Kabupaten' => $wilayah->kabupaten?->nama ?? '-',
                             'Jumlah DAS' => $wilayah->das_count,
                             'Jumlah Juru' => $wilayah->juru_sungai_count,
                             'Total Laporan' => $wilayah->laporan_op_count,

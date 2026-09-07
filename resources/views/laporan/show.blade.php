@@ -62,8 +62,8 @@
                     <p class="mt-1.5 text-xl font-extrabold text-white">{{ $laporan->juruSungai?->nama ?? '-' }}</p>
                     <p class="text-[13px] text-sungai-200/70">
                         {{ $laporan->das?->nama_das ?? '-' }}
-                        @if ($laporan->das?->wilayahSungai?->kabupaten?->nama)
-                            &middot; {{ $laporan->das->wilayahSungai->kabupaten->nama }}
+                        @if ($laporan->das && $laporan->das->kabupaten->isNotEmpty())
+                            &middot; {{ $laporan->das->labelKabupaten() }}
                         @endif
                     </p>
                 </div>

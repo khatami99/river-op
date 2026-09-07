@@ -40,7 +40,7 @@ class MasterController extends Controller
     {
         $juruSungai = $request->user();
 
-        $juruSungai->load('das.wilayahSungai.kabupaten');
+        $juruSungai->load('das.wilayahSungai', 'das.kabupaten');
 
         return response()->json([
             'success' => true,

@@ -34,7 +34,7 @@
                         $info = [
                             'Kode DAS' => $das->kode_das,
                             'Wilayah Sungai' => $das->wilayahSungai?->nama_sungai ?? '-',
-                            'Kabupaten' => $das->wilayahSungai?->kabupaten?->nama ?? '-',
+                            'Kabupaten' => $das->labelKabupaten(),
                             'Total Laporan' => $das->laporan_op_count,
                         ];
                     @endphp

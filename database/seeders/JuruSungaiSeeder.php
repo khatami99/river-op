@@ -2,39 +2,46 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Das;
 use App\Models\JuruSungai;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Juru sungai contoh, ditempatkan pada DAS yang sudah punya titik perkiraan
+ * supaya laporan mereka bisa terlihat menyebar di peta. Dicari lewat kode DAS,
+ * bukan id, agar tidak bergantung pada urutan penyisipan.
+ */
 class JuruSungaiSeeder extends Seeder
 {
     public function run(): void
     {
-        JuruSungai::create([
-            'das_id' => 1,
-            'nama' => 'Ahmad Junaidi',
-            'nip' => '198501012010121001',
-            'username' => 'ahmad_juru',
-            'password' => Hash::make('password'),
-            'aktif' => true,
-        ]);
+        $daftar = [
+            ['DAS-003', 'Ahmad Junaidi',    '198501012010121001', 'ahmad_juru'],
+            ['DAS-015', 'Bambang Setiawan', '198805122013011002', 'bambang_juru'],
+            ['DAS-024', 'Candra Wijaya',    '199109202015031003', 'candra_juru'],
+            ['DAS-026', 'Dedi Rahmatullah', '199203142016041004', 'dedi_juru'],
+            ['DAS-042', 'Eko Saputra',      '198711052012121005', 'eko_juru'],
+            ['DAS-046', 'Fajar Nugroho',    '199408232018011006', 'fajar_juru'],
+        ];
 
-        JuruSungai::create([
-            'das_id' => 2,
-            'nama' => 'Bambang Setiawan',
-            'nip' => '198805122013011002',
-            'username' => 'bambang_juru',
-            'password' => Hash::make('password'),
-            'aktif' => true,
-        ]);
+        foreach ($daftar as [$kodeDas, $nama, $nip, $username]) {
+            $das = Das::where('kode_das', $kodeDas)->first();
 
-        JuruSungai::create([
-            'das_id' => 3,
-            'nama' => 'Candra Wijaya',
-            'nip' => '199109202015031003',
-            'username' => 'candra_juru',
-            'password' => Hash::make('password'),
-            'aktif' => true,
-        ]);
+            if (! $das) {
+                continue;
+            }
+
+            JuruSungai::updateOrCreate(
+                ['username' => $username],
+                [
+                    'das_id' => $das->id,
+                    'nama' => $nama,
+                    'nip' => $nip,
+                    'password' => Hash::make('password'),
+                    'aktif' => true,
+                ]
+            );
+        }
     }
 }

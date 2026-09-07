@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Kabupaten extends Model
 {
@@ -22,8 +22,9 @@ class Kabupaten extends Model
         'aktif' => 'boolean',
     ];
 
-    public function wilayahSungai(): HasMany
+    public function das(): BelongsToMany
     {
-        return $this->hasMany(WilayahSungai::class, 'kabupaten_id');
+        return $this->belongsToMany(Das::class, 'das_kabupaten', 'kabupaten_id', 'das_id')
+            ->withTimestamps();
     }
 }

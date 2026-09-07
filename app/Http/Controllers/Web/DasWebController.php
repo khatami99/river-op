@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Das;
+use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class DasWebController extends Controller
@@ -31,7 +33,7 @@ class DasWebController extends Controller
 
     public function show(Das $das)
     {
-        $das->load(['wilayahSungai.kabupaten', 'juruSungai']);
+        $das->load(['wilayahSungai', 'kabupaten', 'juruSungai']);
         $das->loadCount('laporanOp');
 
         $laporan = $das->laporanOp()
@@ -51,6 +53,7 @@ class DasWebController extends Controller
         return view('das.form', [
             'das' => new Das(['aktif' => true]),
             'daftarWilayah' => WilayahSungai::where('aktif', true)->orderBy('nama_sungai')->get(),
+            'daftarKabupaten' => Kabupaten::where('aktif', true)->orderBy('nama')->get(),
         ]);
     }
 
@@ -59,16 +62,20 @@ class DasWebController extends Controller
         $data = $this->validasi($request);
         $data['aktif'] = $request->boolean('aktif');
 
-        Das::create($data);
+        $das = Das::create(Arr::except($data, 'kabupaten_ids'));
+        $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
 
         return redirect()->route('das.index')->with('sukses', 'DAS berhasil ditambahkan.');
     }
 
     public function edit(Das $das)
     {
+        $das->load('kabupaten');
+
         return view('das.form', [
             'das' => $das,
             'daftarWilayah' => WilayahSungai::where('aktif', true)->orderBy('nama_sungai')->get(),
+            'daftarKabupaten' => Kabupaten::where('aktif', true)->orderBy('nama')->get(),
         ]);
     }
 
@@ -77,7 +84,8 @@ class DasWebController extends Controller
         $data = $this->validasi($request, $das);
         $data['aktif'] = $request->boolean('aktif');
 
-        $das->update($data);
+        $das->update(Arr::except($data, 'kabupaten_ids'));
+        $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
 
         return redirect()->route('das.index')->with('sukses', 'Data DAS diperbarui.');
     }
@@ -107,10 +115,13 @@ class DasWebController extends Controller
             'deskripsi' => ['nullable', 'string'],
             'koordinat_lat' => ['nullable', 'numeric', 'between:-90,90', 'required_with:koordinat_lng'],
             'koordinat_lng' => ['nullable', 'numeric', 'between:-180,180', 'required_with:koordinat_lat'],
+            'kabupaten_ids' => ['nullable', 'array'],
+            'kabupaten_ids.*' => ['integer', 'exists:kabupaten,id'],
         ], [], [
             'nama_das' => 'nama DAS',
             'kode_das' => 'kode DAS',
             'wilayah_sungai_id' => 'wilayah sungai',
+            'kabupaten_ids' => 'kabupaten',
         ]);
     }
 }

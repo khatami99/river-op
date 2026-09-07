@@ -24,18 +24,7 @@
 
         <x-kolom label="Kode" nama="kode_sungai" :wajib="true" petunjuk="Harus unik, misalnya WS-CENGAL.">
             <input id="kode_sungai" name="kode_sungai" type="text" class="{{ $ki }}"
-                   value="{{ old('kode_sungai', $wilayah->kode_sungai) }}" placeholder="WS-CENGAL" required>
-        </x-kolom>
-
-        <x-kolom label="Kabupaten" nama="kabupaten_id" :wajib="true">
-            <select id="kabupaten_id" name="kabupaten_id" class="{{ $ki }}" required>
-                <option value="">Pilih kabupaten</option>
-                @foreach ($daftarKabupaten as $k)
-                    <option value="{{ $k->id }}" @selected((string) old('kabupaten_id', $wilayah->kabupaten_id) === (string) $k->id)>
-                        {{ $k->nama }}
-                    </option>
-                @endforeach
-            </select>
+                   value="{{ old('kode_sungai', $wilayah->kode_sungai) }}" placeholder="04.10.B" required>
         </x-kolom>
 
         <x-kolom label="Deskripsi" nama="deskripsi">
