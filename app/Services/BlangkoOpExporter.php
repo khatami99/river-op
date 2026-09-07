@@ -123,9 +123,9 @@ class BlangkoOpExporter
 
     /**
      * Blangko meminta bentuk "Sungai <nama> pada ruas antara patok Km A s/d Km B".
-     * Nama sungai belum dikumpulkan aplikasi juru, dan kilometernya pun masih
-     * kosong, jadi bagian yang belum ada dibiarkan bertitik-titik persis seperti
-     * blangko kosong — bukan dikarang.
+     * Bagian yang belum diisi juru dibiarkan bertitik-titik persis seperti
+     * blangko kosong — bukan dikarang, dan bukan pula dihilangkan, supaya
+     * pembacanya tahu ada yang memang belum terisi.
      */
     private function barisLokasi(ItemInspeksi $bangunan): string
     {
@@ -133,7 +133,11 @@ class BlangkoOpExporter
             ? '......'
             : rtrim(rtrim(number_format((float) $nilai, 3, ',', '.'), '0'), ',');
 
-        $lokasi = 'Sungai ............................ pada ruas antara patok Km '
+        $sungai = $bangunan->nama_sungai
+            ? 'Sungai ' . preg_replace('/^sungai\s+/i', '', trim($bangunan->nama_sungai))
+            : 'Sungai ............................';
+
+        $lokasi = $sungai . ' pada ruas antara patok Km '
             . $km($bangunan->lokasi_km_dari) . ' s/d Km ' . $km($bangunan->lokasi_km_sampai);
 
         return $bangunan->nama_bangunan

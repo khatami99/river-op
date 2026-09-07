@@ -112,6 +112,8 @@ class LaporanContohSeeder extends Seeder
                         'jenis_bangunan_id' => $jenisTerpilih->id,
                         'nama_bangunan' => $jenisTerpilih->nama . ' ' . $penanda[array_rand($penanda)]
                             . ' ' . Str::after($das->nama_das, 'DAS '),
+                        // Sungai utama tiap DAS umumnya senama dengan DAS-nya.
+                        'nama_sungai' => Str::after($das->nama_das, 'DAS '),
                         'lokasi_km_dari' => $km,
                         'lokasi_km_sampai' => $km + mt_rand(1, 8) / 10,
                         'koordinat_lat' => round($das->koordinat_lat + mt_rand(-450, 450) / 10000, 7),

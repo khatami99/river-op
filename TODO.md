@@ -65,6 +65,19 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Nama sungai dan patok kilometer pada bangunan.** Blangko menulis lokasi
+      sebagai "Sungai <nama> pada ruas antara patok Km A s/d Km B", dan menurut
+      dinas bagian ini normalnya memang diisi. Nama sungainya sebelumnya tidak
+      ada di mana pun, sedangkan `lokasi_km_dari` dan `lokasi_km_sampai` sudah
+      punya kolom sampai ke database tetapi **di-hardcode `null`** oleh aplikasi
+      Android — persis pola yang dulu terjadi pada koordinat GPS.
+
+      Kolom `nama_sungai` ditambahkan pada `item_inspeksi`, dan aplikasi juru
+      kini menyediakan isian nama sungai serta ruas kilometer pada layar
+      pencatatan bangunan (Room versi 3 ke 4). Koma maupun titik diterima
+      sebagai pemisah desimal, mengikuti papan ketik yang dipakai juru.
+      Baris Lokasi bangunan pada blangko hasil export kini terisi penuh.
+
 - [x] **Export blangko OP resmi (.xlsx).** Sebelumnya buntu karena belum ada
       contoh blangko aslinya. Dua berkas laporan sungguhan dari dinas kini
       dipakai sebagai template, sehingga tata letak, garis, dan lebar kolomnya
@@ -145,17 +158,6 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 - [ ] **Export daftar laporan dan rekap sebagai `.xlsx`.** Blangko OP sudah
       berupa Excel asli, tetapi export daftar laporan dan rekapitulasi masih
       CSV. PhpSpreadsheet sudah terpasang, jadi tinggal dipakai.
-
-- [ ] **Nama sungai dan patok kilometer pada bangunan.** Blangko meminta
-      "Sungai <nama> pada ruas antara patok Km A s/d Km B", dan menurut dinas
-      bagian ini normalnya memang diisi. Saat ini nama sungainya belum ada sama
-      sekali, sedangkan `lokasi_km_dari` dan `lokasi_km_sampai` sudah ada di
-      Room, API, dan database tetapi **di-hardcode `null`** oleh aplikasi
-      Android — persis pola yang dulu terjadi pada koordinat GPS.
-
-      Sampai ini dikerjakan, baris Lokasi bangunan pada blangko hasil export
-      tetap bertitik-titik seperti blangko kosong. Perlu kolom `nama_sungai`
-      pada `item_inspeksi`, isian di layar juru, dan migrasi Room.
 
 - [ ] **Export PDF** sesuai format blangko OP resmi. Export Excel sudah ada dan
       masih bisa diedit dinas sebelum dicetak; PDF berguna untuk arsip final

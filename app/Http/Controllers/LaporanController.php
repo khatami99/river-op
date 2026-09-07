@@ -94,6 +94,7 @@ class LaporanController extends Controller
                             'laporan_op_id' => $laporanOp->id,
                             'jenis_bangunan_id' => $itemData['jenis_bangunan_id'],
                             'nama_bangunan' => $itemData['nama_bangunan'] ?? null,
+                            'nama_sungai' => $itemData['nama_sungai'] ?? null,
                             'lokasi_km_dari' => $itemData['lokasi_km_dari'] ?? null,
                             'lokasi_km_sampai' => $itemData['lokasi_km_sampai'] ?? null,
                             'koordinat_lat' => $itemData['koordinat_lat'] ?? null,

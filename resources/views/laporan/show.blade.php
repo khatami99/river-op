@@ -166,6 +166,22 @@
                                     <span>&middot;</span><span>{{ $item->nama_bangunan }}</span>
                                 @endif
                             </p>
+                            {{-- Baris lokasi sesuai blangko OP: nama sungai dan ruas patok kilometer. --}}
+                            @if ($item->nama_sungai || $item->lokasi_km_dari !== null)
+                                <p class="mt-1 text-[12px] text-slate-500">
+                                    @if ($item->nama_sungai)
+                                        Sungai {{ preg_replace('/^sungai\s+/i', '', trim($item->nama_sungai)) }}
+                                    @endif
+                                    @if ($item->lokasi_km_dari !== null)
+                                        <span class="tabular-nums">
+                                            Km {{ rtrim(rtrim(number_format($item->lokasi_km_dari, 3, ',', '.'), '0'), ',') }}
+                                            @if ($item->lokasi_km_sampai !== null)
+                                                s/d Km {{ rtrim(rtrim(number_format($item->lokasi_km_sampai, 3, ',', '.'), '0'), ',') }}
+                                            @endif
+                                        </span>
+                                    @endif
+                                </p>
+                            @endif
                         </div>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
