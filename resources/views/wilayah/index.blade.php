@@ -19,6 +19,10 @@
     $kelasInput = 'w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
 @endphp
 
+@push('kepala')
+    @vite('resources/js/peta.js')
+@endpush
+
 @section('konten')
 
     @error('hapus')
@@ -61,89 +65,101 @@
         </div>
     </form>
 
-    <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
-        @if ($wilayah->isEmpty())
-            <x-kosong judul="Tidak ada wilayah sungai yang cocok" pesan="Coba ubah kata kunci pencarian."/>
-        @else
-            <div class="overflow-x-auto scrollbar-halus">
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                            <th class="px-5 py-3">Nama Wilayah Sungai</th>
-                            <th class="px-5 py-3">Kode</th>
-                            <th class="px-5 py-3">Kabupaten</th>
-                            <th class="px-5 py-3 text-center">DAS</th>
-                            <th class="px-5 py-3 text-center">Juru</th>
-                            <th class="px-5 py-3 text-center">Laporan</th>
-                            <th class="px-5 py-3">Status</th>
-                            <th class="px-5 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 text-[13.5px]">
-                        @foreach ($wilayah as $sungai)
-                            <tr class="transition hover:bg-slate-50">
-                                <td class="px-5 py-3">
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emas-50">
-                                            <svg class="h-4 w-4 text-emas-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8"/>
-                                            </svg>
-                                        </span>
-                                        <span class="font-semibold text-slate-800">{{ $sungai->nama_sungai }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-5 py-3 font-medium text-slate-500">{{ $sungai->kode_sungai }}</td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-sungai-50 px-1.5 text-[12px] font-bold tabular-nums text-sungai-700">
-                                        {{ $sungai->das_count }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
-                                        {{ $sungai->juru_sungai_count }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
-                                        {{ $sungai->laporan_op_count }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3">
-                                    <x-lencana :warna="$sungai->aktif ? 'normal' : 'netral'">
-                                        {{ $sungai->aktif ? 'Aktif' : 'Nonaktif' }}
-                                    </x-lencana>
-                                </td>
-                                <td class="whitespace-nowrap px-5 py-3 text-right">
-                                    <a href="{{ route('wilayah.show', $sungai) }}"
-                                       class="inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-sungai-600 transition hover:bg-sungai-50">
-                                        Detail
-                                    </a>
-                                    @if (auth('staf')->user()?->isAdmin())
-                                        <a href="{{ route('wilayah.edit', $sungai) }}"
-                                           class="inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-slate-600 transition hover:bg-slate-100">
-                                            Ubah
-                                        </a>
-                                        <form method="POST" action="{{ route('wilayah.destroy', $sungai) }}" class="inline"
-                                              onsubmit="return confirm('Hapus {{ $sungai->nama_sungai }}?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    class="rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-bata-600 transition hover:bg-bata-50">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    {{-- Satu kartu, satu peta, per wilayah sungai.
 
-            @if ($wilayah->hasPages())
-                <div class="border-t border-slate-100 px-5 py-3">{{ $wilayah->links() }}</div>
-            @endif
+         Bentuk ini dipilih supaya halaman tidak perlu dirombak ketika wilayah
+         sungai kedua muncul: yang baru langsung mendapat kartu dan petanya
+         sendiri. Peta gabungan seluruh wilayah sengaja tidak dipakai, sebab
+         hasilnya akan sama persis dengan peta pada halaman DAS. --}}
+    @if ($wilayah->isEmpty())
+        <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+            <x-kosong judul="Tidak ada wilayah sungai yang cocok" pesan="Coba ubah kata kunci pencarian."/>
+        </div>
+    @else
+        <div class="mt-3.5 space-y-3.5">
+            @foreach ($wilayah as $sungai)
+                @php $titik = $titikPerWilayah[$sungai->id] ?? collect(); @endphp
+
+                <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+                    <div class="grid lg:grid-cols-5">
+
+                        <div class="lg:col-span-2">
+                            @if ($titik->isNotEmpty())
+                                <div class="peta-wilayah relative h-[15rem] w-full lg:h-full lg:min-h-[16rem]"
+                                     data-titik="{{ $titik->toJson() }}"></div>
+                            @else
+                                <div class="flex h-[15rem] items-center justify-center bg-slate-50 px-6 text-center lg:h-full">
+                                    <p class="text-[13px] leading-relaxed text-slate-400">
+                                        Belum ada DAS bertitik di wilayah ini,<br>jadi petanya belum bisa digambar.
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="p-5 lg:col-span-3">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <p class="text-[11px] font-bold uppercase tracking-widest text-emas-600">{{ $sungai->kode_sungai }}</p>
+                                    <h2 class="mt-0.5 text-base font-extrabold text-sungai-950">{{ $sungai->nama_sungai }}</h2>
+                                </div>
+                                <x-lencana :warna="$sungai->aktif ? 'hijau' : 'abu'">
+                                    {{ $sungai->aktif ? 'Aktif' : 'Nonaktif' }}
+                                </x-lencana>
+                            </div>
+
+                            @if ($sungai->deskripsi)
+                                <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{{ $sungai->deskripsi }}</p>
+                            @endif
+
+                            <dl class="mt-4 grid grid-cols-3 divide-x divide-slate-100 rounded-xl bg-slate-50/70 py-3">
+                                @foreach ([
+                                    ['DAS', $sungai->das_count],
+                                    ['Juru Sungai', $sungai->juru_sungai_count],
+                                    ['Laporan', $sungai->laporan_op_count],
+                                ] as [$label, $nilai])
+                                    <div class="px-3 text-center">
+                                        <dd class="text-lg font-extrabold tabular-nums text-sungai-950">{{ $nilai }}</dd>
+                                        <dt class="text-[11px] font-medium text-slate-400">{{ $label }}</dt>
+                                    </div>
+                                @endforeach
+                            </dl>
+
+                            @if ($titik->isNotEmpty() && $titik->count() < $sungai->das_count)
+                                <p class="mt-2 text-[12px] text-slate-400">
+                                    {{ $titik->count() }} dari {{ $sungai->das_count }} DAS punya titik dan muncul di peta.
+                                </p>
+                            @endif
+
+                            <div class="mt-4 flex flex-wrap items-center gap-2">
+                                <a href="{{ route('wilayah.show', $sungai) }}"
+                                   class="rounded-xl bg-slate-100 px-3.5 py-2 text-[13px] font-bold text-slate-700 transition hover:bg-slate-200">
+                                    Detail
+                                </a>
+                                @if (auth('staf')->user()?->isAdmin())
+                                    <a href="{{ route('wilayah.edit', $sungai) }}"
+                                       class="rounded-xl px-3 py-2 text-[13px] font-semibold text-sungai-700 transition hover:bg-sungai-50">
+                                        Ubah
+                                    </a>
+                                    <form method="POST" action="{{ route('wilayah.destroy', $sungai) }}"
+                                          onsubmit="return confirm('Hapus wilayah sungai ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="rounded-xl px-3 py-2 text-[13px] font-semibold text-bata-600 transition hover:bg-bata-50">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        @if ($wilayah->hasPages())
+            <div class="mt-3.5 rounded-2xl bg-white px-5 py-3.5 ring-1 ring-slate-200/70">{{ $wilayah->links() }}</div>
         @endif
-    </div>
+    @endif
 
 @endsection

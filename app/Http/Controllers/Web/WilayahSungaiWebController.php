@@ -21,7 +21,31 @@ class WilayahSungaiWebController extends Controller
             ->paginate(20)
             ->withQueryString();
 
+        // Tiap wilayah sungai membawa titik DAS-nya sendiri, sehingga halaman ini
+        // menampilkan satu peta per wilayah. Bentuk ini sudah benar sejak
+        // sekarang meski wilayah sungainya baru satu: begitu wilayah kedua
+        // ditambahkan, ia langsung mendapat petanya sendiri tanpa halaman ini
+        // perlu dirombak.
+        $wilayah->loadMissing(['das' => fn ($q) => $q
+            ->whereNotNull('koordinat_lat')
+            ->whereNotNull('koordinat_lng')
+            ->withCount(['juruSungai', 'laporanOp'])
+            ->orderBy('nama_das')]);
+
+        $titikPerWilayah = $wilayah->mapWithKeys(fn ($w) => [
+            $w->id => $w->das->map(fn ($d) => [
+                'nama' => $d->nama_das,
+                'kode' => $d->kode_das,
+                'lat' => (float) $d->koordinat_lat,
+                'lng' => (float) $d->koordinat_lng,
+                'juru' => $d->juru_sungai_count,
+                'laporan' => $d->laporan_op_count,
+                'url' => route('das.show', $d),
+            ])->values(),
+        ]);
+
         return view('wilayah.index', [
+            'titikPerWilayah' => $titikPerWilayah,
             'wilayah' => $wilayah,
             'filter' => ['cari' => $request->input('cari')],
         ]);

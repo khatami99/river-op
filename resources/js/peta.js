@@ -165,6 +165,42 @@ function tampilkanPanel(d, panel, kosong) {
         </div>`;
 }
 
+/* ---------- Peta kecil per wilayah sungai ---------- */
+function siapkanPetaWilayah() {
+    // Berbeda dari peta lain yang hanya satu per halaman, di sini bisa ada
+    // beberapa sekaligus — satu untuk tiap wilayah sungai. Karena itu
+    // dicari lewat kelas, bukan id.
+    document.querySelectorAll('.peta-wilayah').forEach((wadah) => {
+        if (wadah._leaflet_id) return;
+
+        const titik = JSON.parse(wadah.dataset.titik || '[]');
+        if (!titik.length) return;
+
+        const peta = petaDasar(wadah, [titik[0].lat, titik[0].lng], 8);
+
+        titik.forEach((d) => {
+            const warna = d.juru > 0 ? '#127cc4' : '#94a3b8';
+
+            L.marker([d.lat, d.lng], { icon: penanda(warna, d.juru) })
+                .addTo(peta)
+                .bindPopup(
+                    `<strong>${lolos(d.nama)}</strong><br>` +
+                    `<span style="color:#64748b">${lolos(d.kode)} &middot; ${d.juru} juru &middot; ${d.laporan} laporan</span><br>` +
+                    `<a href="${d.url}" style="color:#127cc4;font-weight:700">Detail DAS</a>`
+                );
+        });
+
+        peta.aturPandangan = () => {
+            if (titik.length > 1) {
+                peta.fitBounds(titik.map((d) => [d.lat, d.lng]), { padding: [30, 30], maxZoom: 10 });
+            } else {
+                peta.setView([titik[0].lat, titik[0].lng], 10);
+            }
+        };
+        requestAnimationFrame(peta.segarkan);
+    });
+}
+
 /* ---------- Pemilih koordinat pada formulir DAS ---------- */
 function siapkanPemilihKoordinat() {
     const wadah = document.getElementById('peta-pilih');
@@ -321,6 +357,7 @@ function siapkanPetaSebaran() {
  */
 function siapkanSemuaPeta() {
     siapkanPetaDas();
+    siapkanPetaWilayah();
     siapkanPemilihKoordinat();
     siapkanPetaLaporan();
     siapkanPetaSebaran();
