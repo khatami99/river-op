@@ -76,23 +76,28 @@
             <div>
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Juru Sungai</label>
 
-                {{-- Boleh dipilih lebih dari satu. Ditaruh di panel yang bisa
-                     dilipat karena daftarnya memanjang seiring bertambahnya
-                     juru, dan sebagian besar waktu tidak dipakai. --}}
-                <details class="rounded-xl bg-slate-50 ring-1 ring-inset ring-slate-200"
+                {{-- Boleh dipilih lebih dari satu.
+
+                     Daftarnya mengambang di atas isi halaman, bukan melebar ke
+                     dalam alurnya, supaya perilakunya sama dengan dropdown DAS
+                     dan Jenis Bangunan di sebelahnya. Panel yang melebar akan
+                     mendorong seluruh isi di bawahnya turun setiap kali dibuka. --}}
+                <details class="relative" data-panel-pilihan
                          @if (count($filter['juru_sungai_id'])) open @endif>
-                    <summary class="cursor-pointer select-none px-3 py-2 text-[13px] font-medium text-slate-700">
+                    <summary class="{{ $kelasInput }} flex cursor-pointer select-none items-center justify-between">
                         @if (count($filter['juru_sungai_id']))
-                            <span class="rounded-md bg-sungai-100 px-1.5 py-0.5 text-[11px] font-bold text-sungai-700">
-                                {{ count($filter['juru_sungai_id']) }} dipilih
-                            </span>
+                            <span class="text-slate-800">{{ count($filter['juru_sungai_id']) }} juru dipilih</span>
                         @else
-                            <span class="text-[12px] text-slate-400">Semua juru</span>
+                            <span class="text-slate-500">Semua juru</span>
                         @endif
+                        <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/>
+                        </svg>
                     </summary>
-                    <div class="scrollbar-halus max-h-40 overflow-y-auto border-t border-slate-200 px-3 py-2">
+
+                    <div class="scrollbar-halus absolute left-0 right-0 z-30 mt-1 max-h-56 overflow-y-auto rounded-xl bg-white px-3 py-2 shadow-lg shadow-sungai-950/10 ring-1 ring-slate-200">
                         @foreach ($daftarJuru as $j)
-                            <label class="flex cursor-pointer items-center gap-2 py-1 text-[13px] text-slate-700">
+                            <label class="flex cursor-pointer items-center gap-2 rounded-lg px-1 py-1.5 text-[13px] text-slate-700 hover:bg-slate-50">
                                 <input type="checkbox" name="juru_sungai_id[]" value="{{ $j->id }}"
                                        @checked(in_array((string) $j->id, array_map('strval', $filter['juru_sungai_id']), true))
                                        class="h-4 w-4 rounded border-slate-300 text-sungai-600 focus:ring-sungai-500/30">

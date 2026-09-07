@@ -154,3 +154,17 @@ if (formulir && wadahHasil) {
         formulir.querySelector('input[name="page"]')?.remove();
     });
 }
+
+// Panel pilihan mengambang menutup sendiri ketika pengguna mengklik di luarnya,
+// seperti dropdown biasa. Elemen <details> tidak melakukan itu sendiri.
+document.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-panel-pilihan][open]').forEach((panel) => {
+        if (! panel.contains(e.target)) panel.removeAttribute('open');
+    });
+});
+
+// Tombol Escape juga menutupnya, kebiasaan yang sudah melekat pada dropdown.
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('[data-panel-pilihan][open]').forEach((p) => p.removeAttribute('open'));
+});
