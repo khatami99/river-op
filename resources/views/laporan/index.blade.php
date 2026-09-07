@@ -3,9 +3,29 @@
 @use('App\Support\Bulan')
 
 @section('judul', 'Laporan OP')
-@section('subjudul', $laporan->total() . ' laporan ditemukan')
+@section('subjudul', $tampilan === 'peta'
+    ? $dataTitik->count() . ' bangunan bertitik, ' . $jumlahBermasalah . ' di antaranya bermasalah'
+    : $laporan->total() . ' laporan ditemukan')
+
+@push('kepala')
+    @if ($tampilan === 'peta')
+        @vite('resources/js/peta.js')
+    @endif
+@endpush
 
 @section('aksi-header')
+    <div class="flex shrink-0 flex-wrap items-center gap-2">
+    {{-- Peta dan tabel memperlihatkan data yang sama atas penyaring yang sama,
+         jadi berpindah bentuk tidak menghapus penyaring yang sedang aktif. --}}
+    <div class="flex shrink-0 rounded-xl bg-slate-100 p-1">
+        @foreach (['tabel' => 'Tabel', 'peta' => 'Peta'] as $nilai => $label)
+            <a href="{{ route('laporan.index', array_merge(request()->query(), ['tampilan' => $nilai])) }}"
+               class="rounded-lg px-3.5 py-1.5 text-[13px] font-bold transition {{ $tampilan === $nilai ? 'bg-white text-sungai-950 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                {{ $label }}
+            </a>
+        @endforeach
+    </div>
+
     <a href="{{ route('laporan.export', request()->query()) }}"
        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -13,18 +33,19 @@
         </svg>
         Export Excel
     </a>
+    </div>
 @endsection
 
 @php
     $kelasInput = 'w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
-    $adaFilter = collect($filter)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty();
+    $adaFilter = collect($filter)->filter(fn ($v) => $v !== null && $v !== '' && $v !== false)->isNotEmpty();
 @endphp
 
 @section('konten')
 
     {{-- Filter --}}
     <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <div>
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Bulan</label>
                 <select name="bulan" class="{{ $kelasInput }}">
@@ -66,9 +87,31 @@
             </div>
 
             <div>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Jenis Bangunan</label>
+                <select name="jenis_bangunan_id" class="{{ $kelasInput }}">
+                    <option value="">Semua jenis</option>
+                    @foreach ($daftarJenis as $jb)
+                        <option value="{{ $jb->id }}" @selected((string) $filter['jenis_bangunan_id'] === (string) $jb->id)>{{ $jb->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
                 <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama juru / sungai" class="{{ $kelasInput }}">
             </div>
+        </div>
+
+        {{-- Bentuk tampilan ikut terbawa saat penyaring diterapkan, supaya
+             pegawai yang sedang melihat peta tidak terlempar balik ke tabel. --}}
+        <input type="hidden" name="tampilan" value="{{ $tampilan }}">
+
+        <div class="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <label class="flex cursor-pointer items-center gap-2.5 text-[13px] text-slate-700">
+                <input type="checkbox" name="bermasalah" value="1" @checked($filter['bermasalah'])
+                       class="h-4 w-4 rounded border-slate-300 text-bata-600 focus:ring-bata-500/30">
+                Hanya yang punya temuan bermasalah
+            </label>
         </div>
 
         <div class="mt-3.5 flex items-center gap-2">
@@ -84,6 +127,52 @@
             @endif
         </div>
     </form>
+
+    @if ($tampilan === 'peta')
+
+        @if ($tanpaTitik > 0)
+            <div class="mt-3.5 flex items-start gap-3 rounded-2xl bg-emas-50 p-4 ring-1 ring-emas-500/20">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-emas-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>
+                </svg>
+                <p class="text-[13px] leading-relaxed text-emas-900">
+                    <span class="font-semibold">{{ $tanpaTitik }} bangunan tidak muncul di peta</span>
+                    karena diperiksa sebelum aplikasi juru menangkap titik GPS. Koordinatnya tidak
+                    dapat dilengkapi belakangan.
+                </p>
+            </div>
+        @endif
+
+        <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5">
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px]">
+                    <span class="flex items-center gap-2">
+                        <span class="h-3.5 w-3.5 rounded-full border-2 border-white bg-[#c8102e] shadow"></span>
+                        <span class="text-slate-600">Ada temuan bermasalah</span>
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <span class="h-3.5 w-3.5 rounded-full border-2 border-white bg-[#127cc4] shadow"></span>
+                        <span class="text-slate-600">Tidak ada temuan bermasalah</span>
+                    </span>
+                </div>
+                <label class="flex cursor-pointer items-center gap-2 text-[12px] font-semibold text-slate-600">
+                    <input type="checkbox" id="lapisan-das" checked
+                           class="h-4 w-4 rounded border-slate-300 text-sungai-600 focus:ring-sungai-500/30">
+                    Tampilkan titik DAS
+                </label>
+            </div>
+
+            @if ($dataTitik->isEmpty())
+                <x-kosong judul="Tidak ada bangunan bertitik yang cocok"
+                          pesan="Coba longgarkan penyaring, atau lihat dalam bentuk tabel."/>
+            @else
+                <div id="peta-sebaran" class="h-[600px] w-full border-t border-slate-100"
+                     data-titik="{{ $dataTitik->toJson() }}"
+                     data-das="{{ $dataDas->toJson() }}"></div>
+            @endif
+        </div>
+
+    @else
 
     {{-- Tabel --}}
     <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
@@ -147,5 +236,7 @@
             @endif
         @endif
     </div>
+
+    @endif
 
 @endsection

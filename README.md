@@ -105,11 +105,9 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | Detail laporan | `/laporan/{id}` | Tampilan gaya blangko OP beserta galeri foto |
 | Export | `/laporan/export` | Unduh CSV mengikuti filter yang sedang aktif |
 | Juru sungai | `/juru` | Daftar juru dan kalender kepatuhan 12 bulan |
-| DAS | `/das` | Daftar daerah aliran sungai beserta juru yang bertugas |
+| DAS | `/das` | Peta DAS di atas, daftar berpaginasi di bawahnya |
 | Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
 | Rekapitulasi | `/rekap` | Rekap per DAS, daftar juru belum melapor, export |
-| Peta DAS | `/peta` | Sebaran DAS, juru yang bertugas, dan ringkasannya |
-| Peta Sebaran | `/sebaran` | Semua bangunan dari semua laporan, disaring per DAS, jenis, periode, dan hanya yang bermasalah |
 | Sinkronisasi | `/sinkronisasi` | Keadaan antrean di tiap HP juru, termasuk yang belum pernah melapor |
 | Log Aktivitas | `/log` | Jejak perubahan data master oleh staf, khusus admin |
 | Pengguna | `/staf` | Manajemen akun staf dinas — hanya admin |

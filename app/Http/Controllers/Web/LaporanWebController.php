@@ -6,32 +6,113 @@ use App\Http\Controllers\Controller;
 use App\Services\BlangkoOpExporter;
 use App\Services\TabelExcel;
 use App\Models\Das;
+use App\Models\ItemInspeksi;
+use App\Models\JenisBangunan;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class LaporanWebController extends Controller
 {
+    /**
+     * Daftar laporan, dalam dua bentuk tampilan atas penyaring yang sama.
+     *
+     * Peta sebaran dulu berdiri sebagai halaman sendiri dengan penyaring yang
+     * hampir sama persis. Itu membuat penyaringnya harus dipelihara dua kali,
+     * dan memaksa pegawai mengulang penyaringan bila ingin melihat data yang
+     * sama dalam bentuk lain. Peta kini menjadi cara lain melihat daftar ini.
+     */
     public function index(Request $request)
     {
-        $laporan = $this->queryTerfilter($request)
-            ->with(['juruSungai', 'das'])
-            ->withCount('itemInspeksi')
-            ->orderByDesc('tanggal_inspeksi')
-            ->orderByDesc('id')
-            ->paginate(20)
-            ->withQueryString();
+        $tampilan = $request->input('tampilan') === 'peta' ? 'peta' : 'tabel';
 
-        return view('laporan.index', [
-            'laporan' => $laporan,
+        $bersama = [
             'daftarDas' => Das::orderBy('nama_das')->get(),
             'daftarJuru' => JuruSungai::orderBy('nama')->get(),
+            'daftarJenis' => JenisBangunan::where('aktif', true)->orderBy('urutan')->get(),
             'daftarTahun' => $this->daftarTahun(),
             'filter' => $this->filterAktif($request),
+            'tampilan' => $tampilan,
+        ];
+
+        if ($tampilan === 'peta') {
+            return view('laporan.index', $bersama + $this->dataPeta($request) + ['laporan' => null]);
+        }
+
+        return view('laporan.index', $bersama + [
+            'laporan' => $this->queryTerfilter($request)
+                ->with(['juruSungai', 'das'])
+                ->withCount('itemInspeksi')
+                ->orderByDesc('tanggal_inspeksi')
+                ->orderByDesc('id')
+                ->paginate(20)
+                ->withQueryString(),
         ]);
+    }
+
+    /**
+     * Titik bangunan untuk tampilan peta.
+     *
+     * Satu penanda mewakili satu BANGUNAN, bukan satu laporan: koordinat
+     * direkam per bangunan dan masalahnya melekat di sana, sedangkan satu
+     * laporan bisa memuat bangunan yang berjauhan.
+     */
+    private function dataPeta(Request $request): array
+    {
+        $bangunan = ItemInspeksi::query()
+            ->select('item_inspeksi.*')
+            ->whereIn('laporan_op_id', $this->queryTerfilter($request)->select('laporan_op.id'))
+            ->whereNotNull('koordinat_lat')
+            ->whereNotNull('koordinat_lng')
+            ->when($request->filled('jenis_bangunan_id'),
+                fn ($q) => $q->where('jenis_bangunan_id', $request->integer('jenis_bangunan_id')))
+            ->with(['jenisBangunan', 'laporanOp.juruSungai', 'laporanOp.das'])
+            ->addSelect(['jumlah_bermasalah' => DB::table('temuan_kondisi')
+                ->selectRaw('COUNT(*)')
+                ->whereColumn('temuan_kondisi.item_inspeksi_id', 'item_inspeksi.id')
+                ->where('temuan_kondisi.ada_masalah', true),
+            ])
+            ->get();
+
+        if ($request->boolean('bermasalah')) {
+            $bangunan = $bangunan->filter(fn ($b) => $b->jumlah_bermasalah > 0)->values();
+        }
+
+        // Laporan dari sebelum aplikasi juru menangkap GPS tidak punya titik
+        // dan tidak akan pernah punya, sebab koordinatnya tidak bisa dikarang.
+        // Jumlahnya ditampilkan agar peta yang sepi tidak disalahartikan.
+        $tanpaTitik = ItemInspeksi::whereIn('laporan_op_id', $this->queryTerfilter($request)->select('laporan_op.id'))
+            ->whereNull('koordinat_lat')
+            ->count();
+
+        return [
+            'dataTitik' => $bangunan->map(fn ($b) => [
+                'lat' => (float) $b->koordinat_lat,
+                'lng' => (float) $b->koordinat_lng,
+                'jenis' => $b->jenisBangunan?->nama ?? 'Bangunan',
+                'kode' => $b->jenisBangunan?->kode,
+                'nama' => $b->nama_bangunan,
+                'sungai' => $b->nama_sungai,
+                'das' => $b->laporanOp?->das?->nama_das,
+                'juru' => $b->laporanOp?->juruSungai?->nama,
+                'tanggal' => optional($b->laporanOp?->tanggal_inspeksi)->format('d/m/Y'),
+                'bermasalah' => (int) $b->jumlah_bermasalah,
+                'url' => $b->laporanOp ? route('laporan.show', $b->laporanOp) : null,
+            ]),
+            'dataDas' => Das::whereNotNull('koordinat_lat')->whereNotNull('koordinat_lng')
+                ->orderBy('nama_das')->get()
+                ->map(fn ($d) => [
+                    'nama' => $d->nama_das, 'kode' => $d->kode_das,
+                    'lat' => (float) $d->koordinat_lat, 'lng' => (float) $d->koordinat_lng,
+                    'url' => route('das.show', $d),
+                ]),
+            'jumlahBermasalah' => $bangunan->filter(fn ($b) => $b->jumlah_bermasalah > 0)->count(),
+            'tanpaTitik' => $tanpaTitik,
+        ];
     }
 
     public function show(LaporanOp $laporan)
@@ -138,6 +219,10 @@ class LaporanWebController extends Controller
             ->when($request->filled('tahun'), fn ($q) => $q->where('tahun', $request->integer('tahun')))
             ->when($request->filled('das_id'), fn ($q) => $q->where('das_id', $request->integer('das_id')))
             ->when($request->filled('juru_sungai_id'), fn ($q) => $q->where('juru_sungai_id', $request->integer('juru_sungai_id')))
+            ->when($request->filled('jenis_bangunan_id'), fn ($q) => $q->whereHas('itemInspeksi',
+                fn ($i) => $i->where('jenis_bangunan_id', $request->integer('jenis_bangunan_id'))))
+            ->when($request->boolean('bermasalah'), fn ($q) => $q->whereHas('itemInspeksi.temuanKondisi',
+                fn ($t) => $t->where('ada_masalah', true)))
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->string('cari')->toString();
                 $q->where(function ($sub) use ($cari) {
@@ -155,6 +240,8 @@ class LaporanWebController extends Controller
             'das_id' => $request->input('das_id'),
             'juru_sungai_id' => $request->input('juru_sungai_id'),
             'cari' => $request->input('cari'),
+            'jenis_bangunan_id' => $request->input('jenis_bangunan_id'),
+            'bermasalah' => $request->boolean('bermasalah'),
         ];
     }
 

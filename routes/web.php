@@ -6,9 +6,7 @@ use App\Http\Controllers\Web\JuruSungaiWebController;
 use App\Http\Controllers\Web\LaporanWebController;
 use App\Http\Controllers\Web\LogAktivitasWebController;
 use App\Http\Controllers\Web\LoginController;
-use App\Http\Controllers\Web\PetaWebController;
 use App\Http\Controllers\Web\RekapWebController;
-use App\Http\Controllers\Web\SebaranWebController;
 use App\Http\Controllers\Web\StafDinasWebController;
 use App\Http\Controllers\Web\WilayahSungaiWebController;
 use Illuminate\Support\Facades\Route;
@@ -32,8 +30,11 @@ Route::middleware('auth:staf')->group(function () {
     Route::get('/laporan/{laporan}/blangko', [LaporanWebController::class, 'blangko'])->name('laporan.blangko');
     Route::get('/laporan/{laporan}/blangko-pdf', [LaporanWebController::class, 'blangkoPdf'])->name('laporan.blangko.pdf');
 
-    Route::get('/peta', [PetaWebController::class, 'index'])->name('peta.index');
-    Route::get('/sebaran', [SebaranWebController::class, 'index'])->name('sebaran.index');
+    // Peta DAS kini menyatu dengan halaman DAS, dan peta sebaran menjadi salah
+    // satu bentuk tampilan Laporan OP. Rute lamanya dialihkan supaya tautan
+    // yang mungkin sudah tersimpan orang tidak mati begitu saja.
+    Route::redirect('/peta', '/das')->name('peta.index');
+    Route::redirect('/sebaran', '/laporan?tampilan=peta')->name('sebaran.index');
 
     Route::get('/sinkronisasi', [\App\Http\Controllers\Web\SinkronisasiWebController::class, 'index'])->name('sinkronisasi.index');
 

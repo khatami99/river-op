@@ -33,7 +33,7 @@ class PeranStafTest extends TestCase
     {
         $viewer = $this->buatStaf('viewer');
 
-        foreach (['/dashboard', '/laporan', '/rekap', '/das', '/juru', '/wilayah', '/peta', '/sebaran'] as $halaman) {
+        foreach (['/dashboard', '/laporan', '/laporan?tampilan=peta', '/rekap', '/das', '/juru', '/wilayah'] as $halaman) {
             $this->actingAs($viewer, 'staf')->get($halaman)->assertOk();
         }
     }

@@ -8,8 +8,9 @@ use Tests\DataUji;
 use Tests\TestCase;
 
 /**
- * Peta sebaran laporan. Titiknya dikirim ke halaman sebagai JSON, jadi yang
- * diuji jumlah titik yang lolos penyaring — bukan tampilan petanya.
+ * Peta sebaran laporan, kini salah satu bentuk tampilan halaman Laporan OP.
+ * Titiknya dikirim ke halaman sebagai JSON, jadi yang diuji jumlah titik yang
+ * lolos penyaring — bukan tampilan petanya.
  */
 class PetaSebaranTest extends TestCase
 {
@@ -50,7 +51,7 @@ class PetaSebaranTest extends TestCase
         ]);
 
         $isi = $this->actingAs($this->buatStaf('viewer'), 'staf')
-            ->get('/sebaran')->assertOk()->getContent();
+            ->get('/laporan?tampilan=peta')->assertOk()->getContent();
 
         $this->assertSame(1, $this->jumlahTitik($isi));
         $this->assertStringContainsString('1 bangunan tidak muncul di peta', $isi);
@@ -64,10 +65,10 @@ class PetaSebaranTest extends TestCase
 
         $staf = $this->buatStaf('viewer');
 
-        $semua = $this->actingAs($staf, 'staf')->get('/sebaran')->getContent();
+        $semua = $this->actingAs($staf, 'staf')->get('/laporan?tampilan=peta')->getContent();
         $this->assertSame(2, $this->jumlahTitik($semua));
 
-        $disaring = $this->actingAs($staf, 'staf')->get('/sebaran?bermasalah=1')->getContent();
+        $disaring = $this->actingAs($staf, 'staf')->get('/laporan?tampilan=peta&bermasalah=1')->getContent();
         $this->assertSame(1, $this->jumlahTitik($disaring));
     }
 
@@ -82,11 +83,11 @@ class PetaSebaranTest extends TestCase
         $staf = $this->buatStaf('viewer');
 
         $this->assertSame(2, $this->jumlahTitik(
-            $this->actingAs($staf, 'staf')->get('/sebaran')->getContent()
+            $this->actingAs($staf, 'staf')->get('/laporan?tampilan=peta')->getContent()
         ));
 
         $this->assertSame(1, $this->jumlahTitik(
-            $this->actingAs($staf, 'staf')->get('/sebaran?das=' . $dasA->id)->getContent()
+            $this->actingAs($staf, 'staf')->get('/laporan?tampilan=peta&das_id=' . $dasA->id)->getContent()
         ));
     }
 
@@ -99,7 +100,17 @@ class PetaSebaranTest extends TestCase
         $staf = $this->buatStaf('viewer');
 
         $this->assertSame(1, $this->jumlahTitik(
-            $this->actingAs($staf, 'staf')->get('/sebaran?bulan=7')->getContent()
+            $this->actingAs($staf, 'staf')->get('/laporan?tampilan=peta&bulan=7')->getContent()
         ));
+    }
+
+    public function test_rute_lama_masih_dialihkan(): void
+    {
+        // Tautan lama mungkin sudah tersimpan orang, jadi tidak boleh mati
+        // begitu saja setelah halamannya digabung.
+        $staf = $this->buatStaf('viewer');
+
+        $this->actingAs($staf, 'staf')->get('/sebaran')->assertRedirect('/laporan?tampilan=peta');
+        $this->actingAs($staf, 'staf')->get('/peta')->assertRedirect('/das');
     }
 }
