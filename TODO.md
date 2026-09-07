@@ -211,11 +211,6 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 - [ ] **Notifikasi** ke juru saat sinkronisasi berhasil atau gagal.
 
-- [ ] **Poligon batas DAS dan WS.** Satu-satunya pekerjaan yang benar-benar
-      terhenti, dan bukan karena kodenya: berkas geospasialnya belum ada.
-      Halaman peta sebaran sudah dibangun berlapis agar poligon tinggal
-      menggantikan lapisan titik DAS bila berkasnya sudah didapat.
-
 ---
 
 ## Catatan
