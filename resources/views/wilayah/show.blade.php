@@ -13,6 +13,10 @@
     </a>
 @endsection
 
+@push('kepala')
+    @vite('resources/js/peta.js')
+@endpush
+
 @section('konten')
 
     <div class="grid gap-3.5 lg:grid-cols-3">
@@ -59,6 +63,37 @@
                 @endif
             </div>
         </div>
+
+        {{-- Letak DAS di bawah wilayah sungai ini.
+
+             Peta di sini menjawab pertanyaan yang khas halaman ini: DAS mana
+             saja yang bernaung di sini dan di mana letaknya. Wilayah sungai
+             sendiri tidak punya titik — ia wilayah, bukan titik — sehingga yang
+             digambar adalah DAS-DAS di dalamnya. --}}
+        @if ($dataPeta->isNotEmpty())
+            <div class="mt-3.5 grid gap-3.5 lg:grid-cols-3">
+                <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70 lg:col-span-2">
+                    <div id="peta-das" class="relative h-[clamp(18rem,40vh,24rem)] w-full"
+                         data-das="{{ $dataPeta->toJson() }}"></div>
+                </div>
+
+                <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+                    <div id="panel-kosong" class="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
+                        <p class="text-sm font-bold text-slate-700">Pilih sebuah DAS</p>
+                        <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-slate-400">
+                            Klik penanda di peta untuk melihat juru yang bertugas beserta ringkasan laporannya.
+                        </p>
+                    </div>
+                    <div id="panel-das" class="hidden"></div>
+                </div>
+            </div>
+
+            @if ($belumBerkoordinat > 0)
+                <p class="mt-2 text-[12px] text-slate-400">
+                    {{ $belumBerkoordinat }} DAS belum punya titik dan tidak muncul di peta.
+                </p>
+            @endif
+        @endif
 
         {{-- DAS di bawah wilayah sungai ini --}}
         <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70 lg:col-span-2">

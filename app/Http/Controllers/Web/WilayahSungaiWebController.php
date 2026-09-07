@@ -29,10 +29,44 @@ class WilayahSungaiWebController extends Controller
 
     public function show(WilayahSungai $wilayah)
     {
-        $wilayah->load(['das' => fn ($q) => $q->withCount(['juruSungai', 'laporanOp'])->orderBy('nama_das')]);
+        $wilayah->load(['das' => fn ($q) => $q
+            ->with(['juruSungai' => fn ($j) => $j->where('aktif', true)->orderBy('nama')])
+            ->withCount(['juruSungai', 'laporanOp'])
+            ->orderBy('nama_das')]);
         $wilayah->loadCount(['das', 'juruSungai', 'laporanOp']);
 
-        return view('wilayah.show', ['wilayah' => $wilayah]);
+        // Peta di sini menjawab pertanyaan yang khas halaman ini: DAS mana saja
+        // yang bernaung di bawah wilayah sungai ini, dan letaknya di mana.
+        $bolehTambahJuru = auth('staf')->user()?->isAdmin();
+
+        $dataPeta = $wilayah->das
+            ->filter(fn ($d) => $d->punyaKoordinat())
+            ->values()
+            ->map(fn ($d) => [
+                'id' => $d->id,
+                'nama' => $d->nama_das,
+                'kode' => $d->kode_das,
+                'wilayah' => $wilayah->nama_sungai,
+                'lat' => (float) $d->koordinat_lat,
+                'lng' => (float) $d->koordinat_lng,
+                'juru' => $d->juru_sungai_count,
+                'laporan' => $d->laporan_op_count,
+                'bermasalah' => 0,
+                'url' => route('das.show', $d),
+                'url_tambah_juru' => $bolehTambahJuru ? route('juru.create', ['das_id' => $d->id]) : null,
+                'daftar_juru' => $d->juruSungai->map(fn ($j) => [
+                    'nama' => $j->nama,
+                    'telepon' => $j->no_telepon ?: '-',
+                    'inisial' => mb_strtoupper(mb_substr($j->nama, 0, 1)),
+                    'url' => route('juru.show', $j),
+                ])->values(),
+            ]);
+
+        return view('wilayah.show', [
+            'wilayah' => $wilayah,
+            'dataPeta' => $dataPeta,
+            'belumBerkoordinat' => $wilayah->das->filter(fn ($d) => ! $d->punyaKoordinat())->count(),
+        ]);
     }
 
     public function create()

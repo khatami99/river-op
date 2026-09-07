@@ -27,15 +27,23 @@
         </div>
     @enderror
 
-    <div class="mb-3.5 flex items-start gap-3 rounded-2xl bg-sungai-50 p-4 ring-1 ring-sungai-500/15">
-        <svg class="mt-0.5 h-4 w-4 shrink-0 text-sungai-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        <p class="text-[13px] leading-relaxed text-sungai-900">
-            Saat ini hanya ada satu wilayah sungai yang menjadi wewenang Provinsi Kalimantan Selatan.
-            Pembagian tugas juru sungai dilakukan per <a href="{{ route('das.index') }}" class="font-bold underline">DAS</a> di bawahnya.
-        </p>
-    </div>
+    {{-- Catatan ini menjawab kebingungan yang wajar: halaman master data yang
+         isinya cuma satu baris terlihat seperti data yang belum lengkap.
+
+         Ditampilkan hanya selagi memang satu, sehingga ia pensiun sendiri
+         begitu wilayah sungai kedua ditambahkan — bukan berubah jadi
+         keterangan yang keliru. --}}
+    @if ($wilayah->total() === 1 && ! request()->filled('cari'))
+        <div class="mb-3.5 flex items-start gap-3 rounded-2xl bg-teal-50 p-4 ring-1 ring-teal-600/15">
+            <svg class="mt-0.5 h-4 w-4 shrink-0 text-teal-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-[13px] leading-relaxed text-teal-900">
+                Baru satu wilayah sungai yang menjadi wewenang Provinsi Kalimantan Selatan.
+                Pembagian tugas juru sungai dilakukan per <a href="{{ route('das.index') }}" class="font-bold underline">DAS</a> di bawahnya.
+            </p>
+        </div>
+    @endif
 
     <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
         <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
