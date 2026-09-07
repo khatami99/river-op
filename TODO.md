@@ -65,6 +65,13 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Export daftar laporan dan rekap kini `.xlsx` asli**, bukan CSV lagi.
+      CSV memang terbuka di Excel, tetapi angkanya terbaca sebagai teks
+      sehingga pegawai tidak bisa menjumlahkan sendiri kolomnya. Kini angka
+      ditulis sebagai angka, kepala tabel berwarna, dan lebar kolom menyesuaikan.
+      Daftar juru belum melapor ikut disertakan pada berkas rekap agar bisa
+      langsung dipakai menagih.
+
 - [x] **Export PDF blangko OP** pada tombol "Blangko PDF" di detail laporan.
       Satu halaman per bangunan, tata letak mengikuti blangko kertas. Isinya
       dibaca dari sumber yang sama dengan keluaran Excel supaya keduanya tidak
@@ -200,10 +207,6 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
       Batas sengaja tidak digambar sendiri karena batas yang keliru lebih
       berbahaya bagi sistem instansi daripada tidak ada peta sama sekali.
-
-- [ ] **Export daftar laporan dan rekap sebagai `.xlsx`.** Blangko OP sudah
-      berupa Excel asli, tetapi export daftar laporan dan rekapitulasi masih
-      CSV. PhpSpreadsheet sudah terpasang, jadi tinggal dipakai.
 
 ---
 

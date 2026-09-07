@@ -7,7 +7,9 @@ use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
 use App\Support\Bulan;
+use App\Services\TabelExcel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -30,7 +32,7 @@ class RekapWebController extends Controller
         ]);
     }
 
-    public function export(Request $request): StreamedResponse
+    public function export(Request $request)
     {
         $bulan = (int) $request->input('bulan', now()->month);
         $tahun = (int) $request->input('tahun', now()->year);
@@ -39,49 +41,52 @@ class RekapWebController extends Controller
         $total = $this->totalkan($rekap);
         $belum = $this->juruBelumLapor($bulan, $tahun);
 
-        $namaFile = 'Rekap_OP_'.Bulan::nama($bulan).'_'.$tahun.'.csv';
-
-        return response()->streamDownload(function () use ($rekap, $total, $belum, $bulan, $tahun) {
-            $keluaran = fopen('php://output', 'w');
-            fwrite($keluaran, "\xEF\xBB\xBF");
-
-            fputcsv($keluaran, ['REKAPITULASI LAPORAN OP SUNGAI'], ';');
-            fputcsv($keluaran, ['Periode', Bulan::nama($bulan).' '.$tahun], ';');
-            fputcsv($keluaran, [], ';');
-
-            fputcsv($keluaran, [
+        $tabel = (new TabelExcel('Rekap '.Bulan::nama($bulan).' '.$tahun))
+            ->judul('REKAPITULASI LAPORAN OP SUNGAI')
+            ->keterangan('Periode', Bulan::nama($bulan).' '.$tahun)
+            ->keterangan('Diunduh', now()->format('d/m/Y H:i'))
+            ->kosong()
+            ->kepala([
                 'DAS', 'Jumlah Juru', 'Sudah Lapor', 'Belum Lapor',
                 'Jumlah Laporan', 'Bangunan Diperiksa', 'Temuan Bermasalah',
-            ], ';');
+            ]);
 
-            foreach ($rekap as $baris) {
-                fputcsv($keluaran, [
-                    $baris->nama_das,
-                    $baris->jumlah_juru,
-                    $baris->sudah_lapor,
-                    $baris->belum_lapor,
-                    $baris->jumlah_laporan,
-                    $baris->jumlah_bangunan,
-                    $baris->temuan_bermasalah,
-                ], ';');
+        foreach ($rekap as $baris) {
+            $tabel->baris([
+                $baris->nama_das,
+                (int) $baris->jumlah_juru,
+                (int) $baris->sudah_lapor,
+                (int) $baris->belum_lapor,
+                (int) $baris->jumlah_laporan,
+                (int) $baris->jumlah_bangunan,
+                (int) $baris->temuan_bermasalah,
+            ]);
+        }
+
+        $tabel->baris([
+            'TOTAL', $total['juru'], $total['sudah'], $total['belum'],
+            $total['laporan'], $total['bangunan'], $total['bermasalah'],
+        ], tebal: true);
+
+        // Daftar nama ikut disertakan supaya berkasnya bisa langsung dipakai
+        // menagih, bukan cuma menunjukkan ada berapa yang belum.
+        if ($belum->isNotEmpty()) {
+            $tabel->kosong()
+                ->judul('DAFTAR JURU BELUM MELAPOR')
+                ->kepala(['Nama', 'NIP', 'DAS']);
+
+            foreach ($belum as $orang) {
+                $tabel->baris([$orang->nama, $orang->nip, $orang->das?->nama_das]);
             }
+        }
 
-            fputcsv($keluaran, [
-                'TOTAL', $total['juru'], $total['sudah'], $total['belum'],
-                $total['laporan'], $total['bangunan'], $total['bermasalah'],
-            ], ';');
+        $nama = 'Rekap_OP_'.Bulan::nama($bulan).'_'.$tahun;
 
-            if ($belum->isNotEmpty()) {
-                fputcsv($keluaran, [], ';');
-                fputcsv($keluaran, ['DAFTAR JURU BELUM MELAPOR'], ';');
-                fputcsv($keluaran, ['Nama', 'NIP', 'DAS'], ';');
-                foreach ($belum as $orang) {
-                    fputcsv($keluaran, [$orang->nama, $orang->nip, $orang->das?->nama_das], ';');
-                }
-            }
-
-            fclose($keluaran);
-        }, $namaFile, ['Content-Type' => 'text/csv; charset=UTF-8']);
+        return response()->streamDownload(function () use ($tabel) {
+            IOFactory::createWriter($tabel->selesai(), 'Xlsx')->save('php://output');
+        }, $nama.'.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     /**

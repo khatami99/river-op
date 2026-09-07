@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Services\BlangkoOpExporter;
+use App\Services\TabelExcel;
 use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
@@ -77,7 +78,7 @@ class LaporanWebController extends Controller
         return $pdf->download($blangko->namaBerkas($laporan) . '.pdf');
     }
 
-    public function export(Request $request): StreamedResponse
+    public function export(Request $request)
     {
         $laporan = $this->queryTerfilter($request)
             ->with(['juruSungai', 'das.wilayahSungai',
@@ -85,45 +86,48 @@ class LaporanWebController extends Controller
             ->orderByDesc('tanggal_inspeksi')
             ->get();
 
-        $namaFile = 'Laporan_OP_'.now()->format('Y-m-d_His').'.csv';
-
-        return response()->streamDownload(function () use ($laporan) {
-            $keluaran = fopen('php://output', 'w');
-
-            // BOM supaya Excel membaca karakter Indonesia dengan benar.
-            fwrite($keluaran, "\xEF\xBB\xBF");
-
-            fputcsv($keluaran, [
+        $tabel = (new TabelExcel('Laporan OP'))
+            ->judul('DAFTAR LAPORAN OP SUNGAI')
+            ->keterangan('Diunduh', now()->format('d/m/Y H:i'))
+            ->keterangan('Jumlah laporan', (string) $laporan->count())
+            ->kosong()
+            ->kepala([
                 'Tanggal Inspeksi', 'Juru Sungai', 'NIP', 'DAS', 'Wilayah Sungai', 'Kabupaten',
                 'Cuaca', 'Debit Air', 'Jumlah Bangunan', 'Jumlah Temuan',
                 'Temuan Bermasalah', 'Catatan Umum', 'Kendala', 'Disinkronkan',
-            ], ';');
+            ]);
 
-            foreach ($laporan as $item) {
-                $semuaTemuan = $item->itemInspeksi->flatMap->temuanKondisi;
-                $bermasalah = $semuaTemuan->filter(fn ($t) => $t->adaMasalah())->count();
+        foreach ($laporan as $item) {
+            $semuaTemuan = $item->itemInspeksi->flatMap->temuanKondisi;
 
-                fputcsv($keluaran, [
-                    optional($item->tanggal_inspeksi)->format('d/m/Y'),
-                    $item->juruSungai?->nama,
-                    $item->juruSungai?->nip,
-                    $item->das?->nama_das,
-                    $item->das?->wilayahSungai?->nama_sungai ?? '',
-                    $item->das?->labelKabupaten() ?? '',
-                    ucfirst($item->cuaca ?? ''),
-                    ucfirst($item->debit_air ?? ''),
-                    $item->itemInspeksi->count(),
-                    $semuaTemuan->count(),
-                    $bermasalah,
-                    $item->catatan_umum,
-                    $item->kendala,
-                    optional($item->synced_at)->format('d/m/Y H:i'),
-                ], ';');
-            }
+            $tabel->baris([
+                optional($item->tanggal_inspeksi)->format('d/m/Y'),
+                $item->juruSungai?->nama,
+                $item->juruSungai?->nip,
+                $item->das?->nama_das,
+                $item->das?->wilayahSungai?->nama_sungai ?? '',
+                $item->das?->labelKabupaten() ?? '',
+                ucfirst($item->cuaca ?? ''),
+                ucfirst($item->debit_air ?? ''),
+                $item->itemInspeksi->count(),
+                $semuaTemuan->count(),
+                $semuaTemuan->filter(fn ($t) => $t->adaMasalah())->count(),
+                $item->catatan_umum,
+                $item->kendala,
+                optional($item->synced_at)->format('d/m/Y H:i'),
+            ]);
+        }
 
-            fclose($keluaran);
-        }, $namaFile, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
+        return $this->unduhExcel($tabel->selesai(), 'Laporan_OP_'.now()->format('Y-m-d_His'));
+    }
+
+    /** Dipakai bersama oleh seluruh export Excel di controller ini. */
+    private function unduhExcel(\PhpOffice\PhpSpreadsheet\Spreadsheet $wb, string $nama)
+    {
+        return response()->streamDownload(function () use ($wb) {
+            IOFactory::createWriter($wb, 'Xlsx')->save('php://output');
+        }, $nama.'.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
     }
 
