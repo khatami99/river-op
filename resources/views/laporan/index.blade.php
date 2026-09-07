@@ -13,15 +13,6 @@
     @vite('resources/js/peta.js')
 @endpush
 
-@section('aksi-header')
-    <a href="{{ route('laporan.export', request()->query()) }}" data-unduh id="tautan-export"
-       class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-        </svg>
-        Export Excel
-    </a>
-@endsection
 
 @php
     $kelasInput = 'w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
@@ -36,7 +27,7 @@
          diubah, dan begitu pengguna berhenti mengetik. Bentuknya tetap formulir
          sungguhan supaya tetap bekerja bila JavaScript gagal dimuat. --}}
     <form method="GET" id="saringan-laporan" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
-        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
 
             {{-- Periode. Bagian "sampai" boleh dikosongkan; bila diisi, yang
                  dicari adalah rentangnya, misalnya Juli sampai September. --}}
@@ -82,8 +73,10 @@
                         <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->nama_das }}</option>
                     @endforeach
                 </select>
+            </div>
 
-                <label class="mb-1 mt-2.5 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Jenis Bangunan</label>
+            <div>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Jenis Bangunan</label>
                 <select name="jenis_bangunan_id" class="{{ $kelasInput }}">
                     <option value="">Semua jenis</option>
                     @foreach ($daftarJenis as $jb)
@@ -96,20 +89,23 @@
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
                 <input type="search" name="cari" value="{{ $filter['cari'] }}" autocomplete="off"
                        placeholder="Nama juru / sungai" class="{{ $kelasInput }}">
+            </div>
 
-                {{-- Juru boleh dipilih lebih dari satu. Ditaruh di panel yang
-                     bisa dilipat karena daftarnya memanjang seiring
-                     bertambahnya juru, dan sebagian besar waktu tidak dipakai. --}}
-                <details class="mt-2.5 rounded-xl bg-slate-50 ring-1 ring-inset ring-slate-200"
+            <div>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Juru Sungai</label>
+
+                {{-- Boleh dipilih lebih dari satu. Ditaruh di panel yang bisa
+                     dilipat karena daftarnya memanjang seiring bertambahnya
+                     juru, dan sebagian besar waktu tidak dipakai. --}}
+                <details class="rounded-xl bg-slate-50 ring-1 ring-inset ring-slate-200"
                          @if (count($filter['juru_sungai_id'])) open @endif>
                     <summary class="cursor-pointer select-none px-3 py-2 text-[13px] font-medium text-slate-700">
-                        Juru Sungai
                         @if (count($filter['juru_sungai_id']))
-                            <span class="ml-1 rounded-md bg-sungai-100 px-1.5 py-0.5 text-[11px] font-bold text-sungai-700">
+                            <span class="rounded-md bg-sungai-100 px-1.5 py-0.5 text-[11px] font-bold text-sungai-700">
                                 {{ count($filter['juru_sungai_id']) }} dipilih
                             </span>
                         @else
-                            <span class="ml-1 text-[12px] text-slate-400">semua</span>
+                            <span class="text-[12px] text-slate-400">Semua juru</span>
                         @endif
                     </summary>
                     <div class="scrollbar-halus max-h-40 overflow-y-auto border-t border-slate-200 px-3 py-2">
@@ -152,15 +148,31 @@
         </div>
     </form>
 
-    {{-- Pemilih bentuk tampilan, tepat di atas yang dikendalikannya.
-         Ini bukan penyaring: ia mengubah BENTUK, bukan data mana yang muncul. --}}
-    <div id="pemilih-tampilan" class="mt-3.5 flex w-fit items-center gap-1 rounded-xl bg-slate-100 p-1">
-        @foreach (['tabel' => 'Tabel', 'peta' => 'Peta'] as $nilai => $label)
-            <button type="button" data-tampilan="{{ $nilai }}"
-                    class="rounded-lg px-4 py-1.5 text-[13px] font-bold transition {{ $tampilan === $nilai ? 'bg-white text-sungai-950 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
-                {{ $label }}
-            </button>
-        @endforeach
+    {{-- Baris kendali hasil, tepat di antara penyaring dan hasilnya.
+
+         Tombol export ditaruh di sini, bukan di kepala halaman, karena yang
+         terunduh selalu mengikuti penyaring di atasnya. Menaruhnya berdekatan
+         membuat hubungan itu terbaca tanpa perlu dijelaskan.
+
+         Pemilih Tabel/Peta juga bukan penyaring: ia mengubah BENTUK, bukan
+         data mana yang muncul. --}}
+    <div class="mt-3.5 flex flex-wrap items-center justify-between gap-3">
+        <div id="pemilih-tampilan" class="flex w-fit items-center gap-1 rounded-xl bg-slate-100 p-1">
+            @foreach (['tabel' => 'Tabel', 'peta' => 'Peta'] as $nilai => $label)
+                <button type="button" data-tampilan="{{ $nilai }}"
+                        class="rounded-lg px-4 py-1.5 text-[13px] font-bold transition {{ $tampilan === $nilai ? 'bg-white text-sungai-950 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ $label }}
+                </button>
+            @endforeach
+        </div>
+
+        <a href="{{ route('laporan.export', request()->query()) }}" data-unduh id="tautan-export"
+           class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+            Export Excel <span class="font-medium opacity-70">sesuai filter</span>
+        </a>
     </div>
 
     <div id="hasil-laporan">
