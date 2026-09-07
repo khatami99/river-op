@@ -101,6 +101,9 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
 | Rekapitulasi | `/rekap` | Rekap per DAS, daftar juru belum melapor, export |
 | Peta DAS | `/peta` | Sebaran DAS, juru yang bertugas, dan ringkasannya |
+| Peta Sebaran | `/sebaran` | Semua bangunan dari semua laporan, disaring per DAS, jenis, periode, dan hanya yang bermasalah |
+| Sinkronisasi | `/sinkronisasi` | Keadaan antrean di tiap HP juru, termasuk yang belum pernah melapor |
+| Log Aktivitas | `/log` | Jejak perubahan data master oleh staf, khusus admin |
 | Pengguna | `/staf` | Manajemen akun staf dinas — hanya admin |
 
 ### Peran staf dinas
@@ -254,14 +257,22 @@ Token didefinisikan di `resources/css/app.css`.
 
 ### Belum dikerjakan
 
-Export PDF, nama sungai dan patok kilometer pada bangunan, audit log,
-monitoring sinkronisasi, dan peta sebaran laporan. Rincian beserta
-alasannya ada di [TODO.md](TODO.md).
+Yang tersisa tinggal **poligon batas DAS dan wilayah sungai**, dan itu terhenti
+bukan karena kodenya melainkan karena berkas geospasialnya belum ada — perlu
+shapefile atau GeoJSON resmi. Selain itu notifikasi ke juru dan deployment.
+Rincian beserta alasannya ada di [TODO.md](TODO.md).
 
-**Export blangko OP resmi sudah ada.** Halaman detail laporan menyediakan
-tombol "Unduh Blangko OP" yang menghasilkan berkas `.xlsx` mengikuti blangko
-OP-01.a s.d. OP-01.n. Template aslinya disimpan di `resources/blangko/` dan
-diisi memakai PhpSpreadsheet, sehingga tata letaknya persis blangko dinas.
+**Export blangko OP resmi sudah ada, dalam dua bentuk.** Halaman detail laporan
+menyediakan tombol **Blangko Excel** dan **Blangko PDF**, keduanya mengikuti
+blangko OP-01.a s.d. OP-01.n. Template Excel aslinya disimpan di
+`resources/blangko/` dan diisi memakai PhpSpreadsheet sehingga tata letaknya
+persis blangko dinas; PDF dipakai untuk arsip yang tidak boleh berubah.
+Keduanya membaca sumber data yang sama supaya isinya tidak mungkin berbeda.
+
+**Monitoring sinkronisasi bukan sekadar halaman web.** Server tidak mungkin
+mengetahui laporan yang gagal terkirim, sebab laporan itu memang tidak pernah
+sampai. Aplikasi juru mengabarkan keadaan antreannya sendiri lewat
+`POST /api/sinkronisasi/status` pada setiap akhir percobaan sinkronisasi.
 
 **Peta DAS** dan **peta lokasi bangunan pada detail laporan** sudah ada,
 memakai Leaflet dan OpenStreetMap tanpa kunci API maupun tagihan. Yang belum:
