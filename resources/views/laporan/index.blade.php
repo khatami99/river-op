@@ -15,8 +15,10 @@
 
 
 @php
-    $kelasInput = 'w-full rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+    $kelasIsian = 'rounded-xl border-0 bg-slate-50 px-3 py-2 text-[13px] font-medium text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
     $adaFilter = collect($filter)->filter(fn ($v) => $v !== null && $v !== '' && $v !== false && $v !== [])->isNotEmpty();
+
+    $kelasInput = 'w-full ' . $kelasIsian;
 @endphp
 
 @section('konten')
@@ -27,43 +29,49 @@
          diubah, dan begitu pengguna berhenti mengetik. Bentuknya tetap formulir
          sungguhan supaya tetap bekerja bila JavaScript gagal dimuat. --}}
     <form method="GET" id="saringan-laporan" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
-        <div class="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        {{-- Periode berdiri di barisnya sendiri.
 
-            {{-- Periode. Bagian "sampai" boleh dikosongkan; bila diisi, yang
-                 dicari adalah rentangnya, misalnya Juli sampai September. --}}
-            <div class="sm:col-span-2">
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Periode</label>
-                <div class="flex items-center gap-2">
-                    <select name="bulan" class="{{ $kelasInput }}">
-                        <option value="">Semua bulan</option>
-                        @foreach (Bulan::NAMA as $nomor => $nama)
-                            <option value="{{ $nomor }}" @selected((string) $filter['bulan'] === (string) $nomor)>{{ $nama }}</option>
-                        @endforeach
-                    </select>
-                    <select name="tahun" class="{{ $kelasInput }} max-w-[7.5rem]">
-                        <option value="">Semua tahun</option>
-                        @foreach ($daftarTahun as $t)
-                            <option value="{{ $t }}" @selected((string) $filter['tahun'] === (string) $t)>{{ $t }}</option>
-                        @endforeach
-                    </select>
-                </div>
+             Ia satu-satunya isian yang butuh empat pilihan, dan ketika ditaruh
+             sebaris dengan yang lain, bagian "s/d" menjuntai ke bawah sehingga
+             labelnya tidak lagi sejajar dengan kolom lain. Dipisah dengan
+             garis, keduanya sama-sama rapi. --}}
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <label class="w-full text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-auto sm:pr-1">
+                Periode
+            </label>
 
-                <div class="mt-2 flex items-center gap-2">
-                    <span class="shrink-0 text-[12px] font-semibold text-slate-400">s/d</span>
-                    <select name="bulan_sampai" class="{{ $kelasInput }}">
-                        <option value="">&mdash; satu bulan saja</option>
-                        @foreach (Bulan::NAMA as $nomor => $nama)
-                            <option value="{{ $nomor }}" @selected((string) $filter['bulan_sampai'] === (string) $nomor)>{{ $nama }}</option>
-                        @endforeach
-                    </select>
-                    <select name="tahun_sampai" class="{{ $kelasInput }} max-w-[7.5rem]">
-                        <option value="">Tahun sama</option>
-                        @foreach ($daftarTahun as $t)
-                            <option value="{{ $t }}" @selected((string) $filter['tahun_sampai'] === (string) $t)>{{ $t }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+            <select name="bulan" class="{{ $kelasIsian }} min-w-[9.5rem] flex-1 sm:max-w-[12rem]">
+                <option value="">Semua bulan</option>
+                @foreach (Bulan::NAMA as $nomor => $nama)
+                    <option value="{{ $nomor }}" @selected((string) $filter['bulan'] === (string) $nomor)>{{ $nama }}</option>
+                @endforeach
+            </select>
+
+            <select name="tahun" class="{{ $kelasIsian }} min-w-[7rem] flex-1 sm:max-w-[9rem]">
+                <option value="">Semua tahun</option>
+                @foreach ($daftarTahun as $t)
+                    <option value="{{ $t }}" @selected((string) $filter['tahun'] === (string) $t)>{{ $t }}</option>
+                @endforeach
+            </select>
+
+            <span class="px-1 text-[12px] font-semibold text-slate-400">s/d</span>
+
+            <select name="bulan_sampai" class="{{ $kelasIsian }} min-w-[9.5rem] flex-1 sm:max-w-[12rem]">
+                <option value="">&mdash; satu bulan saja</option>
+                @foreach (Bulan::NAMA as $nomor => $nama)
+                    <option value="{{ $nomor }}" @selected((string) $filter['bulan_sampai'] === (string) $nomor)>{{ $nama }}</option>
+                @endforeach
+            </select>
+
+            <select name="tahun_sampai" class="{{ $kelasIsian }} min-w-[7rem] flex-1 sm:max-w-[9rem]">
+                <option value="">Tahun sama</option>
+                @foreach ($daftarTahun as $t)
+                    <option value="{{ $t }}" @selected((string) $filter['tahun_sampai'] === (string) $t)>{{ $t }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mt-3.5 grid items-start gap-3 border-t border-slate-100 pt-3.5 sm:grid-cols-2 lg:grid-cols-4">
 
             <div>
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
