@@ -71,33 +71,7 @@
             </select>
         </div>
 
-        <div class="mt-3.5 grid items-start gap-3 border-t border-slate-100 pt-3.5 sm:grid-cols-2 lg:grid-cols-4">
-
-            <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
-                <select name="das_id" class="{{ $kelasInput }}">
-                    <option value="">Semua DAS</option>
-                    @foreach ($daftarDas as $w)
-                        <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->nama_das }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Jenis Bangunan</label>
-                <select name="jenis_bangunan_id" class="{{ $kelasInput }}">
-                    <option value="">Semua jenis</option>
-                    @foreach ($daftarJenis as $jb)
-                        <option value="{{ $jb->id }}" @selected((string) $filter['jenis_bangunan_id'] === (string) $jb->id)>{{ $jb->nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
-                <input type="search" name="cari" value="{{ $filter['cari'] }}" autocomplete="off"
-                       placeholder="Nama juru / sungai" class="{{ $kelasInput }}">
-            </div>
+        <div class="mt-3.5 grid items-start gap-3 border-t border-slate-100 pt-3.5 sm:grid-cols-2 lg:grid-cols-3">
 
             <div>
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Juru Sungai</label>
@@ -128,6 +102,39 @@
                     </div>
                 </details>
             </div>
+
+            <div>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
+                <select name="das_id" class="{{ $kelasInput }}">
+                    <option value="">Semua DAS</option>
+                    @foreach ($daftarDas as $w)
+                        <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->nama_das }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Jenis Bangunan</label>
+                <select name="jenis_bangunan_id" class="{{ $kelasInput }}">
+                    <option value="">Semua jenis</option>
+                    @foreach ($daftarJenis as $jb)
+                        <option value="{{ $jb->id }}" @selected((string) $filter['jenis_bangunan_id'] === (string) $jb->id)>{{ $jb->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        {{-- Pencarian bebas berdiri paling bawah karena cakupannya paling luas:
+             ia menelusuri seluruh isi laporan, bukan satu kolom tertentu. --}}
+        <div class="mt-3.5 border-t border-slate-100 pt-3.5">
+            <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Pencarian
+                <span class="ml-1 font-medium normal-case tracking-normal text-slate-400">
+                    &mdash; juru, DAS, wilayah sungai, cuaca, debit air, bulan, tahun, jumlah bangunan, catatan
+                </span>
+            </label>
+            <input type="search" name="cari" value="{{ $filter['cari'] }}" autocomplete="off"
+                   placeholder="Ketik apa saja&hellip;" class="{{ $kelasInput }}">
         </div>
 
         <input type="hidden" name="tampilan" id="tampilan-aktif" value="{{ $tampilan }}">

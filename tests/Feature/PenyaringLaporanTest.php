@@ -132,4 +132,52 @@ class PenyaringLaporanTest extends TestCase
 
         $this->assertSame(1, $baris, 'Export harus memuat hanya laporan Agustus.');
     }
+
+    public function test_pencarian_bebas_menjangkau_seluruh_isi_laporan(): void
+    {
+        $juru = $this->buatJuru(null, 'Ahmad Junaidi');
+
+        $this->buatLaporan($juru, [
+            'tanggal_inspeksi' => '2026-09-05', 'bulan' => 9, 'tahun' => 2026,
+            'cuaca' => 'hujan', 'debit_air' => 'tinggi',
+        ]);
+        $this->buatLaporan($juru, [
+            'tanggal_inspeksi' => '2026-08-05', 'bulan' => 8, 'tahun' => 2026,
+            'cuaca' => 'cerah', 'debit_air' => 'normal',
+        ]);
+
+        $this->assertSame(2, $this->jumlah(['cari' => 'Ahmad']), 'nama juru');
+        $this->assertSame(1, $this->jumlah(['cari' => 'hujan']), 'cuaca');
+        $this->assertSame(1, $this->jumlah(['cari' => 'tinggi']), 'debit air');
+        $this->assertSame(1, $this->jumlah(['cari' => 'September']), 'nama bulan');
+        $this->assertSame(2, $this->jumlah(['cari' => '2026']), 'tahun');
+        $this->assertSame(0, $this->jumlah(['cari' => 'tidakada']), 'tanpa hasil');
+    }
+
+    public function test_ketikan_pendek_tidak_menyeret_seluruh_bulan(): void
+    {
+        // Debit sengaja bukan "normal", sebab kata itu memuat "ma" dan akan
+        // ikut cocok lewat jalur teks biasa — bukan lewat nama bulan.
+        $juru = $this->buatJuru(null, 'Budi');
+        $this->buatLaporan($juru, ['tanggal_inspeksi' => '2026-03-05', 'bulan' => 3, 'debit_air' => 'tinggi']);
+        $this->buatLaporan($juru, ['tanggal_inspeksi' => '2026-05-05', 'bulan' => 5, 'debit_air' => 'tinggi']);
+
+        // "ma" adalah awalan Maret dan Mei. Tanpa batas tiga huruf, mengetik dua
+        // huruf saat mencari nama orang akan menyeret dua bulan penuh.
+        $this->assertSame(0, $this->jumlah(['cari' => 'ma']));
+        $this->assertSame(1, $this->jumlah(['cari' => 'mar']));
+    }
+
+    public function test_angka_dicocokkan_ke_jumlah_bangunan_atau_tahun(): void
+    {
+        $juru = $this->buatJuru();
+        $this->buatLaporan($juru, ['tahun' => 2026]);
+
+        // Satu laporan berisi satu bangunan. Tahun selalu empat angka,
+        // sedangkan jumlah bangunan tidak pernah sebanyak itu, sehingga
+        // keduanya tidak mungkin saling tertukar.
+        $this->assertSame(1, $this->jumlah(['cari' => '1']));
+        $this->assertSame(0, $this->jumlah(['cari' => '9']));
+        $this->assertSame(1, $this->jumlah(['cari' => '2026']));
+    }
 }

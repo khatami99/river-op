@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Services\BlangkoOpExporter;
+use App\Support\Bulan;
 use App\Services\TabelExcel;
 use App\Models\Das;
 use App\Models\ItemInspeksi;
@@ -247,13 +248,64 @@ class LaporanWebController extends Controller
                 fn ($i) => $i->where('jenis_bangunan_id', $request->integer('jenis_bangunan_id'))))
             ->when($request->boolean('bermasalah'), fn ($q) => $q->whereHas('itemInspeksi.temuanKondisi',
                 fn ($t) => $t->where('ada_masalah', true)))
-            ->when($request->filled('cari'), function ($q) use ($request) {
-                $cari = $request->string('cari')->toString();
-                $q->where(function ($sub) use ($cari) {
-                    $sub->whereHas('juruSungai', fn ($j) => $j->where('nama', 'like', "%{$cari}%"))
-                        ->orWhereHas('das', fn ($d) => $d->where('nama_das', 'like', "%{$cari}%"));
-                });
-            });
+            ->when($request->filled('cari'), fn ($q) => $this->cariBebas($q, $request->string('cari')->toString()));
+    }
+
+    /**
+     * Pencarian bebas: satu kotak untuk seluruh isi laporan.
+     *
+     * Pegawai tidak perlu memilih dulu hendak mencari di kolom mana. Yang
+     * ditelusuri: nama juru, nama DAS, nama wilayah sungai, cuaca, debit air,
+     * catatan, kendala, nama bulan, tahun, dan jumlah bangunan.
+     *
+     * Nama bulan hanya dicocokkan bila ketikannya minimal tiga huruf dan
+     * menjadi awalan nama bulan. Tanpa batas itu, mengetik "ma" akan menyeret
+     * seluruh laporan bulan Maret dan Mei tanpa pengguna memintanya.
+     */
+    private function cariBebas($query, string $cari)
+    {
+        $suku = trim($cari);
+
+        return $query->where(function ($sub) use ($suku) {
+            $sub->whereHas('juruSungai', fn ($j) => $j->where('nama', 'like', "%{$suku}%"))
+                ->orWhereHas('das', fn ($d) => $d->where('nama_das', 'like', "%{$suku}%"))
+                ->orWhereHas('das.wilayahSungai', fn ($w) => $w->where('nama_sungai', 'like', "%{$suku}%"))
+                ->orWhere('cuaca', 'like', "%{$suku}%")
+                ->orWhere('debit_air', 'like', "%{$suku}%")
+                ->orWhere('catatan_umum', 'like', "%{$suku}%")
+                ->orWhere('kendala', 'like', "%{$suku}%");
+
+            $bulan = $this->bulanYangCocok($suku);
+            if ($bulan !== []) {
+                $sub->orWhereIn('bulan', $bulan);
+            }
+
+            // Tahun selalu empat angka, sedangkan jumlah bangunan tidak pernah
+            // sebanyak itu, sehingga keduanya tidak mungkin saling tertukar.
+            if (ctype_digit($suku)) {
+                strlen($suku) === 4
+                    ? $sub->orWhere('tahun', (int) $suku)
+                    : $sub->orHas('itemInspeksi', '=', (int) $suku);
+            }
+        });
+    }
+
+    /** Nomor bulan yang namanya diawali ketikan pengguna. */
+    private function bulanYangCocok(string $suku): array
+    {
+        if (mb_strlen($suku) < 3) {
+            return [];
+        }
+
+        $cocok = [];
+
+        foreach (Bulan::NAMA as $nomor => $nama) {
+            if (str_starts_with(mb_strtolower($nama), mb_strtolower($suku))) {
+                $cocok[] = $nomor;
+            }
+        }
+
+        return $cocok;
     }
 
     /**

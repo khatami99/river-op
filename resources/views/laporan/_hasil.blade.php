@@ -64,7 +64,7 @@
                             <th class="px-5 py-3">Juru Sungai</th>
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3">Periode</th>
-                            <th class="px-5 py-3 text-center">Bangunan</th>
+                            <th class="px-5 py-3 text-center">Total Bangunan</th>
                             <th class="px-5 py-3">Cuaca</th>
                             <th class="px-5 py-3"></th>
                         </tr>
