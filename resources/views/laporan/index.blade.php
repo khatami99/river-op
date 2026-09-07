@@ -166,7 +166,7 @@
                 <x-kosong judul="Tidak ada bangunan bertitik yang cocok"
                           pesan="Coba longgarkan penyaring, atau lihat dalam bentuk tabel."/>
             @else
-                <div id="peta-sebaran" class="h-[600px] w-full border-t border-slate-100"
+                <div id="peta-sebaran" class="h-[clamp(20rem,52vh,34rem)] w-full border-t border-slate-100"
                      data-titik="{{ $dataTitik->toJson() }}"
                      data-das="{{ $dataDas->toJson() }}"></div>
             @endif

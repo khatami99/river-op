@@ -46,7 +46,7 @@
     @if ($dataPeta->isNotEmpty())
         <div class="mb-3.5 grid gap-3.5 lg:grid-cols-3">
             <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70 lg:col-span-2">
-                <div id="peta-das" class="h-[420px] w-full" data-das="{{ $dataPeta->toJson() }}"></div>
+                <div id="peta-das" class="h-[clamp(18rem,42vh,26rem)] w-full" data-das="{{ $dataPeta->toJson() }}"></div>
             </div>
 
             <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
