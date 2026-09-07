@@ -36,7 +36,7 @@ class AuthController extends Controller
             'user' => [
                 'id' => $juruSungai->id,
                 'nama' => $juruSungai->nama,
-                'nip' => $juruSungai->nip,
+                'no_telepon' => $juruSungai->no_telepon,
                 'username' => $juruSungai->username,
                 'das_id' => $juruSungai->das_id,
                 'nama_das' => $juruSungai->das?->nama_das,

@@ -17,7 +17,8 @@ class JuruSungai extends Authenticatable
     protected $fillable = [
         'das_id',
         'nama',
-        'nip',
+        'no_telepon',
+        'nomor_sk',
         'username',
         'password',
         'aktif',

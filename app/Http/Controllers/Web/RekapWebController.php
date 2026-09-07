@@ -73,10 +73,10 @@ class RekapWebController extends Controller
         if ($belum->isNotEmpty()) {
             $tabel->kosong()
                 ->judul('DAFTAR JURU BELUM MELAPOR')
-                ->kepala(['Nama', 'NIP', 'DAS']);
+                ->kepala(['Nama', 'Telepon', 'DAS']);
 
             foreach ($belum as $orang) {
-                $tabel->baris([$orang->nama, $orang->nip, $orang->das?->nama_das]);
+                $tabel->baris([$orang->nama, $orang->no_telepon ?: '-', $orang->das?->nama_das]);
             }
         }
 

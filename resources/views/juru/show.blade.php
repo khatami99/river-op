@@ -36,7 +36,8 @@
             <dl class="mt-5 space-y-3 border-t border-white/10 pt-4">
                 @php
                     $data = [
-                        'NIP' => $juru->nip ?: '-',
+                        'Nomor Telepon' => $juru->no_telepon ?: '-',
+                        'Nomor SK' => $juru->nomor_sk ?: '-',
                         'Username' => $juru->username,
                         'DAS' => $juru->das?->nama_das ?? '-',
                         'Wilayah Sungai' => $juru->das?->wilayahSungai?->nama_sungai ?? '-',

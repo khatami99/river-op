@@ -173,7 +173,7 @@ class LaporanWebController extends Controller
             ->keterangan('Jumlah laporan', (string) $laporan->count())
             ->kosong()
             ->kepala([
-                'Tanggal Inspeksi', 'Juru Sungai', 'NIP', 'DAS', 'Wilayah Sungai', 'Kabupaten',
+                'Tanggal Inspeksi', 'Juru Sungai', 'DAS', 'Wilayah Sungai', 'Kabupaten',
                 'Cuaca', 'Debit Air', 'Jumlah Bangunan', 'Jumlah Temuan',
                 'Temuan Bermasalah', 'Catatan Umum', 'Kendala', 'Disinkronkan',
             ]);
@@ -184,7 +184,6 @@ class LaporanWebController extends Controller
             $tabel->baris([
                 optional($item->tanggal_inspeksi)->format('d/m/Y'),
                 $item->juruSungai?->nama,
-                $item->juruSungai?->nip,
                 $item->das?->nama_das,
                 $item->das?->wilayahSungai?->nama_sungai ?? '',
                 $item->das?->labelKabupaten() ?? '',

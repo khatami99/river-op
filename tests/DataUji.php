@@ -51,7 +51,7 @@ trait DataUji
         return JuruSungai::create([
             'das_id' => ($das ?? $this->buatDas())->id,
             'nama' => $nama,
-            'nip' => (string) random_int(10 ** 17, 10 ** 18 - 1),
+            'no_telepon' => '0812' . random_int(10000000, 99999999),
             'username' => 'juru_' . Str::lower(Str::random(6)),
             'password' => Hash::make('rahasia'),
             'aktif' => true,

@@ -90,7 +90,7 @@
             <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3.5 border-t border-white/10 pt-4 sm:grid-cols-4">
                 @php
                     $ringkas = [
-                        'NIP' => $laporan->juruSungai?->nip ?: '-',
+                        'Telepon Juru' => $laporan->juruSungai?->no_telepon ?: '-',
                         'Tanggal Inspeksi' => optional($laporan->tanggal_inspeksi)->format('d M Y') ?? '-',
                         'Cuaca' => ucfirst($laporan->cuaca ?? '-'),
                         'Debit Air' => ucfirst($laporan->debit_air ?? '-'),

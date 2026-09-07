@@ -32,7 +32,7 @@
         <div class="grid gap-3 sm:grid-cols-3">
             <div class="sm:col-span-2">
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
-                <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama, NIP, atau username" class="{{ $kelasInput }}">
+                <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama, telepon, atau username" class="{{ $kelasInput }}">
             </div>
             <div>
                 <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
@@ -65,7 +65,6 @@
                     <thead>
                         <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
                             <th class="px-5 py-3">Nama</th>
-                            <th class="px-5 py-3">NIP</th>
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3 text-center">Laporan</th>
                             <th class="px-5 py-3">Status</th>
@@ -83,8 +82,7 @@
                                         <span class="font-semibold text-slate-800">{{ $orang->nama }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3 tabular-nums text-slate-500">{{ $orang->nip ?: '-' }}</td>
-                                <td class="px-5 py-3 text-slate-500">{{ $orang->das?->nama_das ?? '-' }}</td>
+                                                                <td class="px-5 py-3 text-slate-500">{{ $orang->das?->nama_das ?? '-' }}</td>
                                 <td class="px-5 py-3 text-center">
                                     <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-100 px-1.5 text-[12px] font-bold tabular-nums text-slate-600">
                                         {{ $orang->laporan_op_count }}

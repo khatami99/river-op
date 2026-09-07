@@ -125,7 +125,7 @@ function tampilkanPanel(d, panel, kosong) {
                 <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sungai-50 text-[12px] font-extrabold text-sungai-700">${j.inisial}</span>
                 <span class="min-w-0 flex-1">
                     <span class="block truncate text-[13.5px] font-semibold text-slate-800">${j.nama}</span>
-                    <span class="block truncate text-[12px] text-slate-400">${j.nip}</span>
+                    <span class="block truncate text-[12px] text-slate-400">${j.telepon}</span>
                 </span>
             </a>`).join('')
         : '<p class="px-3 py-6 text-center text-[13px] text-slate-400">Belum ada juru bertugas di DAS ini.</p>';

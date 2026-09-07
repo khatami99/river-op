@@ -26,9 +26,17 @@
                    value="{{ old('nama', $juru->nama) }}" required>
         </x-kolom>
 
-        <x-kolom label="NIP" nama="nip" petunjuk="Boleh dikosongkan bila juru belum memiliki NIP.">
-            <input id="nip" name="nip" type="text" class="{{ $ki }}"
-                   value="{{ old('nip', $juru->nip) }}">
+        <x-kolom label="Nomor Telepon" nama="no_telepon"
+                 petunjuk="Dipakai saat dinas perlu menghubungi juru yang belum melapor.">
+            <input id="no_telepon" name="no_telepon" type="tel" class="{{ $ki }}"
+                   placeholder="08xxxxxxxxxx"
+                   value="{{ old('no_telepon', $juru->no_telepon) }}">
+        </x-kolom>
+
+        <x-kolom label="Nomor SK Pengangkatan" nama="nomor_sk"
+                 petunjuk="Diterbitkan per angkatan, sehingga satu SK biasanya memuat beberapa juru. Karena itu nomor SK bukan pembeda antarjuru.">
+            <input id="nomor_sk" name="nomor_sk" type="text" class="{{ $ki }}"
+                   value="{{ old('nomor_sk', $juru->nomor_sk) }}">
         </x-kolom>
 
         <x-kolom label="DAS Wilayah Kerja" nama="das_id" :wajib="true"

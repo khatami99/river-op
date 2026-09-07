@@ -168,7 +168,7 @@
                     <thead>
                         <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
                             <th class="px-5 py-3">Nama</th>
-                            <th class="px-5 py-3">NIP</th>
+                            <th class="px-5 py-3">Telepon</th>
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3"></th>
                         </tr>
@@ -184,7 +184,7 @@
                                         <span class="font-semibold text-slate-800">{{ $orang->nama }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3 tabular-nums text-slate-500">{{ $orang->nip ?: '-' }}</td>
+                                <td class="px-5 py-3 tabular-nums text-slate-500">{{ $orang->no_telepon ?: '-' }}</td>
                                 <td class="px-5 py-3 text-slate-500">{{ $orang->das?->nama_das ?? '-' }}</td>
                                 <td class="whitespace-nowrap px-5 py-3 text-right">
                                     <a href="{{ route('juru.show', $orang) }}"

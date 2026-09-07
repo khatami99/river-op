@@ -91,7 +91,7 @@
                                 </span>
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $orang->nama }}</p>
-                                    <p class="truncate text-[12px] text-slate-400">{{ $orang->nip ?: $orang->username }}</p>
+                                    <p class="truncate text-[12px] text-slate-400">{{ $orang->no_telepon ?: $orang->username }}</p>
                                 </div>
                                 <x-lencana :warna="$orang->aktif ? 'normal' : 'netral'">
                                     {{ $orang->aktif ? 'Aktif' : 'Nonaktif' }}

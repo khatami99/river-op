@@ -64,7 +64,7 @@ class DasWebController extends Controller
                 'url_tambah_juru' => $bolehTambahJuru ? route('juru.create', ['das_id' => $d->id]) : null,
                 'daftar_juru' => $d->juruSungai->map(fn ($j) => [
                     'nama' => $j->nama,
-                    'nip' => $j->nip ?: $j->username,
+                    'telepon' => $j->no_telepon ?: '-',
                     'inisial' => mb_strtoupper(mb_substr($j->nama, 0, 1)),
                     'url' => route('juru.show', $j),
                 ])->values(),

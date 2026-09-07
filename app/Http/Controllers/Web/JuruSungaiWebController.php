@@ -18,7 +18,8 @@ class JuruSungaiWebController extends Controller
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->string('cari')->toString();
                 $q->where(fn ($sub) => $sub->where('nama', 'like', "%{$cari}%")
-                    ->orWhere('nip', 'like', "%{$cari}%")
+                    ->orWhere('no_telepon', 'like', "%{$cari}%")
+                    ->orWhere('nomor_sk', 'like', "%{$cari}%")
                     ->orWhere('username', 'like', "%{$cari}%"));
             })
             ->when($request->filled('das_id'), fn ($q) => $q->where('das_id', $request->integer('das_id')))
@@ -135,7 +136,8 @@ class JuruSungaiWebController extends Controller
     {
         return $request->validate([
             'nama' => ['required', 'string', 'max:100'],
-            'nip' => ['nullable', 'string', 'max:30'],
+            'no_telepon' => ['nullable', 'string', 'max:25'],
+            'nomor_sk' => ['nullable', 'string', 'max:100'],
             'username' => [
                 'required', 'string', 'max:50',
                 Rule::unique('juru_sungai', 'username')->ignore($juru?->id)->whereNull('deleted_at'),
@@ -143,7 +145,8 @@ class JuruSungaiWebController extends Controller
             'password' => [$juru ? 'nullable' : 'required', 'string', 'min:6', 'max:255'],
             'das_id' => ['required', 'exists:das,id'],
         ], [], [
-            'nip' => 'NIP',
+            'no_telepon' => 'nomor telepon',
+            'nomor_sk' => 'nomor SK',
             'das_id' => 'DAS',
         ]);
     }
