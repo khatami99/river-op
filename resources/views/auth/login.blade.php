@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Masuk — Sistem Informasi OP Sungai</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('gambar/ikon-layar-depan.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,7 +27,7 @@
 
             <div class="relative">
                 <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10">
-                    <x-logo class="h-9 w-9"/>
+                    <x-logo class="h-11"/>
                 </div>
                 <h1 class="mt-6 text-[26px] font-extrabold leading-tight tracking-tight text-white">
                     Sistem Informasi<br>Operasi &amp; Pemeliharaan Sungai
@@ -35,9 +37,15 @@
                 </p>
             </div>
 
-            <div class="relative flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-emas-400">
-                <span class="h-1 w-6 rounded-full bg-emas-400"></span>
-                Dinas PUPR Kalimantan Selatan
+            {{-- Lambang provinsi ditaruh di sini, bukan berdampingan dengan logo
+                 aplikasi di atas. Bagian atas menyatakan "aplikasi apa ini",
+                 bagian ini menyatakan "di bawah lembaga mana" — dua pernyataan
+                 berbeda yang tidak perlu berebut tempat. --}}
+            <div class="relative flex items-center gap-3">
+                <x-logo-kalsel class="h-10 shrink-0"/>
+                <div class="text-[11px] font-semibold uppercase leading-snug tracking-widest text-emas-400">
+                    Dinas PUPR<br>Provinsi Kalimantan Selatan
+                </div>
             </div>
         </div>
 
@@ -45,12 +53,13 @@
         <div class="p-8 sm:p-10">
             <div class="mb-7 flex items-center gap-3 lg:hidden">
                 <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-sungai-950">
-                    <x-logo class="h-7 w-7"/>
+                    <x-logo class="h-8"/>
                 </div>
                 <div class="leading-tight">
                     <p class="text-sm font-bold text-sungai-950">Sistem Informasi OP</p>
                     <p class="text-xs text-slate-500">Dinas PUPR Kalsel</p>
                 </div>
+                <x-logo-kalsel class="ml-auto h-9 shrink-0"/>
             </div>
 
             <h2 class="text-xl font-extrabold tracking-tight text-sungai-950">Masuk ke akun staf</h2>

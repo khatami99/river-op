@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('judul', 'Dashboard') — Sistem Informasi OP Sungai</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('gambar/ikon-layar-depan.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,7 +43,7 @@
         <aside class="hidden w-[248px] shrink-0 flex-col bg-sungai-950 lg:flex">
             <div class="flex items-center gap-3 px-5 py-6">
                 <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10">
-                    <x-logo class="h-7 w-7"/>
+                    <x-logo class="h-9"/>
                 </div>
                 <div class="leading-tight">
                     <p class="text-[13px] font-bold text-white">Sistem Informasi OP</p>

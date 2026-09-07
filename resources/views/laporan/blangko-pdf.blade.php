@@ -11,6 +11,12 @@
         body { font-family: DejaVu Sans, sans-serif; font-size: 9px; color: #000; }
         .lembar { page-break-after: always; }
         .lembar:last-child { page-break-after: auto; }
+        .kop { width: 100%; border-bottom: 1.4px solid #000; padding-bottom: 6px; margin-bottom: 10px; }
+        .kop td { vertical-align: middle; }
+        .kop .lambang { width: 52px; }
+        .kop .lembaga { font-size: 12px; font-weight: bold; line-height: 1.35; }
+        .kop .alamat { font-size: 8.5px; }
+        .kop .kanan { text-align: right; font-size: 9px; }
         .kode { text-align: right; font-size: 9px; }
         h1 { font-size: 11px; margin: 0 0 10px; font-weight: bold; }
         .kepala td { padding: 1.5px 0; vertical-align: top; }
@@ -36,7 +42,23 @@
 
 @forelse ($lembar as $l)
     <div class="lembar">
-        <div class="kode">{{ str_replace('OP-', 'OP - ', $l['kode']) }}</div>
+        {{-- Kop surat. Di sinilah lambang provinsi benar-benar berguna: berkas
+             ini keluar dari sistem untuk dicetak dan diarsipkan, sehingga perlu
+             menyatakan lembaga penerbitnya. --}}
+        <table class="kop">
+            <tr>
+                <td class="lambang">
+                    @if (file_exists(public_path('gambar/logo-kalsel.png')))
+                        <img src="{{ public_path('gambar/logo-kalsel.png') }}" alt="" height="46">
+                    @endif
+                </td>
+                <td>
+                    <div class="lembaga">PEMERINTAH PROVINSI KALIMANTAN SELATAN<br>DINAS PEKERJAAN UMUM DAN PENATAAN RUANG</div>
+                    <div class="alamat">Sistem Informasi Operasi &amp; Pemeliharaan Sungai</div>
+                </td>
+                <td class="kanan">{{ str_replace('OP-', 'OP - ', $l['kode']) }}</td>
+            </tr>
+        </table>
         <h1>CATATAN INSPEKSI BANGUNAN SUNGAI</h1>
 
         <table class="kepala">
