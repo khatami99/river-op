@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\DasWebController;
 use App\Http\Controllers\Web\JuruSungaiWebController;
 use App\Http\Controllers\Web\LaporanWebController;
+use App\Http\Controllers\Web\LogAktivitasWebController;
 use App\Http\Controllers\Web\LoginController;
 use App\Http\Controllers\Web\PetaWebController;
 use App\Http\Controllers\Web\RekapWebController;
@@ -60,6 +61,8 @@ Route::middleware('auth:staf')->group(function () {
         Route::get('/wilayah/{wilayah}/edit', [WilayahSungaiWebController::class, 'edit'])->name('wilayah.edit');
         Route::put('/wilayah/{wilayah}', [WilayahSungaiWebController::class, 'update'])->name('wilayah.update');
         Route::delete('/wilayah/{wilayah}', [WilayahSungaiWebController::class, 'destroy'])->name('wilayah.destroy');
+
+        Route::get('/log', [LogAktivitasWebController::class, 'index'])->name('log.index');
 
         Route::get('/staf', [StafDinasWebController::class, 'index'])->name('staf.index');
         Route::get('/staf/create', [StafDinasWebController::class, 'create'])->name('staf.create');

@@ -27,9 +27,10 @@
 
     $staf = auth('staf')->user();
 
-    // Manajemen pengguna hanya relevan bagi admin.
+    // Manajemen pengguna dan jejak perubahan hanya relevan bagi admin.
     if ($staf?->isAdmin()) {
         $menu[] = ['rute' => 'staf.index', 'aktif' => 'staf.*', 'label' => 'Pengguna', 'ikon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'];
+        $menu[] = ['rute' => 'log.index', 'aktif' => 'log.*', 'label' => 'Log Aktivitas', 'ikon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l4.4 4.4a1 1 0 01.3.7V19a2 2 0 01-2 2z'];
     }
 @endphp
 

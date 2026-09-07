@@ -65,6 +65,19 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Audit log** pada `/log`, khusus admin. Mencatat penambahan, perubahan,
+      dan penghapusan juru sungai, DAS, wilayah sungai, dan pengguna staf,
+      lengkap dengan nilai sebelum dan sesudah, pelaku, waktu, serta IP.
+
+      Laporan dari juru sengaja tidak diawasi: laporan bersifat sekali kirim
+      dan tidak pernah diubah di sisi server. Perubahan dari seeder atau
+      perintah artisan juga tidak dicatat, sebab tidak ada orang yang
+      bertanggung jawab di sana dan barisnya hanya akan memenuhi log.
+
+      Kolom password tidak pernah ikut tercatat. Pelaku boleh menjadi null bila
+      akunnya kelak dihapus — jejaknya justru tidak boleh ikut hilang — dan
+      namanya disalin agar tetap terbaca.
+
 - [x] **Peta sebaran laporan** pada `/sebaran`. Seluruh bangunan dari seluruh
       laporan dalam satu peta, disaring per DAS, jenis bangunan, bulan, tahun,
       dan "hanya yang bermasalah". Satu penanda mewakili satu BANGUNAN, bukan
@@ -189,8 +202,6 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
       server, sehingga server tidak punya cara mengetahuinya. Status GAGAL dan PENDING
       hanya hidup di HP juru. Agar dinas bisa memantau, aplikasi Android harus
       mengirim laporan status secara terpisah — jadi ini bukan sekadar pekerjaan di sisi web.
-
-- [ ] **Audit log.** Jejak perubahan data untuk kebutuhan pertanggungjawaban.
 
 - [ ] **Notifikasi** ke juru saat sinkronisasi berhasil atau gagal.
 
