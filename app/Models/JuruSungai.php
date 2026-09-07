@@ -32,6 +32,12 @@ class JuruSungai extends Authenticatable
         'aktif' => 'boolean',
     ];
 
+    /** Laporan status terakhir dari HP juru ini; null bila belum pernah melapor. */
+    public function statusSinkronisasi(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(StatusSinkronisasi::class, 'juru_sungai_id');
+    }
+
     public function das(): BelongsTo
     {
         return $this->belongsTo(Das::class, 'das_id');

@@ -8,6 +8,7 @@ use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -52,13 +53,28 @@ class LaporanWebController extends Controller
     public function blangko(LaporanOp $laporan, BlangkoOpExporter $blangko)
     {
         $wb = $blangko->untukLaporan($laporan);
-        $nama = $blangko->namaBerkas($laporan);
+        $nama = $blangko->namaBerkas($laporan) . '.xlsx';
 
         return response()->streamDownload(function () use ($wb) {
             IOFactory::createWriter($wb, 'Xlsx')->save('php://output');
         }, $nama, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
+    }
+
+    /**
+     * Blangko yang sama dalam bentuk PDF, untuk arsip yang tidak boleh berubah.
+     * Isinya dibaca dari sumber yang sama dengan keluaran Excel supaya
+     * keduanya tidak mungkin berbeda.
+     */
+    public function blangkoPdf(LaporanOp $laporan, BlangkoOpExporter $blangko)
+    {
+        $pdf = Pdf::loadView('laporan.blangko-pdf', [
+            'laporan' => $laporan,
+            'lembar' => $blangko->lembarUntukPdf($laporan),
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download($blangko->namaBerkas($laporan) . '.pdf');
     }
 
     public function export(Request $request): StreamedResponse

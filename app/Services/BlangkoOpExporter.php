@@ -83,6 +83,55 @@ class BlangkoOpExporter
         return $wb;
     }
 
+    /**
+     * Bentuk data yang sama dengan yang dituangkan ke Excel, tetapi disiapkan
+     * untuk dicetak sebagai PDF. Dipisah agar kedua keluaran membaca sumber
+     * yang sama dan tidak bisa berbeda isi.
+     *
+     * Daftar bagian bangunan diambil dari master data, bukan dari temuan,
+     * supaya bagian yang tidak dilaporkan tetap muncul sebagai baris kosong
+     * seperti pada blangko kertas.
+     */
+    public function lembarUntukPdf(LaporanOp $laporan): array
+    {
+        $laporan->loadMissing([
+            'juruSungai',
+            'das',
+            'itemInspeksi.jenisBangunan.bagianBangunan',
+            'itemInspeksi.temuanKondisi.bagianBangunan',
+        ]);
+
+        return $laporan->itemInspeksi->map(function (ItemInspeksi $bangunan) use ($laporan) {
+            $temuanPerBagian = $bangunan->temuanKondisi->keyBy('bagian_bangunan_id');
+
+            $baris = ($bangunan->jenisBangunan?->bagianBangunan ?? collect())
+                ->sortBy('urutan')
+                ->values()
+                ->map(function ($bagian, $i) use ($temuanPerBagian, $bangunan) {
+                    $temuan = $temuanPerBagian->get($bagian->id);
+
+                    return [
+                        'no' => $i + 1,
+                        'bagian' => $bagian->nama,
+                        'pengamatan' => $temuan ? implode(' : ', $temuan->kondisiList()) : '',
+                        'tindakan' => $temuan?->tindakan_diperlukan ?? '',
+                        'koordinat' => $temuan ? $this->koordinat($bangunan) : '',
+                        'keterangan' => $temuan?->keterangan ?? '',
+                    ];
+                });
+
+            return [
+                'kode' => $bangunan->jenisBangunan?->kode ?? '',
+                'jenis' => mb_strtoupper($bangunan->jenisBangunan?->nama ?? 'BANGUNAN'),
+                'tipe' => $bangunan->jenisBangunan?->tipe_konstruksi,
+                'lokasi' => $this->barisLokasi($bangunan),
+                'pemeriksa' => $laporan->juruSungai?->nama ?? '',
+                'tanggal' => $this->tanggalPanjang($laporan->tanggal_inspeksi),
+                'baris' => $baris,
+            ];
+        })->all();
+    }
+
     public function namaBerkas(LaporanOp $laporan): string
     {
         $bagian = array_filter([
@@ -92,7 +141,7 @@ class BlangkoOpExporter
             $laporan->tahun,
         ]);
 
-        return preg_replace('/[^\w\s.\-]/u', '', implode(' ', $bagian)) . '.xlsx';
+        return preg_replace('/[^\w\s.\-]/u', '', implode(' ', $bagian));
     }
 
     private function isiLembar(Worksheet $lembar, LaporanOp $laporan, ItemInspeksi $bangunan): void

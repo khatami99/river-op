@@ -30,9 +30,12 @@ Route::middleware('auth:staf')->group(function () {
     Route::get('/laporan/export', [LaporanWebController::class, 'export'])->name('laporan.export');
     Route::get('/laporan/{laporan}', [LaporanWebController::class, 'show'])->name('laporan.show');
     Route::get('/laporan/{laporan}/blangko', [LaporanWebController::class, 'blangko'])->name('laporan.blangko');
+    Route::get('/laporan/{laporan}/blangko-pdf', [LaporanWebController::class, 'blangkoPdf'])->name('laporan.blangko.pdf');
 
     Route::get('/peta', [PetaWebController::class, 'index'])->name('peta.index');
     Route::get('/sebaran', [SebaranWebController::class, 'index'])->name('sebaran.index');
+
+    Route::get('/sinkronisasi', [\App\Http\Controllers\Web\SinkronisasiWebController::class, 'index'])->name('sinkronisasi.index');
 
     Route::get('/rekap', [RekapWebController::class, 'index'])->name('rekap.index');
     Route::get('/rekap/export', [RekapWebController::class, 'export'])->name('rekap.export');

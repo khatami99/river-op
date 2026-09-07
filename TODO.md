@@ -65,6 +65,26 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Export PDF blangko OP** pada tombol "Blangko PDF" di detail laporan.
+      Satu halaman per bangunan, tata letak mengikuti blangko kertas. Isinya
+      dibaca dari sumber yang sama dengan keluaran Excel supaya keduanya tidak
+      mungkin berbeda. Daftar bagian bangunan diambil dari master data, bukan
+      dari temuan, sehingga bagian yang tidak dilaporkan tetap muncul sebagai
+      baris kosong seperti pada kertas.
+
+- [x] **Monitoring sinkronisasi** pada `/sinkronisasi`. Server tidak mungkin
+      mengetahui laporan yang gagal terkirim — menurut definisinya laporan itu
+      tidak pernah sampai. Aplikasi juru kini mengabarkan keadaan antreannya
+      sendiri pada setiap akhir percobaan sinkronisasi, termasuk saat gagal dan
+      saat antreannya kosong.
+
+      Juru yang belum pernah melapor tetap ditampilkan, karena justru itu
+      keadaan yang paling perlu diketahui: bisa berarti aplikasinya tidak
+      pernah dibuka.
+
+- [x] **Dependensi diperbarui.** 27 advisory keamanan pada tujuh paket hilang;
+      `composer audit` kini bersih.
+
 - [x] **Audit log** pada `/log`, khusus admin. Mencatat penambahan, perubahan,
       dan penghapusan juru sungai, DAS, wilayah sungai, dan pengguna staf,
       lengkap dengan nilai sebelum dan sesudah, pelaku, waktu, serta IP.
@@ -185,25 +205,16 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
       berupa Excel asli, tetapi export daftar laporan dan rekapitulasi masih
       CSV. PhpSpreadsheet sudah terpasang, jadi tinggal dipakai.
 
-- [ ] **Export PDF** sesuai format blangko OP resmi. Export Excel sudah ada dan
-      masih bisa diedit dinas sebelum dicetak; PDF berguna untuk arsip final
-      yang tidak boleh berubah.
-
-- [ ] **Perbarui dependensi yang rentan.** `composer audit` melaporkan 27
-      advisory pada 7 paket — guzzle, commonmark, symfony, dan laravel/framework.
-      Semuanya bawaan lama, bukan dari PhpSpreadsheet yang baru dipasang.
-
 ---
 
 ## Prioritas rendah
 
-- [ ] **Monitoring sinkronisasi.** Perlu diketahui: server hanya mengenal satu nilai
-      `sync_status`, yaitu `synced`. Laporan yang gagal terkirim tidak pernah sampai ke
-      server, sehingga server tidak punya cara mengetahuinya. Status GAGAL dan PENDING
-      hanya hidup di HP juru. Agar dinas bisa memantau, aplikasi Android harus
-      mengirim laporan status secara terpisah — jadi ini bukan sekadar pekerjaan di sisi web.
-
 - [ ] **Notifikasi** ke juru saat sinkronisasi berhasil atau gagal.
+
+- [ ] **Poligon batas DAS dan WS.** Satu-satunya pekerjaan yang benar-benar
+      terhenti, dan bukan karena kodenya: berkas geospasialnya belum ada.
+      Halaman peta sebaran sudah dibangun berlapis agar poligon tinggal
+      menggantikan lapisan titik DAS bila berkasnya sudah didapat.
 
 ---
 

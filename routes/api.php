@@ -18,4 +18,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/master/profil', [MasterController::class, 'profil']);
     Route::post('/laporan/sync', [LaporanController::class, 'sync']);
     Route::post('/laporan/upload-foto', [LaporanController::class, 'uploadFoto']);
+    Route::post('/sinkronisasi/status', [\App\Http\Controllers\StatusSinkronisasiController::class, 'lapor']);
 });
