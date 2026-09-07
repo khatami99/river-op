@@ -145,7 +145,7 @@
                     {{ $titikBangunan->count() }} dari {{ $laporan->itemInspeksi->count() }} bangunan bertitik
                 </span>
             </div>
-            <div id="peta-laporan" class="h-[clamp(16rem,38vh,24rem)] w-full border-t border-slate-100"
+            <div id="peta-laporan" class="relative h-[clamp(16rem,38vh,24rem)] w-full border-t border-slate-100"
                  data-titik="{{ $titikBangunan->toJson() }}"></div>
         </div>
     @endif

@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <div id="peta-pilih" class="h-64 w-full overflow-hidden rounded-xl ring-1 ring-slate-200"></div>
+            <div id="peta-pilih" class="relative h-64 w-full overflow-hidden rounded-xl ring-1 ring-slate-200"></div>
 
             <input type="hidden" id="koordinat_lat" name="koordinat_lat" value="{{ old('koordinat_lat', $das->koordinat_lat) }}">
             <input type="hidden" id="koordinat_lng" name="koordinat_lng" value="{{ old('koordinat_lng', $das->koordinat_lng) }}">

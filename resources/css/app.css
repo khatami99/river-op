@@ -153,8 +153,15 @@
 
 /* Peta yang ubinnya belum datang. Denyut lembut membedakan "sedang memuat"
    dari "peta rusak" — keduanya sama-sama kotak abu-abu tanpa penanda ini. */
+/* JANGAN menambahkan position di sini.
+
+   Leaflet memeriksa posisi kontainer saat inisialisasi: bila sudah relative,
+   ia tidak memasang apa-apa. Kelas ini dulu memberi position: relative, lalu
+   dilepas begitu ubin termuat — posisinya kembali static dan seluruh lapisan
+   peta lolos keluar dari kotaknya, menimpa sidebar dan header.
+
+   Kontainer peta kini diberi kelas `relative` permanen di markup-nya. */
 .peta-memuat {
-    position: relative;
     background: var(--color-slate-100);
 }
 
