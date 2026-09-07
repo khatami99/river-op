@@ -283,8 +283,10 @@ function siapkanPetaSebaran() {
             .bindPopup(baris.join('<br>'));
     });
 
+    // Teal, bukan biru tua. Penanda bangunan yang tidak bermasalah sudah biru,
+    // dan dua biru berdekatan membuat kedua lapisan sukar dibedakan sekilas.
     daftarDas.forEach((d) => {
-        L.marker([d.lat, d.lng], { icon: penanda('#0a2c48', '') })
+        L.marker([d.lat, d.lng], { icon: penanda('#168088', '') })
             .addTo(lapisanDas)
             .bindPopup(
                 `<strong>${lolos(d.nama)}</strong><br>` +

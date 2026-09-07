@@ -25,14 +25,31 @@
     /* Emas — satu-satunya warna yang hadir di logo provinsi dan logo aplikasi */
     --color-emas-50: #fdf8ec;
     --color-emas-100: #faedca;
-    --color-emas-200: #f4d992;
-    --color-emas-300: #edc25c;
-    --color-emas-400: #e8ac35;
-    --color-emas-500: #d4a017;
-    --color-emas-600: #b87d12;
+    --color-emas-200: #f2dda2;
+    --color-emas-300: #eecd72;
+    --color-emas-400: #ebbd51;
+    --color-emas-500: #d9a63b;
+    --color-emas-600: #b3831f;
     --color-emas-700: #935c13;
     --color-emas-800: #7a4a17;
     --color-emas-900: #683e18;
+
+    /* Teal gelombang — warna ketiga pada logo, selama ini tidak terpakai sama
+       sekali. Diberi tugas jelas: keterangan dan penjelasan. Sebelumnya kotak
+       informasi memakai biru yang sama dengan tombol tindakan utama, sehingga
+       "ini penjelasan" dan "ini yang harus diklik" terlihat serupa.
+       teal-700 sengaja digelapkan sampai kontrasnya 4,69 agar layak jadi teks. */
+    --color-teal-50: #f2f9fa;
+    --color-teal-100: #e2f5f6;
+    --color-teal-200: #c7edf0;
+    --color-teal-300: #99e1e6;
+    --color-teal-400: #62d3da;
+    --color-teal-500: #2bc9d4;
+    --color-teal-600: #1da6af;
+    --color-teal-700: #168088;
+    --color-teal-800: #156b71;
+    --color-teal-900: #16585c;
+    --color-teal-950: #0f3a3d;
 
     /* Hijau — dari perisai logo provinsi, dipakai untuk kondisi normal */
     --color-hijau-50: #eefbf3;

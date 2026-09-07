@@ -5,11 +5,11 @@
 
 @section('konten')
 
-    <div class="mb-3.5 flex flex-wrap items-start gap-3 rounded-2xl bg-sungai-50 p-4 ring-1 ring-sungai-500/15">
-        <svg class="mt-0.5 h-4 w-4 shrink-0 text-sungai-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <div class="mb-3.5 flex flex-wrap items-start gap-3 rounded-2xl bg-teal-50 p-4 ring-1 ring-teal-600/15">
+        <svg class="mt-0.5 h-4 w-4 shrink-0 text-teal-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <p class="text-[13px] leading-relaxed text-sungai-900">
+        <p class="text-[13px] leading-relaxed text-teal-900">
             Angka di halaman ini dilaporkan oleh aplikasi di HP juru, bukan dihitung server.
             Laporan yang gagal terkirim memang tidak pernah sampai ke sini, sehingga satu-satunya
             cara mengetahuinya adalah aplikasi yang mengabarkannya sendiri.
