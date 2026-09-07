@@ -148,7 +148,7 @@
 
             <main class="flex-1 bg-slate-50/60 px-5 py-5 scrollbar-halus sm:px-7 lg:overflow-y-auto">
                 @if (session('sukses'))
-                    <div class="mb-4 rounded-xl border border-hijau-500/20 bg-hijau-50 px-4 py-3 text-sm font-medium text-hijau-700">
+                    <div data-pesan-sesaat="sukses" class="mb-4 rounded-xl border border-hijau-500/20 bg-hijau-50 px-4 py-3 text-sm font-medium text-hijau-700">
                         {{ session('sukses') }}
                     </div>
                 @endif

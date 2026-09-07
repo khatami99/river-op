@@ -137,11 +137,7 @@ class LaporanWebController extends Controller
         $wb = $blangko->untukLaporan($laporan);
         $nama = $blangko->namaBerkas($laporan) . '.xlsx';
 
-        return response()->streamDownload(function () use ($wb) {
-            IOFactory::createWriter($wb, 'Xlsx')->save('php://output');
-        }, $nama, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ]);
+        return $this->unduhExcel($wb, substr($nama, 0, -5));
     }
 
     /**
@@ -156,7 +152,8 @@ class LaporanWebController extends Controller
             'lembar' => $blangko->lembarUntukPdf($laporan),
         ])->setPaper('a4', 'landscape');
 
-        return $pdf->download($blangko->namaBerkas($laporan) . '.pdf');
+        return $pdf->download($blangko->namaBerkas($laporan) . '.pdf')
+            ->withCookie(cookie('unduhan_siap', '1', 1, '/', null, false, false));
     }
 
     public function export(Request $request)
@@ -201,14 +198,25 @@ class LaporanWebController extends Controller
         return $this->unduhExcel($tabel->selesai(), 'Laporan_OP_'.now()->format('Y-m-d_His'));
     }
 
-    /** Dipakai bersama oleh seluruh export Excel di controller ini. */
+    /**
+     * Dipakai bersama oleh seluruh export Excel di controller ini.
+     *
+     * Berkasnya dibangun ke memori lebih dulu, bukan dialirkan langsung.
+     * Dengan aliran, kepala tanggapan terkirim sebelum berkasnya selesai
+     * dibuat, sehingga kuki penanda selesai sampai ke peramban terlalu awal
+     * dan penanda di tombol berhenti sebelum waktunya.
+     */
     private function unduhExcel(\PhpOffice\PhpSpreadsheet\Spreadsheet $wb, string $nama)
     {
-        return response()->streamDownload(function () use ($wb) {
-            IOFactory::createWriter($wb, 'Xlsx')->save('php://output');
-        }, $nama.'.xlsx', [
+        ob_start();
+        IOFactory::createWriter($wb, 'Xlsx')->save('php://output');
+        $isi = ob_get_clean();
+
+        return response($isi, 200, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ]);
+            'Content-Disposition' => 'attachment; filename="'.$nama.'.xlsx"',
+            'Content-Length' => strlen($isi),
+        ])->cookie('unduhan_siap', '1', 1, '/', null, false, false);
     }
 
     private function queryTerfilter(Request $request)

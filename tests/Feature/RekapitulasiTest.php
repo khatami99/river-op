@@ -59,7 +59,7 @@ class RekapitulasiTest extends TestCase
         $isi = $this->actingAs($staf, 'staf')
             ->get('/rekap/export?bulan=8&tahun=2026')
             ->assertOk()
-            ->streamedContent();
+            ->getContent();
 
         $berkas = tempnam(sys_get_temp_dir(), 'rekap') . '.xlsx';
         file_put_contents($berkas, $isi);
@@ -114,7 +114,7 @@ class RekapitulasiTest extends TestCase
 
         $isi = $this->actingAs($staf, 'staf')
             ->get('/rekap/export?bulan=8&tahun=2026')
-            ->streamedContent();
+            ->getContent();
 
         $berkas = tempnam(sys_get_temp_dir(), 'rekap') . '.xlsx';
         file_put_contents($berkas, $isi);

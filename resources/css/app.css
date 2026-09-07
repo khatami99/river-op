@@ -84,3 +84,136 @@
         background: transparent;
     }
 }
+
+/* =====================================================================
+   Umpan balik gerak
+   ---------------------------------------------------------------------
+   Semua yang ada di bagian ini menjawab pertanyaan pengguna: "kliknya
+   masuk tidak?", "masih memuat atau macet?". Tidak ada yang murni hiasan,
+   sebab pegawai dinas membuka halaman yang sama puluhan kali sehari dan
+   gerak yang menyenangkan di kali pertama menjadi penghalang di kali
+   kelima puluh.
+
+   Durasinya sengaja pendek — 150 sampai 250 milidetik. Di atas itu gerak
+   mulai terasa sebagai penundaan, bukan sebagai tanggapan.
+   ===================================================================== */
+
+/* Bilah kemajuan saat berpindah halaman */
+#bilah-kemajuan {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 2.5px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+#bilah-kemajuan.tampil {
+    opacity: 1;
+}
+
+#bilah-kemajuan > span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--color-sungai-500), var(--color-emas-400));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-emas-400) 55%, transparent);
+    transition: width 180ms ease-out;
+}
+
+/* Tombol yang sedang menyiapkan berkas unduhan */
+.sedang-menyiapkan {
+    position: relative;
+    pointer-events: none;
+    color: transparent !important;
+}
+
+.sedang-menyiapkan > * {
+    opacity: 0;
+}
+
+.sedang-menyiapkan::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 15px;
+    height: 15px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 9999px;
+    color: #fff;
+    animation: berputar 620ms linear infinite;
+}
+
+@keyframes berputar {
+    to { transform: rotate(360deg); }
+}
+
+/* Peta yang ubinnya belum datang. Denyut lembut membedakan "sedang memuat"
+   dari "peta rusak" — keduanya sama-sama kotak abu-abu tanpa penanda ini. */
+.peta-memuat {
+    position: relative;
+    background: var(--color-slate-100);
+}
+
+.peta-memuat::after {
+    content: 'Memuat peta…';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-slate-400);
+    animation: berdenyut 1.4s ease-in-out infinite;
+}
+
+@keyframes berdenyut {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+}
+
+/* Pesan sesaat setelah menyimpan atau menghapus */
+[data-pesan-sesaat] {
+    animation: turun-masuk 240ms ease-out;
+    transition: opacity 300ms ease, transform 300ms ease;
+}
+
+@keyframes turun-masuk {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Tombol menekan sedikit saat diklik.
+
+   Sengaja hanya <button>, bukan semua tautan. Tautan berpindah halaman dan
+   sudah punya umpan baliknya sendiri lewat bilah kemajuan, sedangkan baris
+   tabel yang seluruhnya berupa tautan akan terlihat ganjil bila ikut mengecil.
+   Tombol justru sering tidak memindahkan halaman, jadi di situlah umpan balik
+   tekan benar-benar dibutuhkan. */
+@layer utilities {
+    button {
+        transition: transform 90ms ease;
+    }
+
+    button:not(:disabled):active {
+        transform: scale(0.985);
+    }
+}
+
+/* Menghormati pengguna yang mematikan animasi di setelan sistemnya. Sebagian
+   orang merasa pusing oleh gerak, dan sebagian memakai perangkat lambat. */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .peta-memuat::after { animation: none; opacity: 0.7; }
+    button:not(:disabled):active { transform: none; }
+}

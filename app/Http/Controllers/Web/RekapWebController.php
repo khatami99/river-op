@@ -82,11 +82,17 @@ class RekapWebController extends Controller
 
         $nama = 'Rekap_OP_'.Bulan::nama($bulan).'_'.$tahun;
 
-        return response()->streamDownload(function () use ($tabel) {
-            IOFactory::createWriter($tabel->selesai(), 'Xlsx')->save('php://output');
-        }, $nama.'.xlsx', [
+        // Dibangun ke memori dulu agar kuki penanda selesai baru terkirim
+        // setelah berkasnya benar-benar jadi.
+        ob_start();
+        IOFactory::createWriter($tabel->selesai(), 'Xlsx')->save('php://output');
+        $isi = ob_get_clean();
+
+        return response($isi, 200, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ]);
+            'Content-Disposition' => 'attachment; filename="'.$nama.'.xlsx"',
+            'Content-Length' => strlen($isi),
+        ])->cookie('unduhan_siap', '1', 1, '/', null, false, false);
     }
 
     /**

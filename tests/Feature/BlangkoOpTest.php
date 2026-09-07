@@ -45,7 +45,7 @@ class BlangkoOpTest extends TestCase
         $isi = $this->actingAs($staf, 'staf')
             ->get("/laporan/{$laporan->id}/blangko")
             ->assertOk()
-            ->streamedContent();
+            ->getContent();
 
         $wb = $this->muat($isi);
 
@@ -61,7 +61,7 @@ class BlangkoOpTest extends TestCase
         $laporan = $this->buatLaporan($juru);
         $staf = $this->buatStaf('viewer');
 
-        $isi = $this->actingAs($staf, 'staf')->get("/laporan/{$laporan->id}/blangko")->streamedContent();
+        $isi = $this->actingAs($staf, 'staf')->get("/laporan/{$laporan->id}/blangko")->getContent();
         $lembar = $this->muat($isi)->getActiveSheet();
 
         $lokasi = (string) $lembar->getCell('C5')->getValue();
@@ -99,7 +99,7 @@ class BlangkoOpTest extends TestCase
         ]);
 
         $staf = $this->buatStaf('viewer');
-        $isi = $this->actingAs($staf, 'staf')->get("/laporan/{$laporan->id}/blangko")->streamedContent();
+        $isi = $this->actingAs($staf, 'staf')->get("/laporan/{$laporan->id}/blangko")->getContent();
         $wb = $this->muat($isi);
 
         $this->assertCount(2, $wb->getSheetNames());
@@ -116,7 +116,7 @@ class BlangkoOpTest extends TestCase
         $laporan = $this->buatLaporan($juru);
         $staf = $this->buatStaf('viewer');
 
-        $isi = $this->actingAs($staf, 'staf')->get("/laporan/{$laporan->id}/blangko")->streamedContent();
+        $isi = $this->actingAs($staf, 'staf')->get("/laporan/{$laporan->id}/blangko")->getContent();
         $lembar = $this->muat($isi)->getActiveSheet();
 
         // Temuan dibuat pada bagian bangunan urutan pertama, yang di blangko
