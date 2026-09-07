@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\LaporanWebController;
 use App\Http\Controllers\Web\LoginController;
 use App\Http\Controllers\Web\PetaWebController;
 use App\Http\Controllers\Web\RekapWebController;
+use App\Http\Controllers\Web\SebaranWebController;
 use App\Http\Controllers\Web\StafDinasWebController;
 use App\Http\Controllers\Web\WilayahSungaiWebController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,7 @@ Route::middleware('auth:staf')->group(function () {
     Route::get('/laporan/{laporan}/blangko', [LaporanWebController::class, 'blangko'])->name('laporan.blangko');
 
     Route::get('/peta', [PetaWebController::class, 'index'])->name('peta.index');
+    Route::get('/sebaran', [SebaranWebController::class, 'index'])->name('sebaran.index');
 
     Route::get('/rekap', [RekapWebController::class, 'index'])->name('rekap.index');
     Route::get('/rekap/export', [RekapWebController::class, 'export'])->name('rekap.export');

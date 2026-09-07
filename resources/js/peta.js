@@ -18,6 +18,15 @@ function penanda(warna, isi) {
     });
 }
 
+// Isi popup berasal dari isian juru di lapangan, jadi diperlakukan sebagai
+// teks biasa — bukan HTML — supaya tanda kurung sudut tidak merusak tampilan
+// atau menyisipkan markup.
+function lolos(teks) {
+    const kotak = document.createElement('span');
+    kotak.textContent = teks ?? '';
+    return kotak.innerHTML;
+}
+
 function petaDasar(elemen, pusat, zoom) {
     const peta = L.map(elemen, { scrollWheelZoom: false }).setView(pusat, zoom);
 
@@ -60,6 +69,12 @@ function petaDasar(elemen, pusat, zoom) {
     }
     requestAnimationFrame(segarkan);
 
+    // Pemanggil mengganti aturPandangan setelah penanda selesai dipasang,
+    // sehingga ia perlu cara memicu penyegaran sekali lagi. Tanpa ini,
+    // penyegaran pertama sempat memakai pandangan bawaan dan pandangan hasil
+    // hitungan penanda tidak pernah terpakai.
+    peta.segarkan = segarkan;
+
     return peta;
 }
 
@@ -83,6 +98,7 @@ function siapkanPetaDas() {
             berkoordinat.map((d) => [d.lat, d.lng]),
             { padding: [60, 60], maxZoom: 11 }
         );
+        requestAnimationFrame(peta.segarkan);
     }
 
     const panel = document.getElementById('panel-das');
@@ -220,8 +236,80 @@ function siapkanPetaLaporan() {
             peta.setView([titik[0].lat, titik[0].lng], 15);
         }
     };
+    requestAnimationFrame(peta.segarkan);
+}
+
+/* ---------- Peta sebaran seluruh bangunan ---------- */
+function siapkanPetaSebaran() {
+    const wadah = document.getElementById('peta-sebaran');
+    if (!wadah) return;
+
+    const titik = JSON.parse(wadah.dataset.titik || '[]');
+    const daftarDas = JSON.parse(wadah.dataset.das || '[]');
+    if (!titik.length) return;
+
+    const peta = petaDasar(wadah, [titik[0].lat, titik[0].lng], 9);
+
+    // Bangunan dan DAS dipisah ke lapisan sendiri-sendiri. Kelak, bila batas
+    // wilayah DAS sudah didapat, lapisan DAS tinggal diganti isinya menjadi
+    // poligon tanpa mengubah apa pun di sekitarnya.
+    const lapisanBangunan = L.layerGroup().addTo(peta);
+    const lapisanDas = L.layerGroup().addTo(peta);
+
+    titik.forEach((t) => {
+        const bermasalah = t.bermasalah > 0;
+        const warna = bermasalah ? '#c8102e' : '#127cc4';
+
+        const baris = [
+            `<strong>${lolos(t.jenis)}</strong>`,
+            t.nama ? lolos(t.nama) : null,
+            t.sungai ? `Sungai ${lolos(t.sungai)}` : null,
+            t.das ? `<span style="color:#64748b">${lolos(t.das)}</span>` : null,
+            t.juru ? `<span style="color:#64748b">${lolos(t.juru)} &middot; ${t.tanggal || ''}</span>` : null,
+            bermasalah
+                ? `<span style="color:#c8102e;font-weight:700">${t.bermasalah} temuan bermasalah</span>`
+                : '<span style="color:#15803d">Tidak ada temuan bermasalah</span>',
+            t.url ? `<a href="${t.url}" style="color:#127cc4;font-weight:700">Buka laporan</a>` : null,
+        ].filter(Boolean);
+
+        L.circleMarker([t.lat, t.lng], {
+            radius: 7,
+            color: '#fff',
+            weight: 2,
+            fillColor: warna,
+            fillOpacity: 0.9,
+        })
+            .addTo(lapisanBangunan)
+            .bindPopup(baris.join('<br>'));
+    });
+
+    daftarDas.forEach((d) => {
+        L.marker([d.lat, d.lng], { icon: penanda('#0a2c48', '') })
+            .addTo(lapisanDas)
+            .bindPopup(
+                `<strong>${lolos(d.nama)}</strong><br>` +
+                `<span style="color:#64748b">${lolos(d.kode)} &middot; titik perkiraan</span><br>` +
+                `<a href="${d.url}" style="color:#127cc4;font-weight:700">Detail DAS</a>`
+            );
+    });
+
+    const saklar = document.getElementById('lapisan-das');
+    saklar?.addEventListener('change', () => {
+        if (saklar.checked) lapisanDas.addTo(peta);
+        else peta.removeLayer(lapisanDas);
+    });
+
+    peta.aturPandangan = () => {
+        if (titik.length > 1) {
+            peta.fitBounds(titik.map((t) => [t.lat, t.lng]), { padding: [40, 40], maxZoom: 13 });
+        } else {
+            peta.setView([titik[0].lat, titik[0].lng], 13);
+        }
+    };
+    requestAnimationFrame(peta.segarkan);
 }
 
 siapkanPetaDas();
 siapkanPemilihKoordinat();
 siapkanPetaLaporan();
+siapkanPetaSebaran();

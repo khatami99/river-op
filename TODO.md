@@ -65,6 +65,26 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Peta sebaran laporan** pada `/sebaran`. Seluruh bangunan dari seluruh
+      laporan dalam satu peta, disaring per DAS, jenis bangunan, bulan, tahun,
+      dan "hanya yang bermasalah". Satu penanda mewakili satu BANGUNAN, bukan
+      satu laporan, karena koordinat direkam per bangunan dan masalahnya pun
+      melekat di sana; satu laporan bisa memuat bangunan yang berjauhan.
+
+      Titik DAS berada di lapisan terpisah yang bisa dimatikan, supaya kelak
+      poligon batas DAS tinggal menggantikan isinya tanpa mengubah kerangka
+      halaman. Lapisan juru dan lapisan sungai sengaja tidak dibuat: juru tidak
+      punya koordinat (ia ditugaskan ke wilayah), dan sungai belum pernah
+      menjadi entitas di sistem ini — keduanya hanya bisa diisi tebakan.
+
+      Jumlah bangunan tanpa titik ikut ditampilkan, agar peta yang terlihat
+      sepi tidak disalahartikan sebagai tidak ada pekerjaan.
+
+- [x] **Bug pandangan peta, lanjutan.** Pemanggil mengganti aturan pandangan
+      setelah penanda selesai dipasang, sedangkan penyegaran pertama sudah
+      terlanjur memakai pandangan bawaan — akibatnya sebagian penanda berada
+      di luar layar. Penyegaran kini dapat dipicu ulang oleh pemanggil.
+
 - [x] **Nama sungai dan patok kilometer pada bangunan.** Blangko menulis lokasi
       sebagai "Sungai <nama> pada ruas antara patok Km A s/d Km B", dan menurut
       dinas bagian ini normalnya memang diisi. Nama sungainya sebelumnya tidak
@@ -133,13 +153,6 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 ---
 
 ## Prioritas sedang
-
-- [ ] **Peta sebaran laporan.** Prasyaratnya sudah lengkap: koordinat
-      tertangkap aplikasi Android, dan data contoh sudah menyebar di 6 DAS
-      sehingga hasilnya langsung bisa dinilai. Tinggal menampilkan seluruh
-      titik bangunan dalam satu peta yang dapat disaring per periode, per DAS,
-      per jenis bangunan, dan hanya yang bermasalah. Satu titik mewakili satu
-      bangunan, bukan satu laporan, karena GPS-nya memang direkam per bangunan.
 
 - [ ] **Batas wilayah DAS dan WS pada peta.** Keduanya wilayah, bukan titik.
       Perlu shapefile atau GeoJSON resmi — dapat diminta ke BWS Kalimantan III

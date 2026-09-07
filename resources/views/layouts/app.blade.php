@@ -19,6 +19,7 @@
         ['rute' => 'laporan.index', 'aktif' => 'laporan.*', 'label' => 'Laporan OP',     'ikon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l5.4 5.4a1 1 0 01.3.7V19a2 2 0 01-2 2z'],
         ['rute' => 'rekap.index',   'aktif' => 'rekap.*',   'label' => 'Rekapitulasi',   'ikon' => 'M9 19v-6m4 6V7m4 12v-9M5 21h14a1 1 0 001-1V4a1 1 0 00-1-1H5a1 1 0 00-1 1v16a1 1 0 001 1z'],
         ['rute' => 'peta.index',    'aktif' => 'peta.*',    'label' => 'Peta DAS',       'ikon' => 'M17.7 16.7 12 22l-5.7-5.3a8 8 0 1111.4 0zM12 11h.01'],
+        ['rute' => 'sebaran.index', 'aktif' => 'sebaran.*', 'label' => 'Peta Sebaran',   'ikon' => 'M9 20l-5.4 2.7A1 1 0 012 21.8V6.6a1 1 0 01.6-.9L9 3m0 17 6-3m-6 3V3m6 14 5.4 2.7a1 1 0 001.6-.9V3.6a1 1 0 00-.6-.9L15 0m0 17V0m0 0L9 3'],
         ['rute' => 'juru.index',    'aktif' => 'juru.*',    'label' => 'Juru Sungai',    'ikon' => 'M17 20h5v-2a3 3 0 00-5.4-1.9M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.9M7 20H2v-2a3 3 0 015.4-1.9M7 20v-2c0-.7.1-1.3.4-1.9m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
         ['rute' => 'das.index',     'aktif' => 'das.*',     'label' => 'DAS',            'ikon' => 'M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0'],
         ['rute' => 'wilayah.index', 'aktif' => 'wilayah.*', 'label' => 'Wilayah Sungai', 'ikon' => 'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
