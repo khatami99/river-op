@@ -39,19 +39,29 @@ class LaporanWebController extends Controller
             'tampilan' => $tampilan,
         ];
 
-        if ($tampilan === 'peta') {
-            return view('laporan.index', $bersama + $this->dataPeta($request) + ['laporan' => null]);
-        }
-
-        return view('laporan.index', $bersama + [
-            'laporan' => $this->queryTerfilter($request)
+        $data = $bersama + ($tampilan === 'peta'
+            ? $this->dataPeta($request) + ['laporan' => null]
+            : ['laporan' => $this->queryTerfilter($request)
                 ->with(['juruSungai', 'das'])
                 ->withCount('itemInspeksi')
                 ->orderByDesc('tanggal_inspeksi')
                 ->orderByDesc('id')
                 ->paginate(20)
-                ->withQueryString(),
-        ]);
+                ->withQueryString()]);
+
+        // Permintaan potongan datang dari penyaring yang berubah di layar.
+        // Hanya area hasilnya yang dikirim ulang, sehingga kursor pengguna
+        // tidak lepas dari kotak pencarian dan halaman tidak berkedip.
+        if ($request->boolean('fragmen')) {
+            return response()->json([
+                'hasil' => view('laporan._hasil', $data)->render(),
+                'jumlah' => $tampilan === 'peta'
+                    ? $data['dataTitik']->count() . ' bangunan bertitik, ' . $data['jumlahBermasalah'] . ' di antaranya bermasalah'
+                    : $data['laporan']->total() . ' laporan ditemukan',
+            ]);
+        }
+
+        return view('laporan.index', $data);
     }
 
     /**
@@ -219,13 +229,20 @@ class LaporanWebController extends Controller
         ])->cookie('unduhan_siap', '1', 1, '/', null, false, false);
     }
 
+    /**
+     * Periode diperbandingkan sebagai satu angka tahun-bulan, misalnya Agustus
+     * 2026 menjadi 202608. Tanpa itu, rentang yang melewati pergantian tahun
+     * seperti November 2026 sampai Februari 2027 akan salah, sebab bulan 11
+     * lebih besar daripada bulan 2.
+     */
     private function queryTerfilter(Request $request)
     {
-        return LaporanOp::query()
-            ->when($request->filled('bulan'), fn ($q) => $q->where('bulan', $request->integer('bulan')))
-            ->when($request->filled('tahun'), fn ($q) => $q->where('tahun', $request->integer('tahun')))
+        $juru = array_filter((array) $request->input('juru_sungai_id', []));
+
+        return $this->saringPeriode(LaporanOp::query(), $request)
+
             ->when($request->filled('das_id'), fn ($q) => $q->where('das_id', $request->integer('das_id')))
-            ->when($request->filled('juru_sungai_id'), fn ($q) => $q->where('juru_sungai_id', $request->integer('juru_sungai_id')))
+            ->when($juru !== [], fn ($q) => $q->whereIn('juru_sungai_id', $juru))
             ->when($request->filled('jenis_bangunan_id'), fn ($q) => $q->whereHas('itemInspeksi',
                 fn ($i) => $i->where('jenis_bangunan_id', $request->integer('jenis_bangunan_id'))))
             ->when($request->boolean('bermasalah'), fn ($q) => $q->whereHas('itemInspeksi.temuanKondisi',
@@ -239,13 +256,73 @@ class LaporanWebController extends Controller
             });
     }
 
+    /**
+     * Menyaring periode. Ada empat kemungkinan isian, dan semuanya harus jalan
+     * karena pengguna bebas mengisi sebagian saja:
+     *
+     * - bulan dan tahun          -> bulan itu saja
+     * - bulan, tahun, dan sampai -> rentang, boleh melewati pergantian tahun
+     * - tahun saja               -> sepanjang tahun itu
+     * - bulan saja               -> bulan itu pada tahun mana pun
+     *
+     * Rentang diperbandingkan sebagai satu angka tahun-bulan, misalnya Agustus
+     * 2026 menjadi 202608. Tanpa itu, rentang November 2026 sampai Februari
+     * 2027 akan salah, sebab bulan 11 lebih besar daripada bulan 2.
+     */
+    private function saringPeriode($query, Request $request)
+    {
+        $adaBulan = $request->filled('bulan');
+        $adaTahun = $request->filled('tahun');
+
+        if ($adaBulan && $adaTahun) {
+            $awal = $this->kodePeriode($request->input('tahun'), $request->input('bulan'));
+
+            // Tanpa batas akhir, yang dicari bulan itu saja — bukan bulan itu
+            // dan seterusnya.
+            $akhir = $request->filled('bulan_sampai')
+                ? $this->kodePeriode(
+                    $request->input('tahun_sampai') ?: $request->input('tahun'),
+                    $request->input('bulan_sampai')
+                )
+                : $awal;
+
+            return $query
+                ->whereRaw('(tahun * 100 + bulan) >= ?', [$awal])
+                ->whereRaw('(tahun * 100 + bulan) <= ?', [$akhir]);
+        }
+
+        if ($adaTahun) {
+            return $query->where('tahun', $request->integer('tahun'));
+        }
+
+        if ($adaBulan) {
+            return $request->filled('bulan_sampai')
+                ? $query->whereBetween('bulan', [$request->integer('bulan'), $request->integer('bulan_sampai')])
+                : $query->where('bulan', $request->integer('bulan'));
+        }
+
+        return $query;
+    }
+
+    /** Mengubah tahun dan bulan menjadi angka yang bisa diurutkan, atau null. */
+    private function kodePeriode(mixed $tahun, mixed $bulan): ?int
+    {
+        if (! $tahun || ! $bulan) {
+            return null;
+        }
+
+        return ((int) $tahun) * 100 + ((int) $bulan);
+    }
+
     private function filterAktif(Request $request): array
     {
         return [
             'bulan' => $request->input('bulan'),
             'tahun' => $request->input('tahun'),
+            'bulan_sampai' => $request->input('bulan_sampai'),
+            'tahun_sampai' => $request->input('tahun_sampai'),
             'das_id' => $request->input('das_id'),
-            'juru_sungai_id' => $request->input('juru_sungai_id'),
+            'juru_sungai_id' => array_filter((array) $request->input('juru_sungai_id', [])),
             'cari' => $request->input('cari'),
             'jenis_bangunan_id' => $request->input('jenis_bangunan_id'),
             'bermasalah' => $request->boolean('bermasalah'),

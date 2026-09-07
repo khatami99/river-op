@@ -224,3 +224,12 @@
     .peta-memuat::after { animation: none; opacity: 0.7; }
     button:not(:disabled):active { transform: none; }
 }
+
+/* Area hasil saat penyaring sedang diproses. Sengaja hanya diredupkan, bukan
+   dikosongkan: hasil lama tetap terbaca sementara yang baru datang, sehingga
+   layar tidak berkedip pada tiap ketikan. */
+.sedang-menyaring {
+    opacity: 0.55;
+    transition: opacity 120ms ease;
+    pointer-events: none;
+}

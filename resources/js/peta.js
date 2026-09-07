@@ -84,7 +84,7 @@ const PUSAT_KALSEL = [-3.0926, 115.2838];
 /* ---------- Halaman peta sebaran DAS ---------- */
 function siapkanPetaDas() {
     const wadah = document.getElementById('peta-das');
-    if (!wadah) return;
+    if (!wadah || wadah._leaflet_id) return;
 
     const daftar = JSON.parse(wadah.dataset.das || '[]');
     const berkoordinat = daftar.filter((d) => d.lat !== null && d.lng !== null);
@@ -168,7 +168,7 @@ function tampilkanPanel(d, panel, kosong) {
 /* ---------- Pemilih koordinat pada formulir DAS ---------- */
 function siapkanPemilihKoordinat() {
     const wadah = document.getElementById('peta-pilih');
-    if (!wadah) return;
+    if (!wadah || wadah._leaflet_id) return;
 
     const isiLat = document.getElementById('koordinat_lat');
     const isiLng = document.getElementById('koordinat_lng');
@@ -209,7 +209,7 @@ function siapkanPemilihKoordinat() {
 /* ---------- Peta lokasi bangunan pada satu laporan ---------- */
 function siapkanPetaLaporan() {
     const wadah = document.getElementById('peta-laporan');
-    if (!wadah) return;
+    if (!wadah || wadah._leaflet_id) return;
 
     const titik = JSON.parse(wadah.dataset.titik || '[]');
     if (!titik.length) return;
@@ -242,7 +242,7 @@ function siapkanPetaLaporan() {
 /* ---------- Peta sebaran seluruh bangunan ---------- */
 function siapkanPetaSebaran() {
     const wadah = document.getElementById('peta-sebaran');
-    if (!wadah) return;
+    if (!wadah || wadah._leaflet_id) return;
 
     const titik = JSON.parse(wadah.dataset.titik || '[]');
     const daftarDas = JSON.parse(wadah.dataset.das || '[]');
@@ -311,7 +311,20 @@ function siapkanPetaSebaran() {
     requestAnimationFrame(peta.segarkan);
 }
 
-siapkanPetaDas();
-siapkanPemilihKoordinat();
-siapkanPetaLaporan();
-siapkanPetaSebaran();
+/**
+ * Dijadikan fungsi agar dapat dipanggil ulang. Halaman Laporan OP mengganti
+ * area hasilnya tanpa memuat ulang halaman, sehingga elemen petanya benar-benar
+ * baru dan harus dibangun lagi dari nol.
+ *
+ * Elemen yang sudah dipasangi peta dilewati, sebab Leaflet menolak memasang
+ * dua peta pada satu elemen yang sama.
+ */
+function siapkanSemuaPeta() {
+    siapkanPetaDas();
+    siapkanPemilihKoordinat();
+    siapkanPetaLaporan();
+    siapkanPetaSebaran();
+}
+
+window.siapkanSemuaPeta = siapkanSemuaPeta;
+siapkanSemuaPeta();
