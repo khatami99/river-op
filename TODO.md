@@ -65,6 +65,20 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Tes otomatis** — 29 tes, 101 asersi, berjalan di SQLite dalam memori.
+      Yang dijaga: penegakan peran (viewer ditolak menulis meski permintaannya
+      ditembak langsung), jalur sinkronisasi dari aplikasi juru termasuk
+      pengiriman ganda, penilaian bermasalah, angka rekapitulasi beserta
+      export-nya, isi blangko OP, jejak audit, dan penyaring peta sebaran.
+
+      Tesnya sendiri diuji: middleware peran sengaja dilumpuhkan sebentar dan
+      tiga tes langsung gagal, lalu lolos lagi setelah dikembalikan. Tes yang
+      tidak pernah gagal tidak membuktikan apa pun.
+
+      Master data jenis bangunan diambil dari seeder sungguhan, bukan dibuat
+      ulang di berkas tes, supaya tes ikut menjaga seeder itu tetap sejalan
+      dengan blangko OP resmi.
+
 - [x] **Export daftar laporan dan rekap kini `.xlsx` asli**, bukan CSV lagi.
       CSV memang terbuka di Excel, tetapi angkanya terbaca sebagai teks
       sehingga pegawai tidak bisa menjumlahkan sendiri kolomnya. Kini angka

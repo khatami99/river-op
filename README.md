@@ -58,6 +58,14 @@ php artisan migrate --seed
 php artisan storage:link
 ```
 
+Menjalankan tes:
+
+```bash
+php artisan test
+```
+
+Tes memakai SQLite dalam memori, jadi tidak menyentuh database pengembangan.
+
 Build asset frontend:
 
 ```bash
