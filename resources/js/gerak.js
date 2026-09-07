@@ -147,7 +147,7 @@ function siapkanPesanSesaat() {
 function siapkanPenandaPeta() {
     // Ubin peta datang dari internet dan bisa memakan beberapa detik. Tanpa
     // penanda, kotak abu-abu terbaca sebagai peta yang rusak.
-    document.querySelectorAll('#peta-das, #peta-sebaran, #peta-laporan, #peta-pilih, .peta-wilayah').forEach((wadah) => {
+    document.querySelectorAll('#peta-das, #peta-sebaran, #peta-laporan, #peta-pilih, #peta-ws').forEach((wadah) => {
         wadah.classList.add('peta-memuat');
 
         const pengamat = new MutationObserver(() => {

@@ -165,40 +165,72 @@ function tampilkanPanel(d, panel, kosong) {
         </div>`;
 }
 
-/* ---------- Peta kecil per wilayah sungai ---------- */
-function siapkanPetaWilayah() {
-    // Berbeda dari peta lain yang hanya satu per halaman, di sini bisa ada
-    // beberapa sekaligus — satu untuk tiap wilayah sungai. Karena itu
-    // dicari lewat kelas, bukan id.
-    document.querySelectorAll('.peta-wilayah').forEach((wadah) => {
-        if (wadah._leaflet_id) return;
+/* ---------- Peta wilayah sungai ---------- */
+function siapkanPetaWs() {
+    const wadah = document.getElementById('peta-ws');
+    if (!wadah || wadah._leaflet_id) return;
 
-        const titik = JSON.parse(wadah.dataset.titik || '[]');
-        if (!titik.length) return;
+    const daftar = JSON.parse(wadah.dataset.ws || '[]');
+    if (!daftar.length) return;
 
-        const peta = petaDasar(wadah, [titik[0].lat, titik[0].lng], 8);
+    const peta = petaDasar(wadah, [daftar[0].lat, daftar[0].lng], 8);
+    const panel = document.getElementById('panel-ws');
+    const kosong = document.getElementById('panel-ws-kosong');
 
-        titik.forEach((d) => {
-            const warna = d.juru > 0 ? '#127cc4' : '#94a3b8';
-
-            L.marker([d.lat, d.lng], { icon: penanda(warna, d.juru) })
-                .addTo(peta)
-                .bindPopup(
-                    `<strong>${lolos(d.nama)}</strong><br>` +
-                    `<span style="color:#64748b">${lolos(d.kode)} &middot; ${d.juru} juru &middot; ${d.laporan} laporan</span><br>` +
-                    `<a href="${d.url}" style="color:#127cc4;font-weight:700">Detail DAS</a>`
-                );
-        });
-
-        peta.aturPandangan = () => {
-            if (titik.length > 1) {
-                peta.fitBounds(titik.map((d) => [d.lat, d.lng]), { padding: [30, 30], maxZoom: 10 });
-            } else {
-                peta.setView([titik[0].lat, titik[0].lng], 10);
-            }
-        };
-        requestAnimationFrame(peta.segarkan);
+    daftar.forEach((w) => {
+        // Angka pada penanda adalah jumlah DAS yang dinaungi wilayah ini.
+        L.marker([w.lat, w.lng], { icon: penanda(w.aktif ? '#b3831f' : '#94a3b8', w.das) })
+            .addTo(peta)
+            .on('click', () => tampilkanPanelWs(w, panel, kosong));
     });
+
+    peta.aturPandangan = () => {
+        if (daftar.length > 1) {
+            peta.fitBounds(daftar.map((w) => [w.lat, w.lng]), { padding: [60, 60], maxZoom: 9 });
+        } else {
+            peta.setView([daftar[0].lat, daftar[0].lng], 8);
+        }
+    };
+    requestAnimationFrame(peta.segarkan);
+}
+
+function tampilkanPanelWs(w, panel, kosong) {
+    if (!panel) return;
+
+    kosong?.classList.add('hidden');
+    panel.classList.remove('hidden');
+
+    panel.innerHTML = `
+        <div class="border-b border-slate-100 px-5 py-4">
+            <p class="text-[11px] font-bold uppercase tracking-widest text-emas-600">${lolos(w.kode)}</p>
+            <h2 class="mt-0.5 text-base font-extrabold text-sungai-950">${lolos(w.nama)}</h2>
+        </div>
+
+        <div class="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
+            <div class="px-3 py-3 text-center">
+                <p class="text-lg font-extrabold tabular-nums text-sungai-950">${w.das}</p>
+                <p class="text-[11px] font-medium text-slate-400">DAS</p>
+            </div>
+            <div class="px-3 py-3 text-center">
+                <p class="text-lg font-extrabold tabular-nums text-sungai-950">${w.juru}</p>
+                <p class="text-[11px] font-medium text-slate-400">Juru</p>
+            </div>
+            <div class="px-3 py-3 text-center">
+                <p class="text-lg font-extrabold tabular-nums text-sungai-950">${w.laporan}</p>
+                <p class="text-[11px] font-medium text-slate-400">Laporan</p>
+            </div>
+        </div>
+
+        <p class="px-5 py-3 text-[12px] leading-relaxed text-slate-400">
+            Penanda diletakkan pada rata-rata titik ${w.das_bertitik} DAS yang sudah bertitik.
+            Wilayah sungai sendiri berupa wilayah, bukan titik.
+        </p>
+
+        <div class="border-t border-slate-100 px-5 py-4">
+            <a href="${w.url}" class="rounded-xl bg-sungai-950 px-3.5 py-2 text-[13px] font-bold text-white transition hover:bg-sungai-900">
+                Detail Wilayah Sungai
+            </a>
+        </div>`;
 }
 
 /* ---------- Pemilih koordinat pada formulir DAS ---------- */
@@ -357,7 +389,7 @@ function siapkanPetaSebaran() {
  */
 function siapkanSemuaPeta() {
     siapkanPetaDas();
-    siapkanPetaWilayah();
+    siapkanPetaWs();
     siapkanPemilihKoordinat();
     siapkanPetaLaporan();
     siapkanPetaSebaran();

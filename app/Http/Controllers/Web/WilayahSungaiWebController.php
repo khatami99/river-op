@@ -21,31 +21,33 @@ class WilayahSungaiWebController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        // Tiap wilayah sungai membawa titik DAS-nya sendiri, sehingga halaman ini
-        // menampilkan satu peta per wilayah. Bentuk ini sudah benar sejak
-        // sekarang meski wilayah sungainya baru satu: begitu wilayah kedua
-        // ditambahkan, ia langsung mendapat petanya sendiri tanpa halaman ini
-        // perlu dirombak.
+        // Wilayah sungai tidak punya koordinat sendiri — ia wilayah, bukan
+        // titik. Penandanya diletakkan di rata-rata titik DAS yang bernaung di
+        // bawahnya: bukan angka karangan, melainkan turunan dari data yang ada,
+        // dan ikut bergeser sendiri setiap titik DAS ditambah atau dikoreksi.
         $wilayah->loadMissing(['das' => fn ($q) => $q
             ->whereNotNull('koordinat_lat')
-            ->whereNotNull('koordinat_lng')
-            ->withCount(['juruSungai', 'laporanOp'])
-            ->orderBy('nama_das')]);
+            ->whereNotNull('koordinat_lng')]);
 
-        $titikPerWilayah = $wilayah->mapWithKeys(fn ($w) => [
-            $w->id => $w->das->map(fn ($d) => [
-                'nama' => $d->nama_das,
-                'kode' => $d->kode_das,
-                'lat' => (float) $d->koordinat_lat,
-                'lng' => (float) $d->koordinat_lng,
-                'juru' => $d->juru_sungai_count,
-                'laporan' => $d->laporan_op_count,
-                'url' => route('das.show', $d),
-            ])->values(),
-        ]);
+        $dataPeta = $wilayah
+            ->filter(fn ($w) => $w->das->isNotEmpty())
+            ->values()
+            ->map(fn ($w) => [
+                'nama' => $w->nama_sungai,
+                'kode' => $w->kode_sungai,
+                'lat' => round($w->das->avg('koordinat_lat'), 7),
+                'lng' => round($w->das->avg('koordinat_lng'), 7),
+                'das' => $w->das_count,
+                'das_bertitik' => $w->das->count(),
+                'juru' => $w->juru_sungai_count,
+                'laporan' => $w->laporan_op_count,
+                'aktif' => (bool) $w->aktif,
+                'url' => route('wilayah.show', $w),
+                'url_das' => route('das.index', ['cari' => '']),
+            ]);
 
         return view('wilayah.index', [
-            'titikPerWilayah' => $titikPerWilayah,
+            'dataPeta' => $dataPeta,
             'wilayah' => $wilayah,
             'filter' => ['cari' => $request->input('cari')],
         ]);
