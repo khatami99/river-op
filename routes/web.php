@@ -27,6 +27,7 @@ Route::middleware('auth:staf')->group(function () {
     Route::get('/laporan', [LaporanWebController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/export', [LaporanWebController::class, 'export'])->name('laporan.export');
     Route::get('/laporan/{laporan}', [LaporanWebController::class, 'show'])->name('laporan.show');
+    Route::get('/laporan/{laporan}/blangko', [LaporanWebController::class, 'blangko'])->name('laporan.blangko');
 
     Route::get('/peta', [PetaWebController::class, 'index'])->name('peta.index');
 

@@ -7,6 +7,13 @@
 
 @section('aksi-header')
     <div class="flex shrink-0 gap-2">
+        <a href="{{ route('laporan.blangko', $laporan) }}"
+           class="inline-flex items-center gap-2 rounded-xl bg-sungai-950 px-3.5 py-2.5 text-[13px] font-bold text-white transition hover:bg-sungai-900">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h5l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+            Unduh Blangko OP
+        </a>
         <button onclick="window.print()"
                 class="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3.5 py-2.5 text-[13px] font-bold text-slate-700 transition hover:bg-slate-200">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

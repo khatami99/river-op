@@ -65,6 +65,23 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ## Selesai 7 Sep 2026
 
+- [x] **Export blangko OP resmi (.xlsx).** Sebelumnya buntu karena belum ada
+      contoh blangko aslinya. Dua berkas laporan sungguhan dari dinas kini
+      dipakai sebagai template, sehingga tata letak, garis, dan lebar kolomnya
+      persis sama — isian ditaruh ke sel yang sudah ada, bukan digambar ulang.
+
+      Tombol "Unduh Blangko OP" ada di halaman detail laporan. Hanya jenis
+      bangunan yang benar-benar diperiksa yang ikut tercetak, dan bila satu
+      laporan memuat beberapa bangunan berjenis sama, lembarnya digandakan
+      (`OP - 01.e`, `OP - 01.e (2)`) karena blangko hanya menyediakan satu
+      lembar per jenis.
+
+      Baris temuan dicocokkan lewat **urutan** bagian bangunan, bukan namanya:
+      13 dari 14 lembar sudah cocok jumlah barisnya dengan master data kita,
+      dan sisa perbedaan hanya pada penulisan nama (singkatan, serta satu salah
+      ketik pada blangko asli yang sengaja tidak diubah). Koordinat ditulis
+      dalam derajat-menit-detik mengikuti contoh isian dinas.
+
 - [x] **62 DAS resmi diseed** sesuai daftar "Nama DAS" pada Peta Wilayah Sungai
       Cengal-Batulicin (Lampiran V.87, Kode WS 04.10.B), bernomor 001-062.
       Nama wilayah sungainya ikut dibetulkan menjadi **WS Cengal-Batulicin**
@@ -125,12 +142,28 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
       Batas sengaja tidak digambar sendiri karena batas yang keliru lebih
       berbahaya bagi sistem instansi daripada tidak ada peta sama sekali.
 
-- [ ] **Export Excel sungguhan (`.xlsx`).** Saat ini export berupa CSV. Terbuka dengan
-      baik di Excel, tetapi bukan berkas Excel asli. Perlu menambah dependensi
-      seperti `maatwebsite/excel` atau `openspout/openspout`.
+- [ ] **Export daftar laporan dan rekap sebagai `.xlsx`.** Blangko OP sudah
+      berupa Excel asli, tetapi export daftar laporan dan rekapitulasi masih
+      CSV. PhpSpreadsheet sudah terpasang, jadi tinggal dipakai.
 
-- [ ] **Export PDF** sesuai format blangko OP resmi, untuk kebutuhan cetak dan arsip.
-      Perlu contoh blangko aslinya lebih dulu agar tata letaknya tepat.
+- [ ] **Nama sungai dan patok kilometer pada bangunan.** Blangko meminta
+      "Sungai <nama> pada ruas antara patok Km A s/d Km B", dan menurut dinas
+      bagian ini normalnya memang diisi. Saat ini nama sungainya belum ada sama
+      sekali, sedangkan `lokasi_km_dari` dan `lokasi_km_sampai` sudah ada di
+      Room, API, dan database tetapi **di-hardcode `null`** oleh aplikasi
+      Android — persis pola yang dulu terjadi pada koordinat GPS.
+
+      Sampai ini dikerjakan, baris Lokasi bangunan pada blangko hasil export
+      tetap bertitik-titik seperti blangko kosong. Perlu kolom `nama_sungai`
+      pada `item_inspeksi`, isian di layar juru, dan migrasi Room.
+
+- [ ] **Export PDF** sesuai format blangko OP resmi. Export Excel sudah ada dan
+      masih bisa diedit dinas sebelum dicetak; PDF berguna untuk arsip final
+      yang tidak boleh berubah.
+
+- [ ] **Perbarui dependensi yang rentan.** `composer audit` melaporkan 27
+      advisory pada 7 paket — guzzle, commonmark, symfony, dan laravel/framework.
+      Semuanya bawaan lama, bukan dari PhpSpreadsheet yang baru dipasang.
 
 ---
 

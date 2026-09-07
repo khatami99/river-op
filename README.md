@@ -254,9 +254,14 @@ Token didefinisikan di `resources/css/app.css`.
 
 ### Belum dikerjakan
 
-Export PDF sesuai blangko resmi, export `.xlsx` sungguhan, audit log,
+Export PDF, nama sungai dan patok kilometer pada bangunan, audit log,
 monitoring sinkronisasi, dan peta sebaran laporan. Rincian beserta
 alasannya ada di [TODO.md](TODO.md).
+
+**Export blangko OP resmi sudah ada.** Halaman detail laporan menyediakan
+tombol "Unduh Blangko OP" yang menghasilkan berkas `.xlsx` mengikuti blangko
+OP-01.a s.d. OP-01.n. Template aslinya disimpan di `resources/blangko/` dan
+diisi memakai PhpSpreadsheet, sehingga tata letaknya persis blangko dinas.
 
 **Peta DAS** dan **peta lokasi bangunan pada detail laporan** sudah ada,
 memakai Leaflet dan OpenStreetMap tanpa kunci API maupun tagihan. Yang belum:

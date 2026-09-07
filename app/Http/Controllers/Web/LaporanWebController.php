@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Services\BlangkoOpExporter;
 use App\Models\Das;
 use App\Models\JuruSungai;
 use App\Models\LaporanOp;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class LaporanWebController extends Controller
@@ -41,6 +43,22 @@ class LaporanWebController extends Controller
         ]);
 
         return view('laporan.show', ['laporan' => $laporan]);
+    }
+
+    /**
+     * Mengunduh laporan dalam bentuk blangko OP resmi. Dipakai dinas untuk
+     * arsip, menggantikan pengetikan ulang hasil aplikasi ke Excel.
+     */
+    public function blangko(LaporanOp $laporan, BlangkoOpExporter $blangko)
+    {
+        $wb = $blangko->untukLaporan($laporan);
+        $nama = $blangko->namaBerkas($laporan);
+
+        return response()->streamDownload(function () use ($wb) {
+            IOFactory::createWriter($wb, 'Xlsx')->save('php://output');
+        }, $nama, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     public function export(Request $request): StreamedResponse
