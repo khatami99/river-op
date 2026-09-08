@@ -57,7 +57,7 @@
         @if ($log->isEmpty())
             <div class="px-6 py-20 text-center">
                 <p class="text-sm font-bold text-slate-700">Belum ada aktivitas tercatat</p>
-                <p class="mt-1 text-[13px] text-slate-400">
+                <p class="mt-1 text-[13px] text-slate-500">
                     Perubahan data juru, DAS, wilayah sungai, dan pengguna akan muncul di sini.
                 </p>
             </div>
@@ -69,11 +69,11 @@
                             <span class="rounded-lg px-2 py-0.5 text-[11px] font-bold {{ $warnaAksi[$baris->aksi] ?? 'bg-slate-100 text-slate-600' }}">
                                 {{ $baris->labelAksi() }}
                             </span>
-                            <span class="text-[12px] font-bold uppercase tracking-wider text-slate-400">
+                            <span class="text-[12px] font-bold uppercase tracking-wider text-slate-600">
                                 {{ $namaJenis[$baris->jenis_data] ?? $baris->jenis_data }}
                             </span>
                             <span class="text-[13.5px] font-semibold text-sungai-950">{{ $baris->ringkasan }}</span>
-                            <span class="ml-auto text-[12px] tabular-nums text-slate-400">
+                            <span class="ml-auto text-[12px] tabular-nums text-slate-500">
                                 {{ $baris->created_at->format('d/m/Y H:i') }}
                             </span>
                         </div>
@@ -81,7 +81,7 @@
                         <p class="mt-1 text-[12px] text-slate-500">
                             oleh <span class="font-semibold text-slate-600">{{ $baris->nama_pelaku }}</span>
                             @if ($baris->ip)
-                                <span class="text-slate-400">&middot; {{ $baris->ip }}</span>
+                                <span class="text-slate-500">&middot; {{ $baris->ip }}</span>
                             @endif
                         </p>
 

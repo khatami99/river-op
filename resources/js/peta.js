@@ -125,30 +125,30 @@ function tampilkanPanel(d, panel, kosong) {
                 <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sungai-50 text-[12px] font-extrabold text-sungai-700">${j.inisial}</span>
                 <span class="min-w-0 flex-1">
                     <span class="block truncate text-[13.5px] font-semibold text-slate-800">${j.nama}</span>
-                    <span class="block truncate text-[12px] text-slate-400">${j.telepon}</span>
+                    <span class="block truncate text-[12px] text-slate-500">${j.telepon}</span>
                 </span>
             </a>`).join('')
-        : '<p class="px-3 py-6 text-center text-[13px] text-slate-400">Belum ada juru bertugas di DAS ini.</p>';
+        : '<p class="px-3 py-6 text-center text-[13px] text-slate-500">Belum ada juru bertugas di DAS ini.</p>';
 
     panel.innerHTML = `
         <div class="border-b border-slate-100 px-5 py-4">
-            <p class="text-[11px] font-bold uppercase tracking-widest text-emas-600">${d.kode}</p>
+            <p class="text-[12px] font-bold uppercase tracking-wider text-emas-600">${d.kode}</p>
             <h2 class="mt-0.5 text-base font-extrabold text-sungai-950">${d.nama}</h2>
-            <p class="mt-0.5 text-[12px] text-slate-400">${d.wilayah}</p>
+            <p class="mt-0.5 text-[12px] text-slate-500">${d.wilayah}</p>
         </div>
 
         <div class="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
             <div class="px-3 py-3 text-center">
                 <p class="text-lg font-extrabold tabular-nums text-sungai-950">${d.juru}</p>
-                <p class="text-[11px] font-medium text-slate-400">Juru</p>
+                <p class="text-[11px] font-medium text-slate-500">Juru</p>
             </div>
             <div class="px-3 py-3 text-center">
                 <p class="text-lg font-extrabold tabular-nums text-sungai-950">${d.laporan}</p>
-                <p class="text-[11px] font-medium text-slate-400">Laporan</p>
+                <p class="text-[11px] font-medium text-slate-500">Laporan</p>
             </div>
             <div class="px-3 py-3 text-center">
                 <p class="text-lg font-extrabold tabular-nums ${d.bermasalah > 0 ? 'text-bata-600' : 'text-hijau-600'}">${d.bermasalah}</p>
-                <p class="text-[11px] font-medium text-slate-400">Bermasalah</p>
+                <p class="text-[11px] font-medium text-slate-500">Bermasalah</p>
             </div>
         </div>
 
@@ -202,26 +202,26 @@ function tampilkanPanelWs(w, panel, kosong) {
 
     panel.innerHTML = `
         <div class="border-b border-slate-100 px-5 py-4">
-            <p class="text-[11px] font-bold uppercase tracking-widest text-emas-600">${lolos(w.kode)}</p>
+            <p class="text-[12px] font-bold uppercase tracking-wider text-emas-600">${lolos(w.kode)}</p>
             <h2 class="mt-0.5 text-base font-extrabold text-sungai-950">${lolos(w.nama)}</h2>
         </div>
 
         <div class="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
             <div class="px-3 py-3 text-center">
                 <p class="text-lg font-extrabold tabular-nums text-sungai-950">${w.das}</p>
-                <p class="text-[11px] font-medium text-slate-400">DAS</p>
+                <p class="text-[11px] font-medium text-slate-500">DAS</p>
             </div>
             <div class="px-3 py-3 text-center">
                 <p class="text-lg font-extrabold tabular-nums text-sungai-950">${w.juru}</p>
-                <p class="text-[11px] font-medium text-slate-400">Juru</p>
+                <p class="text-[11px] font-medium text-slate-500">Juru</p>
             </div>
             <div class="px-3 py-3 text-center">
                 <p class="text-lg font-extrabold tabular-nums text-sungai-950">${w.laporan}</p>
-                <p class="text-[11px] font-medium text-slate-400">Laporan</p>
+                <p class="text-[11px] font-medium text-slate-500">Laporan</p>
             </div>
         </div>
 
-        <p class="px-5 py-3 text-[12px] leading-relaxed text-slate-400">
+        <p class="px-5 py-3 text-[12px] leading-relaxed text-slate-500">
             Penanda diletakkan pada rata-rata titik ${w.das_bertitik} DAS yang sudah bertitik.
             Wilayah sungai sendiri berupa wilayah, bukan titik.
         </p>

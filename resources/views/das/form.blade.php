@@ -2,7 +2,7 @@
 
 @php
     $baru = ! $das->exists;
-    $ki = 'w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-[13.5px] text-slate-900 ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+    $ki = 'w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-[13.5px] text-slate-900 ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
 @endphp
 
 @section('judul', $baru ? 'Tambah DAS' : 'Ubah DAS')
@@ -87,7 +87,7 @@
             <input type="hidden" id="koordinat_lat" name="koordinat_lat" value="{{ old('koordinat_lat', $das->koordinat_lat) }}">
             <input type="hidden" id="koordinat_lng" name="koordinat_lng" value="{{ old('koordinat_lng', $das->koordinat_lng) }}">
 
-            <p class="mt-1.5 text-[12px] text-slate-400">
+            <p class="mt-1.5 text-[12px] text-slate-500">
                 DAS sebenarnya berupa wilayah, bukan titik &mdash; batasnya mengikuti punggung
                 bukit. Titik ini hanya pegangan agar DAS bisa ditandai dan diklik di peta,
                 bukan letak resminya. Boleh dikosongkan, tetapi DAS tanpa titik tidak akan

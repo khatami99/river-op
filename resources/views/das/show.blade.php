@@ -26,7 +26,7 @@
             </svg>
 
             <div class="relative">
-                <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Daerah Aliran Sungai</p>
+                <p class="text-[12px] font-bold uppercase tracking-wider text-emas-400">Daerah Aliran Sungai</p>
                 <p class="mt-1.5 text-lg font-extrabold text-white">{{ $das->nama_das }}</p>
 
                 <dl class="mt-4 space-y-3 border-t border-white/10 pt-4">
@@ -40,12 +40,12 @@
                     @endphp
                     @foreach ($info as $label => $nilai)
                         <div class="flex items-baseline justify-between gap-4">
-                            <dt class="text-[12px] text-sungai-300/60">{{ $label }}</dt>
+                            <dt class="text-[12px] text-sungai-300/80">{{ $label }}</dt>
                             <dd class="truncate text-right text-[13px] font-semibold text-white">{{ $nilai }}</dd>
                         </div>
                     @endforeach
                     <div class="flex items-center justify-between gap-4">
-                        <dt class="text-[12px] text-sungai-300/60">Status</dt>
+                        <dt class="text-[12px] text-sungai-300/80">Status</dt>
                         <dd>
                             <x-lencana :warna="$das->aktif ? 'normal' : 'netral'">
                                 {{ $das->aktif ? 'Aktif' : 'Nonaktif' }}
@@ -91,7 +91,7 @@
                                 </span>
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $orang->nama }}</p>
-                                    <p class="truncate text-[12px] text-slate-400">{{ $orang->no_telepon ?: $orang->username }}</p>
+                                    <p class="truncate text-[12px] text-slate-500">{{ $orang->no_telepon ?: $orang->username }}</p>
                                 </div>
                                 <x-lencana :warna="$orang->aktif ? 'normal' : 'netral'">
                                     {{ $orang->aktif ? 'Aktif' : 'Nonaktif' }}
@@ -115,7 +115,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Tanggal</th>
                             <th class="px-5 py-3">Juru Sungai</th>
                             <th class="px-5 py-3">Periode</th>

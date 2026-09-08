@@ -13,6 +13,6 @@
     @enderror
 
     @if ($petunjuk)
-        <p class="mt-1.5 text-[12px] text-slate-400">{{ $petunjuk }}</p>
+        <p class="mt-1.5 text-[12px] text-slate-500">{{ $petunjuk }}</p>
     @endif
 </div>

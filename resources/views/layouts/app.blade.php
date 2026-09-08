@@ -70,7 +70,7 @@
             <nav class="flex-1 space-y-5 px-3">
                 @foreach ($kelompok as $namaKelompok => $isiKelompok)
                 <div class="space-y-1">
-                    <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-sungai-300/40">
+                    <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-sungai-300/70">
                         {{ $namaKelompok }}
                     </p>
                 @foreach ($isiKelompok as $item)
@@ -101,12 +101,12 @@
                     </div>
                     <div class="min-w-0 flex-1 leading-tight">
                         <p class="truncate text-[13px] font-semibold text-white">{{ $staf->nama ?? '-' }}</p>
-                        <p class="text-[11px] capitalize text-sungai-300/60">{{ $staf->role ?? '' }}</p>
+                        <p class="text-[11px] capitalize text-sungai-300/80">{{ $staf->role ?? '' }}</p>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" title="Keluar"
-                                class="flex h-8 w-8 items-center justify-center rounded-lg text-sungai-300/60 transition hover:bg-white/10 hover:text-white">
+                                class="flex h-8 w-8 items-center justify-center rounded-lg text-sungai-300/80 transition hover:bg-white/10 hover:text-white">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
@@ -155,7 +155,7 @@
 
                 @yield('konten')
 
-                <p class="mt-8 text-center text-[11px] text-slate-400">
+                <p class="mt-8 text-center text-[11px] text-slate-500">
                     Sistem Informasi Operasi &amp; Pemeliharaan Sungai &middot; Dinas PUPR Provinsi Kalimantan Selatan
                 </p>
             </main>

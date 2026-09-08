@@ -31,11 +31,11 @@
     <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
         <div class="grid gap-3 sm:grid-cols-3">
             <div class="sm:col-span-2">
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
+                <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">Pencarian</label>
                 <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama, telepon, atau username" class="{{ $kelasInput }}">
             </div>
             <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
+                <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">DAS</label>
                 <select name="das_id" class="{{ $kelasInput }}">
                     <option value="">Semua DAS</option>
                     @foreach ($daftarDas as $w)
@@ -63,7 +63,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Nama</th>
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3 text-center">Laporan</th>

@@ -18,7 +18,7 @@
 @endphp
 
 <form method="GET" class="mb-3.5 flex flex-wrap items-center gap-2 rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200/70">
-    <label class="mr-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Periode</label>
+    <label class="mr-1 text-[12px] font-bold uppercase tracking-wider text-slate-600">Periode</label>
 
     <select name="bulan" onchange="this.form.submit()" class="{{ $kelasPilihan }}">
         @foreach (Bulan::NAMA as $nomor => $nama)

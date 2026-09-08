@@ -25,7 +25,7 @@
         ] as [$label, $nilai, $warna])
             <div class="rounded-2xl bg-white px-5 py-4 ring-1 ring-slate-200/70">
                 <p class="text-2xl font-extrabold tabular-nums {{ $warna }}">{{ $nilai }}</p>
-                <p class="mt-0.5 text-[12px] font-medium text-slate-400">{{ $label }}</p>
+                <p class="mt-0.5 text-[12px] font-medium text-slate-500">{{ $label }}</p>
             </div>
         @endforeach
     </div>
@@ -33,7 +33,7 @@
     <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-[13px]">
-                <thead class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <thead class="border-b border-slate-100 text-[12px] font-bold uppercase tracking-wider text-slate-600">
                     <tr>
                         <th class="px-5 py-3">Juru Sungai</th>
                         <th class="px-5 py-3">DAS</th>
@@ -51,14 +51,14 @@
                             <td class="px-5 py-3">
                                 <a href="{{ route('juru.show', $j) }}" class="font-semibold text-sungai-950 hover:underline">{{ $j->nama }}</a>
                                 @if ($s?->versi_aplikasi)
-                                    <span class="ml-1.5 text-[11px] text-slate-400">v{{ $s->versi_aplikasi }}</span>
+                                    <span class="ml-1.5 text-[11px] text-slate-500">v{{ $s->versi_aplikasi }}</span>
                                 @endif
                             </td>
                             <td class="px-5 py-3 text-slate-500">{{ $j->das?->nama_das ?? '-' }}</td>
-                            <td class="px-5 py-3 text-right tabular-nums {{ $s && $s->jumlah_tertunda > 0 ? 'font-bold text-emas-700' : 'text-slate-400' }}">
+                            <td class="px-5 py-3 text-right tabular-nums {{ $s && $s->jumlah_tertunda > 0 ? 'font-bold text-emas-700' : 'text-slate-500' }}">
                                 {{ $s?->jumlah_tertunda ?? '—' }}
                             </td>
-                            <td class="px-5 py-3 text-right tabular-nums {{ $s && $s->jumlah_gagal > 0 ? 'font-bold text-bata-600' : 'text-slate-400' }}">
+                            <td class="px-5 py-3 text-right tabular-nums {{ $s && $s->jumlah_gagal > 0 ? 'font-bold text-bata-600' : 'text-slate-500' }}">
                                 {{ $s?->jumlah_gagal ?? '—' }}
                             </td>
                             <td class="px-5 py-3 text-right tabular-nums text-slate-500">{{ $s?->jumlah_terkirim ?? '—' }}</td>
@@ -79,7 +79,7 @@
                                 @endif
 
                                 @if ($s?->pesan_terakhir)
-                                    <span class="mt-1 block text-[11px] text-slate-400">{{ $s->pesan_terakhir }}</span>
+                                    <span class="mt-1 block text-[11px] text-slate-500">{{ $s->pesan_terakhir }}</span>
                                 @endif
                             </td>
                         </tr>

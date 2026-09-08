@@ -43,7 +43,7 @@
                  berbeda yang tidak perlu berebut tempat. --}}
             <div class="relative flex items-center gap-3">
                 <x-logo-kalsel class="h-10 shrink-0"/>
-                <div class="text-[11px] font-semibold uppercase leading-snug tracking-widest text-emas-400">
+                <div class="text-[12px] font-semibold uppercase leading-snug tracking-wider text-emas-400">
                     Dinas PUPR<br>Provinsi Kalimantan Selatan
                 </div>
             </div>
@@ -82,7 +82,7 @@
                     <input id="username" name="username" type="text" required autofocus
                            value="{{ old('username') }}" autocomplete="username"
                            class="mt-1.5 block w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900
-                                  ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-400
+                                  ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500
                                   focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
                 </div>
 
@@ -90,7 +90,7 @@
                     <label for="password" class="block text-[13px] font-semibold text-slate-700">Password</label>
                     <input id="password" name="password" type="password" required autocomplete="current-password"
                            class="mt-1.5 block w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900
-                                  ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-400
+                                  ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500
                                   focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
                 </div>
 
@@ -107,7 +107,7 @@
                 </button>
             </form>
 
-            <p class="mt-6 border-t border-slate-100 pt-5 text-center text-xs leading-relaxed text-slate-400">
+            <p class="mt-6 border-t border-slate-100 pt-5 text-center text-xs leading-relaxed text-slate-500">
                 Juru sungai mengirim laporan melalui aplikasi Android, bukan halaman ini.
             </p>
         </div>

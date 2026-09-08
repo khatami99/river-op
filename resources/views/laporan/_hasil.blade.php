@@ -59,7 +59,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Tanggal</th>
                             <th class="px-5 py-3">Juru Sungai</th>
                             <th class="px-5 py-3">DAS</th>

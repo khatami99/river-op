@@ -26,7 +26,7 @@
     @enderror
 
     <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
-        <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
+        <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">Pencarian</label>
         <div class="flex flex-wrap items-center gap-2">
             <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama atau username"
                    class="{{ $ki }} max-w-md flex-1">
@@ -44,7 +44,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Nama</th>
                             <th class="px-5 py-3">Username</th>
                             <th class="px-5 py-3">Peran</th>
@@ -63,7 +63,7 @@
                                         </span>
                                         <span class="font-semibold text-slate-800">{{ $orang->nama }}</span>
                                         @if ($diriSendiri)
-                                            <span class="text-[11px] font-semibold text-slate-400">(Anda)</span>
+                                            <span class="text-[11px] font-semibold text-slate-500">(Anda)</span>
                                         @endif
                                     </div>
                                 </td>

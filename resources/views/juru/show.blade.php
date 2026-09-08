@@ -46,7 +46,7 @@
                 @endphp
                 @foreach ($data as $label => $nilai)
                     <div class="flex items-baseline justify-between gap-4">
-                        <dt class="text-[12px] text-sungai-300/60">{{ $label }}</dt>
+                        <dt class="text-[12px] text-sungai-300/80">{{ $label }}</dt>
                         <dd class="truncate text-right text-[13px] font-semibold text-white">{{ $nilai }}</dd>
                     </div>
                 @endforeach
@@ -58,7 +58,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h2 class="text-sm font-bold text-sungai-950">Kepatuhan Pelaporan</h2>
-                    <p class="mt-0.5 text-[12px] text-slate-400">
+                    <p class="mt-0.5 text-[12px] text-slate-500">
                         {{ count($bulanTerlapor) }} dari 12 bulan sudah dilaporkan
                     </p>
                 </div>
@@ -77,7 +77,7 @@
                     @php $sudah = in_array($nomor, $bulanTerlapor, true); @endphp
                     <div class="flex flex-col items-center justify-center rounded-xl py-3 ring-1
                                 {{ $sudah ? 'bg-hijau-50 ring-hijau-500/20' : 'bg-slate-50 ring-slate-200/70' }}">
-                        <span class="text-[11px] font-bold uppercase tracking-wide {{ $sudah ? 'text-hijau-700' : 'text-slate-400' }}">
+                        <span class="text-[12px] font-bold uppercase tracking-wide {{ $sudah ? 'text-hijau-700' : 'text-slate-600' }}">
                             {{ Bulan::singkat($nomor) }}
                         </span>
                         @if ($sudah)
@@ -105,7 +105,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Tanggal</th>
                             <th class="px-5 py-3">Periode</th>
                             <th class="px-5 py-3">DAS</th>

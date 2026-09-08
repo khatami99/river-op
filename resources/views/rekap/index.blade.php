@@ -29,7 +29,7 @@
                 <path d="M0 76c40-24 80-24 120 0s80 24 120 0 80-24 120 0 80 24 120 0" stroke="#127cc4" stroke-width="9" stroke-linecap="round"/>
             </svg>
             <div class="relative">
-                <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Kepatuhan Pelaporan</p>
+                <p class="text-[12px] font-bold uppercase tracking-wider text-emas-400">Kepatuhan Pelaporan</p>
                 <p class="mt-1 text-lg font-bold text-white">{{ Bulan::nama($bulan) }} {{ $tahun }}</p>
                 <div class="mt-4 flex items-end gap-3">
                     <span class="text-[40px] font-extrabold leading-none tabular-nums text-white">{{ $persen }}<span class="text-lg">%</span></span>
@@ -42,21 +42,21 @@
         </div>
 
         <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
-            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Belum Melapor</p>
+            <p class="text-[12px] font-bold uppercase tracking-wider text-slate-600">Belum Melapor</p>
             <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $total['belum'] > 0 ? 'text-emas-500' : 'text-hijau-600' }}">
                 {{ $total['belum'] }}
             </p>
-            <p class="mt-1.5 text-[12px] font-medium text-slate-400">juru sungai</p>
+            <p class="mt-1.5 text-[12px] font-medium text-slate-500">juru sungai</p>
         </div>
 
         <div class="rounded-2xl p-5 ring-1 {{ $total['bermasalah'] > 0 ? 'bg-bata-50 ring-bata-500/20' : 'bg-white ring-slate-200/70' }}">
-            <p class="text-[11px] font-bold uppercase tracking-wider {{ $total['bermasalah'] > 0 ? 'text-bata-700/70' : 'text-slate-400' }}">
+            <p class="text-[12px] font-bold uppercase tracking-wider {{ $total['bermasalah'] > 0 ? 'text-bata-700' : 'text-slate-600' }}">
                 Temuan Bermasalah
             </p>
             <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bata-600' : 'text-hijau-600' }}">
                 {{ $total['bermasalah'] }}
             </p>
-            <p class="mt-1.5 text-[12px] font-medium {{ $total['bermasalah'] > 0 ? 'text-bata-700/60' : 'text-slate-400' }}">
+            <p class="mt-1.5 text-[12px] font-medium {{ $total['bermasalah'] > 0 ? 'text-bata-700' : 'text-slate-500' }}">
                 dari {{ $total['bangunan'] }} bangunan diperiksa
             </p>
         </div>
@@ -74,7 +74,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3 text-center">Juru</th>
                             <th class="px-5 py-3 text-center">Sudah</th>
@@ -91,7 +91,7 @@
                                     <a href="{{ route('das.show', $baris->id) }}" class="font-semibold text-slate-800 hover:text-sungai-600">
                                         {{ $baris->nama_das }}
                                     </a>
-                                    <span class="ml-1 text-[12px] text-slate-400">{{ $baris->kode_das }}</span>
+                                    <span class="ml-1 text-[12px] text-slate-500">{{ $baris->kode_das }}</span>
                                 </td>
                                 <td class="px-5 py-3 text-center tabular-nums text-slate-600">{{ $baris->jumlah_juru }}</td>
                                 <td class="px-5 py-3 text-center">
@@ -145,13 +145,13 @@
                     </svg>
                 </div>
                 <p class="text-sm font-bold text-hijau-700">Seluruh juru sudah melapor</p>
-                <p class="mt-1 text-[13px] text-slate-400">Periode {{ Bulan::nama($bulan) }} {{ $tahun }}</p>
+                <p class="mt-1 text-[13px] text-slate-500">Periode {{ Bulan::nama($bulan) }} {{ $tahun }}</p>
             </div>
         @else
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Nama</th>
                             <th class="px-5 py-3">Telepon</th>
                             <th class="px-5 py-3">DAS</th>

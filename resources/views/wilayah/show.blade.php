@@ -28,7 +28,7 @@
             </svg>
 
             <div class="relative">
-                <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Wilayah Sungai</p>
+                <p class="text-[12px] font-bold uppercase tracking-wider text-emas-400">Wilayah Sungai</p>
                 <p class="mt-1.5 text-lg font-extrabold text-white">{{ $wilayah->nama_sungai }}</p>
 
                 <dl class="mt-4 space-y-3 border-t border-white/10 pt-4">
@@ -42,12 +42,12 @@
                     @endphp
                     @foreach ($info as $label => $nilai)
                         <div class="flex items-baseline justify-between gap-4">
-                            <dt class="text-[12px] text-sungai-300/60">{{ $label }}</dt>
+                            <dt class="text-[12px] text-sungai-300/80">{{ $label }}</dt>
                             <dd class="text-right text-[13px] font-semibold text-white">{{ $nilai }}</dd>
                         </div>
                     @endforeach
                     <div class="flex items-center justify-between gap-4">
-                        <dt class="text-[12px] text-sungai-300/60">Status</dt>
+                        <dt class="text-[12px] text-sungai-300/80">Status</dt>
                         <dd>
                             <x-lencana :warna="$wilayah->aktif ? 'normal' : 'netral'">
                                 {{ $wilayah->aktif ? 'Aktif' : 'Nonaktif' }}
@@ -80,7 +80,7 @@
                 <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
                     <div id="panel-kosong" class="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
                         <p class="text-sm font-bold text-slate-700">Pilih sebuah DAS</p>
-                        <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-slate-400">
+                        <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-slate-500">
                             Klik penanda di peta untuk melihat juru yang bertugas beserta ringkasan laporannya.
                         </p>
                     </div>
@@ -89,7 +89,7 @@
             </div>
 
             @if ($belumBerkoordinat > 0)
-                <p class="mt-2 text-[12px] text-slate-400">
+                <p class="mt-2 text-[12px] text-slate-500">
                     {{ $belumBerkoordinat }} DAS belum punya titik dan tidak muncul di peta.
                 </p>
             @endif
@@ -116,7 +116,7 @@
                                 </span>
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-[13.5px] font-semibold text-slate-800">{{ $item->nama_das }}</p>
-                                    <p class="truncate text-[12px] text-slate-400">{{ $item->kode_das }}</p>
+                                    <p class="truncate text-[12px] text-slate-500">{{ $item->kode_das }}</p>
                                 </div>
                                 <div class="flex shrink-0 items-center gap-4 text-[12px] text-slate-500">
                                     <span><span class="font-bold tabular-nums text-slate-700">{{ $item->juru_sungai_count }}</span> juru</span>

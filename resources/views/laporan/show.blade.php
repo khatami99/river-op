@@ -72,7 +72,7 @@
         <div class="rounded-2xl bg-sungai-950 p-5 lg:col-span-2">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-emas-400">Identitas Laporan</p>
+                    <p class="text-[12px] font-bold uppercase tracking-wider text-emas-400">Identitas Laporan</p>
                     <p class="mt-1.5 text-xl font-extrabold text-white">{{ $laporan->juruSungai?->nama ?? '-' }}</p>
                     <p class="text-[13px] text-sungai-200/70">
                         {{ $laporan->das?->nama_das ?? '-' }}
@@ -82,7 +82,7 @@
                     </p>
                 </div>
                 <div class="rounded-xl bg-white/5 px-3.5 py-2 ring-1 ring-white/10">
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-sungai-300/60">Periode</p>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-sungai-300/80">Periode</p>
                     <p class="text-[13px] font-bold text-white">{{ Bulan::nama($laporan->bulan) }} {{ $laporan->tahun }}</p>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                 @endphp
                 @foreach ($ringkas as $label => $nilai)
                     <div>
-                        <dt class="text-[10px] font-bold uppercase tracking-widest text-sungai-300/50">{{ $label }}</dt>
+                        <dt class="text-[11px] font-bold uppercase tracking-wider text-sungai-300/80">{{ $label }}</dt>
                         <dd class="mt-1 text-[13.5px] font-semibold text-white">{{ $nilai }}</dd>
                     </div>
                 @endforeach
@@ -108,11 +108,11 @@
         {{-- Angka kunci --}}
         <div class="grid grid-cols-2 gap-3.5 lg:grid-cols-1">
             <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Bangunan Diperiksa</p>
+                <p class="text-[12px] font-bold uppercase tracking-wider text-slate-600">Bangunan Diperiksa</p>
                 <p class="mt-1.5 text-3xl font-extrabold tabular-nums text-sungai-950">{{ $laporan->itemInspeksi->count() }}</p>
             </div>
             <div class="rounded-2xl p-4 ring-1 {{ $jumlahBermasalah > 0 ? 'bg-bata-50 ring-bata-500/20' : 'bg-hijau-50 ring-hijau-500/20' }}">
-                <p class="text-[11px] font-bold uppercase tracking-wider {{ $jumlahBermasalah > 0 ? 'text-bata-700/70' : 'text-hijau-700/70' }}">
+                <p class="text-[12px] font-bold uppercase tracking-wider {{ $jumlahBermasalah > 0 ? 'text-bata-700' : 'text-hijau-700' }}">
                     Temuan Bermasalah
                 </p>
                 <p class="mt-1.5 text-3xl font-extrabold tabular-nums {{ $jumlahBermasalah > 0 ? 'text-bata-600' : 'text-hijau-600' }}">
@@ -125,7 +125,7 @@
     {{-- Foto lokasi --}}
     @if (count($fotoLokasi))
         <div class="mt-3.5 rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
-            <p class="mb-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">Foto Lokasi</p>
+            <p class="mb-3 text-[12px] font-bold uppercase tracking-wider text-slate-600">Foto Lokasi</p>
             <div class="flex flex-wrap gap-3">
                 @foreach ($fotoLokasi as $foto)
                     <img src="{{ $foto }}" alt="Foto lokasi" loading="lazy"
@@ -141,7 +141,7 @@
         <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
             <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-4">
                 <h2 class="text-sm font-bold text-sungai-950">Lokasi Bangunan</h2>
-                <span class="text-[12px] text-slate-400">
+                <span class="text-[12px] text-slate-500">
                     {{ $titikBangunan->count() }} dari {{ $laporan->itemInspeksi->count() }} bangunan bertitik
                 </span>
             </div>
@@ -165,7 +165,7 @@
                             <h3 class="text-[15px] font-bold text-sungai-950">
                                 {{ $item->jenisBangunan?->nama ?? 'Jenis tidak diketahui' }}
                             </h3>
-                            <p class="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[12px] text-slate-400">
+                            <p class="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[12px] text-slate-500">
                                 @if ($item->jenisBangunan?->kode)
                                     <span class="font-bold text-emas-600">{{ $item->jenisBangunan->kode }}</span>
                                 @endif
@@ -218,7 +218,7 @@
                 @endif
 
                 @if ($item->temuanKondisi->isEmpty())
-                    <p class="border-t border-slate-100 px-5 py-8 text-center text-[13px] text-slate-400">
+                    <p class="border-t border-slate-100 px-5 py-8 text-center text-[13px] text-slate-500">
                         Tidak ada temuan tercatat pada bangunan ini.
                     </p>
                 @else
@@ -300,20 +300,20 @@
         <div class="mt-3.5 grid gap-3.5 sm:grid-cols-2">
             @if ($laporan->catatan_umum)
                 <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Catatan Umum</p>
+                    <p class="text-[12px] font-bold uppercase tracking-wider text-slate-600">Catatan Umum</p>
                     <p class="mt-2 whitespace-pre-line text-[13.5px] leading-relaxed text-slate-600">{{ $laporan->catatan_umum }}</p>
                 </div>
             @endif
             @if ($laporan->kendala)
                 <div class="rounded-2xl bg-emas-50 p-5 ring-1 ring-emas-500/20">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-emas-700/70">Kendala di Lapangan</p>
-                    <p class="mt-2 whitespace-pre-line text-[13.5px] leading-relaxed text-emas-900/80">{{ $laporan->kendala }}</p>
+                    <p class="text-[12px] font-bold uppercase tracking-wider text-emas-800">Kendala di Lapangan</p>
+                    <p class="mt-2 whitespace-pre-line text-[13.5px] leading-relaxed text-emas-900">{{ $laporan->kendala }}</p>
                 </div>
             @endif
         </div>
     @endif
 
-    <p class="mt-4 text-center text-[12px] text-slate-400">
+    <p class="mt-4 text-center text-[12px] text-slate-500">
         Disinkronkan dari aplikasi juru pada {{ optional($laporan->synced_at)->format('d/m/Y H:i') ?? '-' }}
     </p>
 

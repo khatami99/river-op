@@ -34,7 +34,7 @@
                 <p class="text-[13px] font-semibold text-emas-900">
                     {{ $belumBerkoordinat->count() }} DAS belum punya titik dan tidak muncul di peta
                 </p>
-                <p class="mt-1 text-[12px] leading-relaxed text-emas-800/80">
+                <p class="mt-1 text-[12px] leading-relaxed text-emas-800">
                     Buka DAS-nya lalu tentukan titiknya dengan mengklik peta pada formulir.
                     Titik ini perkiraan saja &mdash; DAS sebenarnya berupa wilayah, bukan titik.
                 </p>
@@ -58,7 +58,7 @@
                         </svg>
                     </div>
                     <p class="text-sm font-bold text-slate-700">Pilih sebuah DAS</p>
-                    <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-slate-400">
+                    <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-slate-500">
                         Klik penanda di peta untuk melihat juru yang bertugas beserta ringkasan laporannya.
                     </p>
                 </div>
@@ -75,7 +75,7 @@
     @enderror
 
     <form method="GET" class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
-        <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Pencarian</label>
+        <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">Pencarian</label>
         <div class="flex flex-wrap items-center gap-2">
             <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama atau kode DAS"
                    class="{{ $kelasInput }} max-w-md flex-1">
@@ -97,7 +97,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="bg-slate-50/70 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <tr class="bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
                             <th class="px-5 py-3">Nama DAS</th>
                             <th class="px-5 py-3">Kode</th>
                             <th class="px-5 py-3">Wilayah Sungai</th>

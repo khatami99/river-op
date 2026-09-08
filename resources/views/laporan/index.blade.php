@@ -36,7 +36,7 @@
              labelnya tidak lagi sejajar dengan kolom lain. Dipisah dengan
              garis, keduanya sama-sama rapi. --}}
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <label class="w-full text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-auto sm:pr-1">
+            <label class="w-full text-[12px] font-bold uppercase tracking-wider text-slate-600 sm:w-auto sm:pr-1">
                 Periode
             </label>
 
@@ -54,7 +54,7 @@
                 @endforeach
             </select>
 
-            <span class="px-1 text-[12px] font-semibold text-slate-400">s/d</span>
+            <span class="px-1 text-[12px] font-semibold text-slate-500">s/d</span>
 
             <select name="bulan_sampai" class="{{ $kelasIsian }} min-w-[9.5rem] flex-1 sm:max-w-[12rem]">
                 <option value="">&mdash; satu bulan saja</option>
@@ -74,7 +74,7 @@
         <div class="mt-3.5 grid items-start gap-3 border-t border-slate-100 pt-3.5 sm:grid-cols-2 lg:grid-cols-3">
 
             <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Juru Sungai</label>
+                <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">Juru Sungai</label>
 
                 {{-- Boleh dipilih lebih dari satu.
 
@@ -90,7 +90,7 @@
                         @else
                             <span class="text-slate-500">Semua juru</span>
                         @endif
-                        <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="h-4 w-4 shrink-0 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/>
                         </svg>
                     </summary>
@@ -109,7 +109,7 @@
             </div>
 
             <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">DAS</label>
+                <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">DAS</label>
                 <select name="das_id" class="{{ $kelasInput }}">
                     <option value="">Semua DAS</option>
                     @foreach ($daftarDas as $w)
@@ -119,7 +119,7 @@
             </div>
 
             <div>
-                <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">Jenis Bangunan</label>
+                <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">Jenis Bangunan</label>
                 <select name="jenis_bangunan_id" class="{{ $kelasInput }}">
                     <option value="">Semua jenis</option>
                     @foreach ($daftarJenis as $jb)
@@ -132,9 +132,9 @@
         {{-- Pencarian bebas berdiri paling bawah karena cakupannya paling luas:
              ia menelusuri seluruh isi laporan, bukan satu kolom tertentu. --}}
         <div class="mt-3.5 border-t border-slate-100 pt-3.5">
-            <label class="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">
                 Pencarian
-                <span class="ml-1 font-medium normal-case tracking-normal text-slate-400">
+                <span class="ml-1 font-medium normal-case tracking-normal text-slate-500">
                     &mdash; juru, DAS, wilayah sungai, cuaca, debit air, bulan, tahun, jumlah bangunan, catatan
                 </span>
             </label>
