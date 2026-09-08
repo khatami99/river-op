@@ -54,6 +54,11 @@ Route::middleware('auth:staf')->group(function () {
         Route::put('/juru/{juru}', [JuruSungaiWebController::class, 'update'])->name('juru.update');
         Route::delete('/juru/{juru}', [JuruSungaiWebController::class, 'destroy'])->name('juru.destroy');
 
+        // Pengisian kabupaten sekaligus untuk seluruh DAS. Satu per satu
+        // lewat formulir edit berarti 62 kali buka-simpan.
+        Route::get('/das/kabupaten', [DasWebController::class, 'kabupaten'])->name('das.kabupaten');
+        Route::post('/das/kabupaten', [DasWebController::class, 'simpanKabupaten'])->name('das.kabupaten.simpan');
+
         Route::get('/das/create', [DasWebController::class, 'create'])->name('das.create');
         Route::post('/das', [DasWebController::class, 'store'])->name('das.store');
         Route::get('/das/{das}/edit', [DasWebController::class, 'edit'])->name('das.edit');

@@ -132,6 +132,58 @@ class DasWebController extends Controller
         return redirect()->route('das.index')->with('sukses', 'Data DAS diperbarui.');
     }
 
+    /**
+     * Pengisian kabupaten untuk seluruh DAS dalam satu layar.
+     *
+     * Kabupaten ikut tercetak pada blangko OP yang diserahkan ke dinas, dan
+     * saat ini hampir seluruhnya kosong. Mengisinya lewat formulir edit
+     * berarti 62 kali buka, centang, simpan — pekerjaan yang tidak akan
+     * pernah selesai.
+     *
+     * Centang, bukan pilihan tunggal: satu DAS bisa membentang di dua
+     * kabupaten.
+     */
+    public function kabupaten()
+    {
+        return view('das.kabupaten', [
+            'daftarDas' => Das::with('kabupaten')->orderBy('nama_das')->get(),
+            'daftarKabupaten' => Kabupaten::orderBy('nama')->get(),
+        ]);
+    }
+
+    public function simpanKabupaten(Request $request)
+    {
+        $terpilih = (array) $request->input('kabupaten', []);
+        $sah = Kabupaten::pluck('id')->all();
+        $berubah = 0;
+
+        DB::transaction(function () use ($terpilih, $sah, &$berubah) {
+            foreach (Das::with('kabupaten')->get() as $das) {
+                // Hanya id kabupaten yang benar-benar ada yang diterima; sisanya
+                // dibuang, sebab isian ini datang dari formulir.
+                $baru = array_values(array_intersect(
+                    array_map('intval', (array) ($terpilih[$das->id] ?? [])),
+                    $sah
+                ));
+
+                $lama = $das->kabupaten->pluck('id')->sort()->values()->all();
+                sort($baru);
+
+                if ($lama !== $baru) {
+                    $das->kabupaten()->sync($baru);
+                    $berubah++;
+                }
+            }
+        });
+
+        return redirect()->route('das.kabupaten')->with(
+            'sukses',
+            $berubah === 0
+                ? 'Tidak ada perubahan kabupaten.'
+                : "Kabupaten diperbarui pada {$berubah} DAS."
+        );
+    }
+
     public function destroy(Das $das)
     {
         if ($das->juruSungai()->exists() || $das->laporanOp()->exists()) {
