@@ -1,0 +1,58 @@
+/* Penyesuaian Leaflet.
+   Dimuat dari peta.js SETELAH leaflet.css supaya tidak perlu menaikkan
+   kekhususan pemilih hanya untuk menang urutan. */
+
+/* Kontrol dan atribusi bawaan Leaflet dipatok putih. Di mode gelap keduanya
+   jadi dua kotak menyala di sudut peta. */
+.leaflet-container {
+    background: var(--color-permukaan-sedang);
+    font-family: inherit;
+}
+
+.leaflet-control-attribution {
+    background: color-mix(in srgb, var(--color-permukaan) 88%, transparent) !important;
+
+    /* Sempat memakai teks-samar dan tercatat 4,34 — di bawah ambang. Baris
+       atribusi ini wajib menurut lisensi OpenStreetMap, jadi ia harus
+       terbaca, bukan sekadar hadir. */
+    color: var(--color-teks-lembut);
+}
+
+.leaflet-control-attribution a {
+    color: var(--color-info-teks);
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+    background: var(--color-permukaan);
+    color: var(--color-teks);
+    border-bottom-color: var(--color-garis);
+}
+
+.leaflet-bar a:hover {
+    background: var(--color-permukaan-sedang);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+    background: var(--color-permukaan);
+    color: var(--color-teks);
+}
+
+/* Ubin peta di mode gelap.
+
+   Diredupkan, bukan dibalik. Membalik warna memang menggelapkan latar peta,
+   tetapi sekaligus memutar seluruh rona: air jadi cokelat, hutan jadi ungu.
+   Peta dinas yang salah warna lebih berbahaya daripada peta yang menyilaukan.
+
+   Kecerahan diturunkan dan kontrasnya dinaikkan sedikit supaya garis jalan
+   dan sungai tidak ikut lenyap. Rona aslinya utuh. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-tema='terang']) .leaflet-tile-pane {
+        filter: brightness(0.5) contrast(1.18) saturate(1.1);
+    }
+}
+
+:root[data-tema='gelap'] .leaflet-tile-pane {
+    filter: brightness(0.5) contrast(1.18) saturate(1.1);
+}

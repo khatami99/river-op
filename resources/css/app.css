@@ -64,20 +64,221 @@
     --color-bata-500: #e0304a;
     --color-bata-600: #c8102e;
     --color-bata-700: #a50e26;
+
+    /* =================================================================
+       Warna menurut PERAN, bukan menurut rupa
+       -----------------------------------------------------------------
+       Sampai di sini warna ditulis apa adanya di markup: bg-white untuk
+       kartu, text-slate-500 untuk keterangan. Itu berarti mode gelap harus
+       menempelkan pasangan gelap pada 561 tempat, dan tiap warna punya dua
+       kebenaran yang harus dijaga sejajar selamanya.
+
+       Tailwind 4 tidak menanam nilai warna pada kelasnya, ia menunjuk ke
+       variabel: .bg-white{background-color:var(--color-white)}. Jadi bila
+       kelasnya dinamai menurut PERAN, seluruh mode gelap cukup menimpa
+       variabel di satu tempat, dan tidak ada yang bisa ketinggalan.
+
+       Nilai terangnya sama persis dengan yang dipakai sebelumnya, sehingga
+       tampilan mode terang tidak bergeser sedikit pun.
+       ================================================================= */
+
+    /* Permukaan */
+    --color-dasar: #fbfcfd;              /* latar halaman */
+    --color-permukaan: #ffffff;          /* kartu */
+    --color-permukaan-lembut: #f8fafc;   /* isian formulir, arsiran halus */
+    --color-permukaan-sedang: #f1f5f9;   /* lencana, pil, lajur kemajuan */
+    --color-permukaan-kuat: #e2e8f0;
+
+    /* Garis */
+    --color-garis: #e2e8f0;
+    --color-garis-halus: #f1f5f9;
+    --color-garis-kuat: #cbd5e1;
+
+    /* Teks — tingkatannya dijaga oleh kontras yang sudah diukur */
+    --color-teks-tegas: #0f172a;
+    --color-teks: #1e293b;
+    --color-teks-sedang: #334155;
+    --color-teks-lembut: #475569;
+    --color-teks-samar: #64748b;
+    --color-teks-pudar: #cbd5e1;         /* hiasan, bukan tulisan yang dibaca */
+    --color-judul: #0a2c48;
+
+    /* Tindakan */
+    --color-aksi: #0a2c48;
+    --color-aksi-sorot: #16466c;
+    --color-aksi-teks: #ffffff;
+    --color-cari: #12639e;               /* dulu sungai-600: kontras putih 4,46 */
+    --color-cari-sorot: #145482;
+    --color-cari-teks: #ffffff;
+
+    /* Lencana dan kotak keterangan, sepasang latar dengan teksnya */
+    --color-info-latar: #eff8ff;
+    --color-info-teks: #12639e;
+    --color-peringatan-latar: #fdf8ec;
+    --color-peringatan-teks: #935c13;
+    --color-bahaya-latar: #fef2f3;
+    --color-bahaya-teks: #a50e26;
+    --color-aman-latar: #eefbf3;
+    --color-aman-teks: #0d6132;
+    --color-catatan-latar: #f2f9fa;
+    --color-catatan-teks: #168088;
+    --color-catatan-teks-pekat: #16585c;   /* isi kalimat, bukan labelnya */
+    --color-peringatan-teks-pekat: #683e18;
+
+    /* Kartu "belum melapor" — satu-satunya kartu beraksen penuh */
+    --color-gradasi-masuk: #daeefe;      /* latar halaman masuk */
+    --color-alarm-latar: #ebbd51;
+    --color-alarm-teks: #683e18;
+    --color-alarm-tegas: #4a2c11;
+}
+
+/* =====================================================================
+   Mode gelap
+   ---------------------------------------------------------------------
+   Bawaannya mengikuti setelan perangkat. Pilihan manual pengguna menimpa
+   itu lewat atribut data-tema pada <html>, dan hanya berlaku di peramban
+   yang bersangkutan.
+
+   Perhatikan bentuk penulisannya: nilai terang didefinisikan di :root
+   polos, dan yang di sini hanya MENIMPA. Warna yang cuma punya definisi
+   di dalam blok ini akan hilang sama sekali di mode terang.
+
+   Semua pasangan di bawah sudah diukur; tidak ada yang di bawah 4,5 : 1.
+   Kerja kontras terbalik di latar gelap — slate-600 yang 7,58 di atas
+   putih justru tidak terbaca di sini, jadi tidak ada yang bisa disalin
+   begitu saja dari mode terang.
+   ===================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-tema='terang']) {
+        color-scheme: dark;
+
+        --color-dasar: #061523;
+        --color-permukaan: #0c1f31;
+        --color-permukaan-lembut: #12293e;
+        --color-permukaan-sedang: #17334b;
+        --color-permukaan-kuat: #1e3f5c;
+
+        --color-garis: #24455f;
+        --color-garis-halus: #182f45;
+        --color-garis-kuat: #35617f;
+
+        --color-teks-tegas: #f1f7fc;
+        --color-teks: #e0ecf6;
+        --color-teks-sedang: #c2d9ea;
+        --color-teks-lembut: #a4c2da;
+        --color-teks-samar: #89abc6;
+        --color-teks-pudar: #46617a;
+        --color-judul: #eaf3fa;
+
+        --color-aksi: #5db8f8;
+        --color-aksi-sorot: #91d1fc;
+        --color-aksi-teks: #061523;
+        --color-cari: #2b5f8c;
+        --color-cari-sorot: #35759f;
+        --color-cari-teks: #e6f1fa;
+
+        --color-info-latar: #12395a;
+        --color-info-teks: #8ccdf8;
+        --color-peringatan-latar: #45330c;
+        --color-peringatan-teks: #f3d181;
+        --color-bahaya-latar: #571a26;
+        --color-bahaya-teks: #f7a3ae;
+        --color-aman-latar: #0f3b24;
+        --color-aman-teks: #7fdba8;
+        --color-catatan-latar: #0f3b3f;
+        --color-catatan-teks: #7fdee5;
+        --color-catatan-teks-pekat: #b9ecf0;
+        --color-peringatan-teks-pekat: #fbe3ab;
+
+        --color-gradasi-masuk: #0a2338;
+        --color-gradasi-masuk: #0a2338;
+    --color-alarm-latar: #7a5610;
+        --color-alarm-teks: #fde9b8;
+        --color-alarm-tegas: #fff6df;
+    }
+}
+
+/* Pilihan manual pengguna. Ditulis terpisah, bukan digabung dengan pemilih
+   di atas, supaya menyalakan mode gelap tetap bekerja pada perangkat yang
+   setelan sistemnya terang. */
+:root[data-tema='gelap'] {
+    color-scheme: dark;
+
+    --color-dasar: #061523;
+    --color-permukaan: #0c1f31;
+    --color-permukaan-lembut: #12293e;
+    --color-permukaan-sedang: #17334b;
+    --color-permukaan-kuat: #1e3f5c;
+
+    --color-garis: #24455f;
+    --color-garis-halus: #182f45;
+    --color-garis-kuat: #35617f;
+
+    --color-teks-tegas: #f1f7fc;
+    --color-teks: #e0ecf6;
+    --color-teks-sedang: #c2d9ea;
+    --color-teks-lembut: #a4c2da;
+    --color-teks-samar: #89abc6;
+    --color-teks-pudar: #46617a;
+    --color-judul: #eaf3fa;
+
+    --color-aksi: #5db8f8;
+    --color-aksi-sorot: #91d1fc;
+    --color-aksi-teks: #061523;
+    --color-cari: #2b5f8c;
+    --color-cari-sorot: #35759f;
+    --color-cari-teks: #e6f1fa;
+
+    --color-info-latar: #12395a;
+    --color-info-teks: #8ccdf8;
+    --color-peringatan-latar: #45330c;
+    --color-peringatan-teks: #f3d181;
+    --color-bahaya-latar: #571a26;
+    --color-bahaya-teks: #f7a3ae;
+    --color-aman-latar: #0f3b24;
+    --color-aman-teks: #7fdba8;
+    --color-catatan-latar: #0f3b3f;
+    --color-catatan-teks: #7fdee5;
+    --color-catatan-teks-pekat: #b9ecf0;
+    --color-peringatan-teks-pekat: #fbe3ab;
+
+    --color-gradasi-masuk: #0a2338;
+    --color-alarm-latar: #7a5610;
+    --color-alarm-teks: #fde9b8;
+    --color-alarm-tegas: #fff6df;
+}
+
+:root[data-tema='terang'] {
+    color-scheme: light;
+}
+
+/* Tombol tema yang sedang dipilih. Warnanya ditentukan di sini, bukan di
+   JavaScript, sebab pengalih yang sama dipakai di atas rel navigasi yang
+   selalu gelap dan di kepala halaman yang ikut berubah. */
+[data-pengalih-tema='rel'] .tema-aktif {
+    background: rgb(255 255 255 / 0.15);
+    color: #fff;
+}
+
+[data-pengalih-tema='halaman'] .tema-aktif {
+    background: var(--color-permukaan);
+    color: var(--color-teks);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
 }
 
 /* Scrollbar tipis agar panel dalam shell tidak terlihat berat */
 @layer utilities {
     .scrollbar-halus {
         scrollbar-width: thin;
-        scrollbar-color: var(--color-slate-300) transparent;
+        scrollbar-color: var(--color-garis-kuat) transparent;
     }
     .scrollbar-halus::-webkit-scrollbar {
         width: 6px;
         height: 6px;
     }
     .scrollbar-halus::-webkit-scrollbar-thumb {
-        background-color: var(--color-slate-300);
+        background-color: var(--color-garis-kuat);
         border-radius: 9999px;
     }
     .scrollbar-halus::-webkit-scrollbar-track {
@@ -162,7 +363,7 @@
 
    Kontainer peta kini diberi kelas `relative` permanen di markup-nya. */
 .peta-memuat {
-    background: var(--color-slate-100);
+    background: var(--color-permukaan-sedang);
 }
 
 .peta-memuat::after {
@@ -174,7 +375,7 @@
     justify-content: center;
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-slate-400);
+    color: var(--color-teks-samar);
     animation: berdenyut 1.4s ease-in-out infinite;
 }
 

@@ -4,6 +4,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="light dark">
+
+    {{-- Dijalankan sebelum apa pun digambar.
+
+         Pilihan tema disimpan di peramban, dan membacanya lewat modul biasa
+         berarti halaman sempat tergambar terang lebih dulu lalu berubah
+         gelap — kedip putih yang menyakitkan mata, persis pada orang yang
+         memilih mode gelap karena silau. Karena itu skrip ini kecil, sinkron,
+         dan berdiri di sini, bukan di berkas modul.
+
+         Tanpa isi localStorage, tidak ada atribut yang dipasang dan CSS yang
+         memutuskan lewat setelan perangkat. --}}
+    <script>
+        (function () {
+            try {
+                var pilihan = localStorage.getItem('tema');
+                if (pilihan === 'gelap' || pilihan === 'terang') {
+                    document.documentElement.dataset.tema = pilihan;
+                }
+            } catch (e) {}
+        })();
+    </script>
     <title>@yield('judul', 'Dashboard') — Sistem Informasi OP Sungai</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ asset('gambar/ikon-layar-depan.png') }}">
@@ -13,7 +35,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('kepala')
 </head>
-<body class="bg-white lg:h-screen lg:overflow-hidden">
+<body class="bg-permukaan lg:h-screen lg:overflow-hidden">
 
 @php
     /**
@@ -53,7 +75,7 @@
     $menu = collect($kelompok)->flatten(1)->all();
 @endphp
 
-<div class="flex min-h-screen flex-col overflow-hidden bg-white lg:h-screen lg:flex-row">
+<div class="flex min-h-screen flex-col overflow-hidden bg-permukaan lg:h-screen lg:flex-row">
 
         {{-- Rel navigasi --}}
         <aside class="hidden w-[248px] shrink-0 flex-col bg-sungai-950 lg:flex">
@@ -94,6 +116,10 @@
                 @endforeach
             </nav>
 
+            <div class="mx-3 mt-3 flex justify-center">
+                <x-pengalih-tema class="w-full justify-center"/>
+            </div>
+
             <div class="m-3 rounded-2xl bg-white/5 p-3 ring-1 ring-white/10">
                 <div class="flex items-center gap-3">
                     <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emas-400 text-sm font-extrabold text-emas-900">
@@ -119,43 +145,46 @@
         {{-- Area konten --}}
         <div class="flex min-w-0 flex-1 flex-col lg:overflow-hidden">
 
-            <header class="shrink-0 border-b border-slate-100 px-5 pb-4 pt-5 sm:px-7">
+            <header class="shrink-0 border-b border-garis-halus px-5 pb-4 pt-5 sm:px-7">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div class="min-w-0">
-                        <h1 class="truncate text-[22px] font-extrabold tracking-tight text-sungai-950">
+                        <h1 class="truncate text-[22px] font-extrabold tracking-tight text-judul">
                             @yield('judul', 'Dashboard')
                         </h1>
                         @hasSection('subjudul')
-                            <p class="mt-0.5 truncate text-[13px] text-slate-500">@yield('subjudul')</p>
+                            <p class="mt-0.5 truncate text-[13px] text-teks-samar">@yield('subjudul')</p>
                         @endif
                     </div>
                     @yield('aksi-header')
                 </div>
 
                 {{-- Navigasi ringkas untuk layar kecil --}}
-                <nav class="-mx-1 mt-4 flex gap-1 overflow-x-auto scrollbar-halus lg:hidden">
+                <div class="mt-4 flex items-center gap-2 lg:hidden">
+                <nav class="-mx-1 flex flex-1 gap-1 overflow-x-auto scrollbar-halus">
                     @foreach ($menu as $item)
                         <a href="{{ route($item['rute']) }}"
                            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-semibold
                                   {{ request()->routeIs($item['aktif'])
-                                     ? 'bg-sungai-950 text-white'
-                                     : 'text-slate-500 hover:bg-slate-100' }}">
+                                     ? 'bg-aksi text-aksi-teks'
+                                     : 'text-teks-samar hover:bg-permukaan-sedang' }}">
                             {{ $item['label'] }}
                         </a>
                     @endforeach
                 </nav>
+                <x-pengalih-tema gaya="halaman" class="shrink-0"/>
+                </div>
             </header>
 
-            <main class="flex-1 bg-slate-50/60 px-5 py-5 scrollbar-halus sm:px-7 lg:overflow-y-auto">
+            <main class="flex-1 bg-dasar px-5 py-5 scrollbar-halus sm:px-7 lg:overflow-y-auto">
                 @if (session('sukses'))
-                    <div data-pesan-sesaat="sukses" class="mb-4 rounded-xl border border-hijau-500/20 bg-hijau-50 px-4 py-3 text-sm font-medium text-hijau-700">
+                    <div data-pesan-sesaat="sukses" class="mb-4 rounded-xl border border-hijau-500/20 bg-aman-latar px-4 py-3 text-sm font-medium text-aman-teks">
                         {{ session('sukses') }}
                     </div>
                 @endif
 
                 @yield('konten')
 
-                <p class="mt-8 text-center text-[11px] text-slate-500">
+                <p class="mt-8 text-center text-[11px] text-teks-samar">
                     Sistem Informasi Operasi &amp; Pemeliharaan Sungai &middot; Dinas PUPR Provinsi Kalimantan Selatan
                 </p>
             </main>

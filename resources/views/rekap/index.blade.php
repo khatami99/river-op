@@ -7,7 +7,7 @@
 
 @section('aksi-header')
     <a href="{{ route('rekap.export', ['bulan' => $bulan, 'tahun' => $tahun]) }}" data-unduh
-       class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
+       class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-aksi px-4 py-2.5 text-[13px] font-bold text-aksi-teks shadow-lg shadow-aksi/25 transition hover:bg-aksi-sorot">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
         </svg>
@@ -41,31 +41,31 @@
             </div>
         </div>
 
-        <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
-            <p class="text-[12px] font-bold uppercase tracking-wider text-slate-600">Belum Melapor</p>
-            <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $total['belum'] > 0 ? 'text-emas-500' : 'text-hijau-600' }}">
+        <div class="rounded-2xl bg-permukaan p-5 ring-1 ring-garis/70">
+            <p class="text-[12px] font-bold uppercase tracking-wider text-teks-lembut">Belum Melapor</p>
+            <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $total['belum'] > 0 ? 'text-emas-500' : 'text-aman-teks' }}">
                 {{ $total['belum'] }}
             </p>
-            <p class="mt-1.5 text-[12px] font-medium text-slate-500">juru sungai</p>
+            <p class="mt-1.5 text-[12px] font-medium text-teks-samar">juru sungai</p>
         </div>
 
-        <div class="rounded-2xl p-5 ring-1 {{ $total['bermasalah'] > 0 ? 'bg-bata-50 ring-bata-500/20' : 'bg-white ring-slate-200/70' }}">
-            <p class="text-[12px] font-bold uppercase tracking-wider {{ $total['bermasalah'] > 0 ? 'text-bata-700' : 'text-slate-600' }}">
+        <div class="rounded-2xl p-5 ring-1 {{ $total['bermasalah'] > 0 ? 'bg-bahaya-latar ring-bahaya-teks/25' : 'bg-permukaan ring-garis/70' }}">
+            <p class="text-[12px] font-bold uppercase tracking-wider {{ $total['bermasalah'] > 0 ? 'text-bahaya-teks' : 'text-teks-lembut' }}">
                 Temuan Bermasalah
             </p>
-            <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bata-600' : 'text-hijau-600' }}">
+            <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bahaya-teks' : 'text-aman-teks' }}">
                 {{ $total['bermasalah'] }}
             </p>
-            <p class="mt-1.5 text-[12px] font-medium {{ $total['bermasalah'] > 0 ? 'text-bata-700' : 'text-slate-500' }}">
+            <p class="mt-1.5 text-[12px] font-medium {{ $total['bermasalah'] > 0 ? 'text-bahaya-teks' : 'text-teks-samar' }}">
                 dari {{ $total['bangunan'] }} bangunan diperiksa
             </p>
         </div>
     </div>
 
     {{-- Tabel rekap --}}
-    <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="mt-3.5 overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70">
         <div class="px-5 py-4">
-            <h2 class="text-sm font-bold text-sungai-950">Rekap per DAS</h2>
+            <h2 class="text-sm font-bold text-judul">Rekap per DAS</h2>
         </div>
 
         @if ($rekap->isEmpty())
@@ -74,7 +74,7 @@
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
+                        <tr class="border-t border-garis-halus bg-permukaan-lembut/70 text-left text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3 text-center">Juru</th>
                             <th class="px-5 py-3 text-center">Sudah</th>
@@ -84,28 +84,28 @@
                             <th class="px-5 py-3 text-center">Bermasalah</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 text-[13.5px]">
+                    <tbody class="divide-y divide-garis-halus text-[13.5px]">
                         @foreach ($rekap as $baris)
-                            <tr class="transition hover:bg-slate-50">
+                            <tr class="transition hover:bg-permukaan-lembut">
                                 <td class="px-5 py-3">
-                                    <a href="{{ route('das.show', $baris->id) }}" class="font-semibold text-slate-800 hover:text-sungai-600">
+                                    <a href="{{ route('das.show', $baris->id) }}" class="font-semibold text-teks hover:text-info-teks">
                                         {{ $baris->nama_das }}
                                     </a>
-                                    <span class="ml-1 text-[12px] text-slate-500">{{ $baris->kode_das }}</span>
+                                    <span class="ml-1 text-[12px] text-teks-samar">{{ $baris->kode_das }}</span>
                                 </td>
-                                <td class="px-5 py-3 text-center tabular-nums text-slate-600">{{ $baris->jumlah_juru }}</td>
+                                <td class="px-5 py-3 text-center tabular-nums text-teks-lembut">{{ $baris->jumlah_juru }}</td>
                                 <td class="px-5 py-3 text-center">
-                                    <span class="font-bold tabular-nums text-hijau-600">{{ $baris->sudah_lapor }}</span>
+                                    <span class="font-bold tabular-nums text-aman-teks">{{ $baris->sudah_lapor }}</span>
                                 </td>
                                 <td class="px-5 py-3 text-center">
-                                    <span class="font-bold tabular-nums {{ $baris->belum_lapor > 0 ? 'text-emas-600' : 'text-slate-300' }}">
+                                    <span class="font-bold tabular-nums {{ $baris->belum_lapor > 0 ? 'text-peringatan-teks' : 'text-teks-pudar' }}">
                                         {{ $baris->belum_lapor }}
                                     </span>
                                 </td>
-                                <td class="px-5 py-3 text-center tabular-nums text-slate-600">{{ $baris->jumlah_laporan }}</td>
-                                <td class="px-5 py-3 text-center tabular-nums text-slate-600">{{ $baris->jumlah_bangunan }}</td>
+                                <td class="px-5 py-3 text-center tabular-nums text-teks-lembut">{{ $baris->jumlah_laporan }}</td>
+                                <td class="px-5 py-3 text-center tabular-nums text-teks-lembut">{{ $baris->jumlah_bangunan }}</td>
                                 <td class="px-5 py-3 text-center">
-                                    <span class="font-bold tabular-nums {{ $baris->temuan_bermasalah > 0 ? 'text-bata-600' : 'text-slate-300' }}">
+                                    <span class="font-bold tabular-nums {{ $baris->temuan_bermasalah > 0 ? 'text-bahaya-teks' : 'text-teks-pudar' }}">
                                         {{ $baris->temuan_bermasalah }}
                                     </span>
                                 </td>
@@ -113,14 +113,14 @@
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr class="border-t-2 border-slate-200 bg-slate-50 text-[13.5px] font-extrabold text-sungai-950">
+                        <tr class="border-t-2 border-garis bg-permukaan-lembut text-[13.5px] font-extrabold text-judul">
                             <td class="px-5 py-3.5">TOTAL</td>
                             <td class="px-5 py-3.5 text-center tabular-nums">{{ $total['juru'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums text-hijau-700">{{ $total['sudah'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums {{ $total['belum'] > 0 ? 'text-emas-700' : '' }}">{{ $total['belum'] }}</td>
+                            <td class="px-5 py-3.5 text-center tabular-nums text-aman-teks">{{ $total['sudah'] }}</td>
+                            <td class="px-5 py-3.5 text-center tabular-nums {{ $total['belum'] > 0 ? 'text-peringatan-teks' : '' }}">{{ $total['belum'] }}</td>
                             <td class="px-5 py-3.5 text-center tabular-nums">{{ $total['laporan'] }}</td>
                             <td class="px-5 py-3.5 text-center tabular-nums">{{ $total['bangunan'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bata-700' : '' }}">{{ $total['bermasalah'] }}</td>
+                            <td class="px-5 py-3.5 text-center tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bahaya-teks' : '' }}">{{ $total['bermasalah'] }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -129,9 +129,9 @@
     </div>
 
     {{-- Daftar belum melapor --}}
-    <div class="mt-3.5 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="mt-3.5 overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70">
         <div class="flex items-center justify-between px-5 py-4">
-            <h2 class="text-sm font-bold text-sungai-950">Daftar Juru Belum Melapor</h2>
+            <h2 class="text-sm font-bold text-judul">Daftar Juru Belum Melapor</h2>
             <x-lencana :warna="$juruBelumLapor->isEmpty() ? 'normal' : 'emas'">
                 {{ $juruBelumLapor->count() }} juru
             </x-lencana>
@@ -139,41 +139,41 @@
 
         @if ($juruBelumLapor->isEmpty())
             <div class="flex flex-col items-center justify-center px-6 py-14 text-center">
-                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-hijau-50">
-                    <svg class="h-6 w-6 text-hijau-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-aman-latar">
+                    <svg class="h-6 w-6 text-aman-teks" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                 </div>
-                <p class="text-sm font-bold text-hijau-700">Seluruh juru sudah melapor</p>
-                <p class="mt-1 text-[13px] text-slate-500">Periode {{ Bulan::nama($bulan) }} {{ $tahun }}</p>
+                <p class="text-sm font-bold text-aman-teks">Seluruh juru sudah melapor</p>
+                <p class="mt-1 text-[13px] text-teks-samar">Periode {{ Bulan::nama($bulan) }} {{ $tahun }}</p>
             </div>
         @else
             <div class="overflow-x-auto scrollbar-halus">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-t border-slate-100 bg-slate-50/70 text-left text-[12px] font-bold uppercase tracking-wider text-slate-600">
+                        <tr class="border-t border-garis-halus bg-permukaan-lembut/70 text-left text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
                             <th class="px-5 py-3">Nama</th>
                             <th class="px-5 py-3">Telepon</th>
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 text-[13.5px]">
+                    <tbody class="divide-y divide-garis-halus text-[13.5px]">
                         @foreach ($juruBelumLapor as $orang)
-                            <tr class="transition hover:bg-slate-50">
+                            <tr class="transition hover:bg-permukaan-lembut">
                                 <td class="px-5 py-3">
                                     <div class="flex items-center gap-2.5">
-                                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emas-100 text-[12px] font-extrabold text-emas-800">
+                                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-peringatan-latar text-[12px] font-extrabold text-peringatan-teks">
                                             {{ strtoupper(substr($orang->nama, 0, 1)) }}
                                         </span>
-                                        <span class="font-semibold text-slate-800">{{ $orang->nama }}</span>
+                                        <span class="font-semibold text-teks">{{ $orang->nama }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3 tabular-nums text-slate-500">{{ $orang->no_telepon ?: '-' }}</td>
-                                <td class="px-5 py-3 text-slate-500">{{ $orang->das?->nama_das ?? '-' }}</td>
+                                <td class="px-5 py-3 tabular-nums text-teks-samar">{{ $orang->no_telepon ?: '-' }}</td>
+                                <td class="px-5 py-3 text-teks-samar">{{ $orang->das?->nama_das ?? '-' }}</td>
                                 <td class="whitespace-nowrap px-5 py-3 text-right">
                                     <a href="{{ route('juru.show', $orang) }}"
-                                       class="inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-sungai-600 transition hover:bg-sungai-50">
+                                       class="inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-info-teks transition hover:bg-info-latar">
                                         Detail
                                     </a>
                                 </td>

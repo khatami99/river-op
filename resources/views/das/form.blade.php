@@ -2,7 +2,7 @@
 
 @php
     $baru = ! $das->exists;
-    $ki = 'w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-[13.5px] text-slate-900 ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+    $ki = 'w-full rounded-xl border-0 bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-tegas ring-1 ring-inset ring-garis transition placeholder:text-teks-samar focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
 @endphp
 
 @section('judul', $baru ? 'Tambah DAS' : 'Ubah DAS')
@@ -48,10 +48,10 @@
             @php $terpilih = collect(old('kabupaten_ids', $das->exists ? $das->kabupaten->pluck('id')->all() : []))->map(fn ($v) => (string) $v); @endphp
             <div class="grid gap-2 sm:grid-cols-2">
                 @foreach ($daftarKabupaten as $k)
-                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl bg-slate-50 px-3.5 py-2.5 text-[13.5px] text-slate-700 ring-1 ring-inset ring-slate-200 transition hover:bg-white hover:ring-sungai-300">
+                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-sedang ring-1 ring-inset ring-garis transition hover:bg-permukaan hover:ring-info-teks/40">
                         <input type="checkbox" name="kabupaten_ids[]" value="{{ $k->id }}"
                                @checked($terpilih->contains((string) $k->id))
-                               class="h-4 w-4 rounded border-slate-300 text-sungai-600 focus:ring-sungai-500/30">
+                               class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
                         {{ $k->nama }}
                     </label>
                 @endforeach
@@ -64,11 +64,11 @@
         </x-kolom>
 
         {{-- Titik pada peta --}}
-        <div class="border-t border-slate-100 pt-4">
+        <div class="border-t border-garis-halus pt-4">
             <div class="mb-1.5 flex flex-wrap items-center justify-between gap-2">
-                <label class="text-[13px] font-semibold text-slate-700">Titik Perkiraan pada Peta</label>
+                <label class="text-[13px] font-semibold text-teks-sedang">Titik Perkiraan pada Peta</label>
                 <div class="flex items-center gap-2">
-                    <span id="label-koordinat" class="text-[12px] font-medium tabular-nums text-slate-500">
+                    <span id="label-koordinat" class="text-[12px] font-medium tabular-nums text-teks-samar">
                         @if ($das->punyaKoordinat())
                             {{ number_format($das->koordinat_lat, 5) }}, {{ number_format($das->koordinat_lng, 5) }}
                         @else
@@ -76,29 +76,29 @@
                         @endif
                     </span>
                     <button type="button" id="hapus-koordinat"
-                            class="{{ $das->punyaKoordinat() ? '' : 'hidden' }} rounded-lg px-2 py-1 text-[12px] font-bold text-bata-600 transition hover:bg-bata-50">
+                            class="{{ $das->punyaKoordinat() ? '' : 'hidden' }} rounded-lg px-2 py-1 text-[12px] font-bold text-bahaya-teks transition hover:bg-bahaya-latar">
                         Hapus titik
                     </button>
                 </div>
             </div>
 
-            <div id="peta-pilih" class="relative h-64 w-full overflow-hidden rounded-xl ring-1 ring-slate-200"></div>
+            <div id="peta-pilih" class="relative h-64 w-full overflow-hidden rounded-xl ring-1 ring-garis"></div>
 
             <input type="hidden" id="koordinat_lat" name="koordinat_lat" value="{{ old('koordinat_lat', $das->koordinat_lat) }}">
             <input type="hidden" id="koordinat_lng" name="koordinat_lng" value="{{ old('koordinat_lng', $das->koordinat_lng) }}">
 
-            <p class="mt-1.5 text-[12px] text-slate-500">
+            <p class="mt-1.5 text-[12px] text-teks-samar">
                 DAS sebenarnya berupa wilayah, bukan titik &mdash; batasnya mengikuti punggung
                 bukit. Titik ini hanya pegangan agar DAS bisa ditandai dan diklik di peta,
                 bukan letak resminya. Boleh dikosongkan, tetapi DAS tanpa titik tidak akan
                 muncul di halaman Peta DAS.
             </p>
-            @error('koordinat_lat')<p class="mt-1.5 text-[12px] font-medium text-bata-600">{{ $message }}</p>@enderror
+            @error('koordinat_lat')<p class="mt-1.5 text-[12px] font-medium text-bahaya-teks">{{ $message }}</p>@enderror
         </div>
 
-        <label class="flex items-center gap-2.5 border-t border-slate-100 pt-4 text-[13.5px] text-slate-700">
+        <label class="flex items-center gap-2.5 border-t border-garis-halus pt-4 text-[13.5px] text-teks-sedang">
             <input type="checkbox" name="aktif" value="1" @checked(old('aktif', $das->aktif ?? true))
-                   class="h-4 w-4 rounded border-slate-300 text-sungai-600 focus:ring-sungai-500/30">
+                   class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
             DAS aktif — hanya DAS aktif yang dapat dipilih saat menambah juru
         </label>
 

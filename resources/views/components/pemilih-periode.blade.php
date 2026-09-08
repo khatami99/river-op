@@ -14,11 +14,11 @@
      Dijadikan komponen supaya kedua halaman itu benar-benar sama bentuknya,
      bukan sekadar mirip. --}}
 @php
-    $kelasPilihan = 'rounded-xl border-0 bg-slate-50 py-2 pl-3 pr-8 text-[13px] font-semibold text-slate-800 ring-1 ring-inset ring-slate-200 transition focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+    $kelasPilihan = 'rounded-xl border-0 bg-permukaan-lembut py-2 pl-3 pr-8 text-[13px] font-semibold text-teks ring-1 ring-inset ring-garis transition focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
 @endphp
 
-<form method="GET" class="mb-3.5 flex flex-wrap items-center gap-2 rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200/70">
-    <label class="mr-1 text-[12px] font-bold uppercase tracking-wider text-slate-600">Periode</label>
+<form method="GET" class="mb-3.5 flex flex-wrap items-center gap-2 rounded-2xl bg-permukaan px-4 py-3 ring-1 ring-garis/70">
+    <label class="mr-1 text-[12px] font-bold uppercase tracking-wider text-teks-lembut">Periode</label>
 
     <select name="bulan" onchange="this.form.submit()" class="{{ $kelasPilihan }}">
         @foreach (Bulan::NAMA as $nomor => $nama)
@@ -34,7 +34,7 @@
 
     {{-- Tanpa JavaScript, tombol ini yang menggantikan onchange. --}}
     <noscript>
-        <button type="submit" class="rounded-xl bg-sungai-600 px-4 py-2 text-[13px] font-bold text-white">
+        <button type="submit" class="rounded-xl bg-cari px-4 py-2 text-[13px] font-bold text-cari-teks">
             Tampilkan
         </button>
     </noscript>

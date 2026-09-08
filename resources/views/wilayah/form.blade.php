@@ -2,7 +2,7 @@
 
 @php
     $baru = ! $wilayah->exists;
-    $ki = 'w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-[13.5px] text-slate-900 ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+    $ki = 'w-full rounded-xl border-0 bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-tegas ring-1 ring-inset ring-garis transition placeholder:text-teks-samar focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
 @endphp
 
 @section('judul', $baru ? 'Tambah Wilayah Sungai' : 'Ubah Wilayah Sungai')
@@ -32,9 +32,9 @@
                       placeholder="Keterangan singkat mengenai wilayah sungai ini">{{ old('deskripsi', $wilayah->deskripsi) }}</textarea>
         </x-kolom>
 
-        <label class="flex items-center gap-2.5 border-t border-slate-100 pt-4 text-[13.5px] text-slate-700">
+        <label class="flex items-center gap-2.5 border-t border-garis-halus pt-4 text-[13.5px] text-teks-sedang">
             <input type="checkbox" name="aktif" value="1" @checked(old('aktif', $wilayah->aktif ?? true))
-                   class="h-4 w-4 rounded border-slate-300 text-sungai-600 focus:ring-sungai-500/30">
+                   class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
             Wilayah sungai aktif
         </label>
 

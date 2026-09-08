@@ -1,18 +1,18 @@
 @props(['label', 'nama', 'wajib' => false, 'petunjuk' => null])
 
 <div>
-    <label for="{{ $nama }}" class="mb-1.5 block text-[13px] font-semibold text-slate-700">
+    <label for="{{ $nama }}" class="mb-1.5 block text-[13px] font-semibold text-teks-sedang">
         {{ $label }}
-        @if ($wajib)<span class="text-bata-600">*</span>@endif
+        @if ($wajib)<span class="text-bahaya-teks">*</span>@endif
     </label>
 
     {{ $slot }}
 
     @error($nama)
-        <p class="mt-1.5 text-[12px] font-medium text-bata-600">{{ $message }}</p>
+        <p class="mt-1.5 text-[12px] font-medium text-bahaya-teks">{{ $message }}</p>
     @enderror
 
     @if ($petunjuk)
-        <p class="mt-1.5 text-[12px] text-slate-500">{{ $petunjuk }}</p>
+        <p class="mt-1.5 text-[12px] text-teks-samar">{{ $petunjuk }}</p>
     @endif
 </div>

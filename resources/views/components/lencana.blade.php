@@ -2,12 +2,12 @@
 
 @php
     $gaya = [
-        'normal'  => 'bg-hijau-50 text-hijau-700 ring-hijau-500/20',
-        'masalah' => 'bg-bata-50 text-bata-700 ring-bata-500/20',
-        'emas'    => 'bg-emas-50 text-emas-800 ring-emas-500/25',
-        'sungai'  => 'bg-sungai-50 text-sungai-700 ring-sungai-500/20',
-        'netral'  => 'bg-slate-100 text-slate-600 ring-slate-400/20',
-    ][$warna] ?? 'bg-slate-100 text-slate-600 ring-slate-400/20';
+        'normal'  => 'bg-aman-latar text-aman-teks ring-aman-teks/25',
+        'masalah' => 'bg-bahaya-latar text-bahaya-teks ring-bahaya-teks/25',
+        'emas'    => 'bg-peringatan-latar text-peringatan-teks ring-peringatan-teks/25',
+        'sungai'  => 'bg-info-latar text-info-teks ring-info-teks/25',
+        'netral'  => 'bg-permukaan-sedang text-teks-lembut ring-garis-kuat/40',
+    ][$warna] ?? 'bg-permukaan-sedang text-teks-lembut ring-garis-kuat/40';
 @endphp
 
 <span {{ $attributes->merge([

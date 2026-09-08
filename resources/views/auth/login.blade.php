@@ -3,6 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+
+    {{-- Sama seperti pada layouts/app: dijalankan sebelum halaman digambar
+         supaya tidak ada kedip putih. Halaman ini berdiri sendiri, jadi
+         skripnya tidak bisa diwarisi dari sana. --}}
+    <script>
+        (function () {
+            try {
+                var pilihan = localStorage.getItem('tema');
+                if (pilihan === 'gelap' || pilihan === 'terang') {
+                    document.documentElement.dataset.tema = pilihan;
+                }
+            } catch (e) {}
+        })();
+    </script>
     <title>Masuk — Sistem Informasi OP Sungai</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ asset('gambar/ikon-layar-depan.png') }}">
@@ -11,10 +26,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-gradient-to-br from-sungai-100 via-sungai-50 to-emas-50">
+<body class="min-h-screen bg-gradient-to-br from-gradasi-masuk via-info-latar to-peringatan-latar">
 
 <div class="flex min-h-screen items-center justify-center p-4 lg:p-6">
-    <div class="grid w-full max-w-4xl overflow-hidden rounded-[26px] bg-white shadow-2xl shadow-sungai-950/10 lg:grid-cols-2">
+    <div class="grid w-full max-w-4xl overflow-hidden rounded-[26px] bg-permukaan shadow-2xl shadow-sungai-950/10 lg:grid-cols-2">
 
         {{-- Panel identitas --}}
         <div class="relative hidden flex-col justify-between overflow-hidden bg-sungai-950 p-9 lg:flex">
@@ -56,21 +71,21 @@
                     <x-logo class="h-8"/>
                 </div>
                 <div class="leading-tight">
-                    <p class="text-sm font-bold text-sungai-950">Sistem Informasi OP</p>
-                    <p class="text-xs text-slate-500">Dinas PUPR Kalsel</p>
+                    <p class="text-sm font-bold text-judul">Sistem Informasi OP</p>
+                    <p class="text-xs text-teks-samar">Dinas PUPR Kalsel</p>
                 </div>
                 <x-logo-kalsel class="ml-auto h-9 shrink-0"/>
             </div>
 
-            <h2 class="text-xl font-extrabold tracking-tight text-sungai-950">Masuk ke akun staf</h2>
-            <p class="mt-1 text-sm text-slate-500">Gunakan akun yang diberikan administrator.</p>
+            <h2 class="text-xl font-extrabold tracking-tight text-judul">Masuk ke akun staf</h2>
+            <p class="mt-1 text-sm text-teks-samar">Gunakan akun yang diberikan administrator.</p>
 
             @if ($errors->any())
-                <div class="mt-5 flex items-start gap-2.5 rounded-xl border border-bata-500/20 bg-bata-50 px-3.5 py-3">
-                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-bata-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <div class="mt-5 flex items-start gap-2.5 rounded-xl border border-bata-500/20 bg-bahaya-latar px-3.5 py-3">
+                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-bahaya-teks" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>
                     </svg>
-                    <p class="text-[13px] font-medium text-bata-700">{{ $errors->first() }}</p>
+                    <p class="text-[13px] font-medium text-bahaya-teks">{{ $errors->first() }}</p>
                 </div>
             @endif
 
@@ -78,36 +93,36 @@
                 @csrf
 
                 <div>
-                    <label for="username" class="block text-[13px] font-semibold text-slate-700">Username</label>
+                    <label for="username" class="block text-[13px] font-semibold text-teks-sedang">Username</label>
                     <input id="username" name="username" type="text" required autofocus
                            value="{{ old('username') }}" autocomplete="username"
-                           class="mt-1.5 block w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900
-                                  ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500
-                                  focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
+                           class="mt-1.5 block w-full rounded-xl border-0 bg-permukaan-lembut px-3.5 py-2.5 text-sm text-teks-tegas
+                                  ring-1 ring-inset ring-garis transition placeholder:text-teks-samar
+                                  focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
                 </div>
 
                 <div>
-                    <label for="password" class="block text-[13px] font-semibold text-slate-700">Password</label>
+                    <label for="password" class="block text-[13px] font-semibold text-teks-sedang">Password</label>
                     <input id="password" name="password" type="password" required autocomplete="current-password"
-                           class="mt-1.5 block w-full rounded-xl border-0 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900
-                                  ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-500
-                                  focus:bg-white focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
+                           class="mt-1.5 block w-full rounded-xl border-0 bg-permukaan-lembut px-3.5 py-2.5 text-sm text-teks-tegas
+                                  ring-1 ring-inset ring-garis transition placeholder:text-teks-samar
+                                  focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
                 </div>
 
-                <label class="flex items-center gap-2 text-[13px] text-slate-600">
+                <label class="flex items-center gap-2 text-[13px] text-teks-lembut">
                     <input type="checkbox" name="ingat_saya" value="1"
-                           class="h-4 w-4 rounded border-slate-300 text-sungai-600 focus:ring-sungai-500/30">
+                           class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
                     Ingat saya di perangkat ini
                 </label>
 
                 <button type="submit"
-                        class="w-full rounded-xl bg-sungai-950 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sungai-950/20
+                        class="w-full rounded-xl bg-aksi px-4 py-3 text-sm font-bold text-aksi-teks shadow-lg shadow-aksi/30
                                transition hover:bg-sungai-900 focus:outline-none focus:ring-2 focus:ring-sungai-500 focus:ring-offset-2">
                     Masuk
                 </button>
             </form>
 
-            <p class="mt-6 border-t border-slate-100 pt-5 text-center text-xs leading-relaxed text-slate-500">
+            <p class="mt-6 border-t border-garis-halus pt-5 text-center text-xs leading-relaxed text-teks-samar">
                 Juru sungai mengirim laporan melalui aplikasi Android, bukan halaman ini.
             </p>
         </div>

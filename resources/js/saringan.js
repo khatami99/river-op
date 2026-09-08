@@ -117,10 +117,10 @@ if (formulir && wadahHasil) {
 
         document.querySelectorAll('#pemilih-tampilan [data-tampilan]').forEach((t) => {
             const aktif = t === tombol;
-            t.classList.toggle('bg-white', aktif);
-            t.classList.toggle('text-sungai-950', aktif);
+            t.classList.toggle('bg-permukaan', aktif);
+            t.classList.toggle('text-judul', aktif);
             t.classList.toggle('shadow-sm', aktif);
-            t.classList.toggle('text-slate-500', ! aktif);
+            t.classList.toggle('text-teks-samar', ! aktif);
         });
 
         segarkanHasil();
