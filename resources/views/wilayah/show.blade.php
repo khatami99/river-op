@@ -70,43 +70,50 @@
              saja yang bernaung di sini dan di mana letaknya. Wilayah sungai
              sendiri tidak punya titik — ia wilayah, bukan titik — sehingga yang
              digambar adalah DAS-DAS di dalamnya. --}}
-        @if ($dataPeta->isNotEmpty())
-            <div class="mt-3.5 grid gap-3.5 lg:grid-cols-3">
-                <div class="overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70 lg:col-span-2">
-                    <div id="peta-das" class="relative h-[clamp(18rem,40vh,24rem)] w-full"
-                         data-das="{{ $dataPeta->toJson() }}"></div>
-                </div>
+        {{-- Peta dan panelnya adalah anak langsung kisi di atas, bukan kisi
+             tersendiri di dalam salah satu selnya.
 
-                <div class="overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70">
-                    <div id="panel-kosong" class="flex h-full flex-col items-center justify-center px-6 py-10 text-center">
-                        <p class="text-sm font-bold text-teks-sedang">Pilih sebuah DAS</p>
-                        <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-teks-samar">
-                            Klik penanda di peta untuk melihat juru yang bertugas beserta ringkasan laporannya.
-                        </p>
-                    </div>
-                    <div id="panel-das" class="hidden"></div>
-                </div>
+             Dulu keduanya dibungkus kisi baru, sehingga seluruh blok peta
+             terjepit ke dalam satu kolom selebar sepertiga: panelnya menyempit
+             sampai "Bermasalah" terpotong jadi "Berm…", dan catatan di
+             bawahnya terlempar sendirian ke kolom ketiga. --}}
+        @if ($dataPeta->isNotEmpty())
+            <div class="overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70 lg:col-span-2">
+                <div id="peta-das" class="relative h-[clamp(18rem,40vh,24rem)] w-full"
+                     data-das="{{ $dataPeta->toJson() }}"></div>
+
+                {{-- Catatan ini menempel pada petanya, sebab ia menerangkan
+                     apa yang TIDAK ada di peta itu. --}}
+                @if ($belumBerkoordinat > 0)
+                    <p class="border-t border-garis-halus px-5 py-2.5 text-[12px] text-teks-samar">
+                        {{ $belumBerkoordinat }} DAS belum punya titik, sehingga tidak muncul di peta.
+                    </p>
+                @endif
             </div>
 
-            @if ($belumBerkoordinat > 0)
-                <p class="mt-2 text-[12px] text-teks-samar">
-                    {{ $belumBerkoordinat }} DAS belum punya titik dan tidak muncul di peta.
-                </p>
-            @endif
+            <div class="overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70 lg:self-start">
+                <div id="panel-kosong" class="flex flex-col items-center px-6 py-8 text-center">
+                    <p class="text-sm font-bold text-teks-sedang">Pilih sebuah DAS</p>
+                    <p class="mt-1 max-w-[15rem] text-[13px] leading-relaxed text-teks-samar">
+                        Klik penanda di peta untuk melihat juru yang bertugas beserta ringkasan laporannya.
+                    </p>
+                </div>
+                <div id="panel-das" class="hidden"></div>
+            </div>
         @endif
 
         {{-- DAS di bawah wilayah sungai ini --}}
         <div class="overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70 lg:col-span-2">
             <div class="flex items-center justify-between px-5 py-4">
                 <h2 class="text-sm font-bold text-judul">Daerah Aliran Sungai</h2>
-                <x-lencana warna="sungai">{{ $wilayah->das->count() }} DAS</x-lencana>
+                <x-lencana warna="sungai">{{ $daftarDas->total() }} DAS</x-lencana>
             </div>
 
-            @if ($wilayah->das->isEmpty())
+            @if ($daftarDas->isEmpty())
                 <x-kosong judul="Belum ada DAS" pesan="Wilayah sungai ini belum memiliki DAS."/>
             @else
                 <ul class="divide-y divide-garis-halus border-t border-garis-halus">
-                    @foreach ($wilayah->das as $item)
+                    @foreach ($daftarDas as $item)
                         <li>
                             <a href="{{ route('das.show', $item) }}" class="flex items-center gap-3 px-5 py-3 transition hover:bg-permukaan-lembut">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-info-latar">
@@ -126,6 +133,10 @@
                         </li>
                     @endforeach
                 </ul>
+
+                @if ($daftarDas->hasPages())
+                    <div class="border-t border-garis-halus px-5 py-3">{{ $daftarDas->links() }}</div>
+                @endif
             @endif
         </div>
     </div>

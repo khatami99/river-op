@@ -65,6 +65,17 @@ class WilayahSungaiWebController extends Controller
         // yang bernaung di bawah wilayah sungai ini, dan letaknya di mana.
         $bolehTambahJuru = auth('staf')->user()?->isAdmin();
 
+        // Dua kumpulan yang berbeda dengan sengaja: peta memerlukan seluruh
+        // DAS yang bertitik, sedangkan daftar di bawahnya cukup sepuluh per
+        // halaman seperti daftar lain di aplikasi ini. Memaksa keduanya
+        // memakai satu kumpulan berarti memilih antara peta yang tidak utuh
+        // atau daftar sepanjang 62 baris.
+        $daftarDas = $wilayah->das()
+            ->withCount(['juruSungai', 'laporanOp'])
+            ->orderBy('nama_das')
+            ->paginate(10)
+            ->withQueryString();
+
         $dataPeta = $wilayah->das
             ->filter(fn ($d) => $d->punyaKoordinat())
             ->values()
@@ -90,6 +101,7 @@ class WilayahSungaiWebController extends Controller
 
         return view('wilayah.show', [
             'wilayah' => $wilayah,
+            'daftarDas' => $daftarDas,
             'dataPeta' => $dataPeta,
             'belumBerkoordinat' => $wilayah->das->filter(fn ($d) => ! $d->punyaKoordinat())->count(),
         ]);
