@@ -99,29 +99,63 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-garis-halus text-[13.5px]">
+                        {{-- DAS yang belum punya juru ditandai, bukan disembunyikan.
+
+                             Sembilan dari sepuluh baris di sini nol permanen: bukan
+                             karena jurunya lalai, melainkan karena belum ada juru yang
+                             ditugaskan. Sebelumnya keduanya tampil sebagai angka 0 yang
+                             sama persis — padahal yang pertama perlu ditegur dan yang
+                             kedua perlu diisi orang.
+
+                             Kolom laporannya diberi tanda pisah, bukan angka nol. Nol
+                             berarti "diukur, hasilnya kosong"; tanda pisah berarti
+                             "tidak berlaku". Ini tidak menyentuh baris TOTAL, sebab nol
+                             memang tidak menambah apa pun pada penjumlahan. --}}
                         @foreach ($rekap as $baris)
+                            @php $tanpaJuru = (int) $baris->jumlah_juru === 0; @endphp
                             <tr class="transition hover:bg-permukaan-lembut">
                                 <td class="px-5 py-3">
                                     <a href="{{ route('das.show', $baris->id) }}" class="font-semibold text-teks hover:text-info-teks">
                                         {{ $baris->nama_das }}
                                     </a>
                                     <span class="ml-1 text-[12px] text-teks-samar">{{ $baris->kode_das }}</span>
+                                    @if ($tanpaJuru)
+                                        <span class="ml-1.5 inline-block rounded-md bg-permukaan-sedang px-1.5 py-0.5 text-[11px] font-semibold text-teks-samar">
+                                            belum ada juru
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="px-5 py-3 text-center tabular-nums text-teks-lembut">{{ $baris->jumlah_juru }}</td>
+                                <td class="px-5 py-3 text-center tabular-nums {{ $tanpaJuru ? 'text-teks-pudar' : 'text-teks-lembut' }}">{{ $baris->jumlah_juru }}</td>
                                 <td class="px-5 py-3 text-center">
-                                    <span class="font-bold tabular-nums text-aman-teks">{{ $baris->sudah_lapor }}</span>
+                                    @if ($tanpaJuru)
+                                        <span class="text-teks-pudar">&ndash;</span>
+                                    @else
+                                        <span class="font-bold tabular-nums text-aman-teks">{{ $baris->sudah_lapor }}</span>
+                                    @endif
                                 </td>
                                 <td class="px-5 py-3 text-center">
-                                    <span class="font-bold tabular-nums {{ $baris->belum_lapor > 0 ? 'text-peringatan-teks' : 'text-teks-pudar' }}">
-                                        {{ $baris->belum_lapor }}
-                                    </span>
+                                    @if ($tanpaJuru)
+                                        <span class="text-teks-pudar">&ndash;</span>
+                                    @else
+                                        <span class="font-bold tabular-nums {{ $baris->belum_lapor > 0 ? 'text-peringatan-teks' : 'text-teks-pudar' }}">
+                                            {{ $baris->belum_lapor }}
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="px-5 py-3 text-center tabular-nums text-teks-lembut">{{ $baris->jumlah_laporan }}</td>
-                                <td class="px-5 py-3 text-center tabular-nums text-teks-lembut">{{ $baris->jumlah_bangunan }}</td>
+                                <td class="px-5 py-3 text-center tabular-nums {{ $tanpaJuru ? 'text-teks-pudar' : 'text-teks-lembut' }}">
+                                    {{ $tanpaJuru ? '–' : $baris->jumlah_laporan }}
+                                </td>
+                                <td class="px-5 py-3 text-center tabular-nums {{ $tanpaJuru ? 'text-teks-pudar' : 'text-teks-lembut' }}">
+                                    {{ $tanpaJuru ? '–' : $baris->jumlah_bangunan }}
+                                </td>
                                 <td class="px-5 py-3 text-center">
-                                    <span class="font-bold tabular-nums {{ $baris->temuan_bermasalah > 0 ? 'text-bahaya-teks' : 'text-teks-pudar' }}">
-                                        {{ $baris->temuan_bermasalah }}
-                                    </span>
+                                    @if ($tanpaJuru)
+                                        <span class="text-teks-pudar">&ndash;</span>
+                                    @else
+                                        <span class="font-bold tabular-nums {{ $baris->temuan_bermasalah > 0 ? 'text-bahaya-teks' : 'text-teks-pudar' }}">
+                                            {{ $baris->temuan_bermasalah }}
+                                        </span>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
