@@ -19,6 +19,22 @@ function penanda(warna, isi) {
     });
 }
 
+// Penanda polos, tanpa angka di dalamnya. Dipakai pada peta yang penandanya
+// sedikit sehingga identitasnya bisa dibawa label di sebelah, bukan dijejalkan
+// ke dalam lingkaran 30px yang cuma muat dua tiga karakter.
+function penandaPolos(warna) {
+    return L.divIcon({
+        className: '',
+        html: `<div style="
+                    width:16px;height:16px;border-radius:999px;
+                    background:${warna};
+                    box-shadow:0 2px 8px rgba(10,44,72,.35);
+                    border:3px solid #fff;"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+    });
+}
+
 // Isi popup berasal dari isian juru di lapangan, jadi diperlakukan sebagai
 // teks biasa — bukan HTML — supaya tanda kurung sudut tidak merusak tampilan
 // atau menyisipkan markup.
@@ -186,9 +202,25 @@ function siapkanPetaWs() {
     const kosong = document.getElementById('panel-ws-kosong');
 
     daftar.forEach((w) => {
-        // Angka pada penanda adalah jumlah DAS yang dinaungi wilayah ini.
-        L.marker([w.lat, w.lng], { icon: penanda(w.aktif ? '#935c13' : '#475569', w.das) })
+        // Identitasnya dibawa label di sebelah penanda, bukan angka di dalam
+        // lingkaran. Angka telanjang di atas peta adalah teka-teki: "62" bisa
+        // berarti kode, jumlah DAS, atau nomor urut, dan pembaca baru tahu
+        // setelah mengklik. Di peta DAS lingkaran yang bentuknya sama malah
+        // berisi jumlah juru — bentuk yang sama, dua arti berbeda.
+        //
+        // Cara ini hanya bisa dipakai di sini. Wilayah sungai paling banyak
+        // tiga empat; DAS ada 62, dan memberi label pada semuanya akan jadi
+        // tulisan yang saling menimpa.
+        const namaPendek = w.nama.replace(/^Wilayah Sungai\s+/i, '');
+
+        L.marker([w.lat, w.lng], { icon: penandaPolos(w.aktif ? '#935c13' : '#475569') })
             .addTo(peta)
+            .bindTooltip(`${lolos(namaPendek)} &middot; ${w.das} DAS`, {
+                permanent: true,
+                direction: 'right',
+                offset: [10, 0],
+                className: 'label-peta',
+            })
             .on('click', () => tampilkanPanelWs(w, panel, kosong));
     });
 

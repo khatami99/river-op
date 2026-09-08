@@ -22,3 +22,25 @@
        bukan bagian dari peta. */
     background: var(--color-permukaan-sedang);
 }
+
+/* Label nama di sebelah penanda.
+
+   Warnanya dipatok, bukan mengikuti tema, dengan alasan yang sama seperti
+   popup dan tombol perbesar: semua yang digambar di atas peta ikut dunia
+   petanya, yang memang selalu terang. */
+.leaflet-tooltip.label-peta {
+    background: rgb(255 255 255 / 0.94);
+    border: 1px solid rgb(10 44 72 / 0.12);
+    border-radius: 8px;
+    padding: 3px 8px;
+    font: 700 12px/1.25 inherit;
+    color: #0a2c48;
+    box-shadow: 0 2px 8px rgb(10 44 72 / 0.18);
+    white-space: nowrap;
+}
+
+/* Leaflet menggambar segitiga kecil pada tooltip. Di sini penandanya sudah
+   jelas menempel pada labelnya, jadi segitiganya cuma menambah keramaian. */
+.leaflet-tooltip.label-peta::before {
+    display: none;
+}
