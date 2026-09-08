@@ -71,17 +71,31 @@
         @if ($rekap->isEmpty())
             <x-kosong judul="Belum ada DAS terdaftar" pesan="Tambahkan DAS terlebih dahulu."/>
         @else
-            <div class="overflow-x-auto scrollbar-halus">
+            <div class="max-h-[68vh] overflow-auto scrollbar-halus">
                 <table class="w-full">
+                    {{-- Kepala tabel melekat.
+
+                         Enam kolom di sini semuanya angka. Begitu kepalanya
+                         hanyut, deretan "0 0 0 0 0 0" tidak berarti apa-apa —
+                         pembaca tidak lagi tahu mana Sudah, mana Belum, mana
+                         Bermasalah. Dengan 62 DAS, itu terjadi setelah
+                         beberapa detik menggulung.
+
+                         Latarnya wajib pekat, bukan bg-.../70 seperti dulu:
+                         baris yang lewat di bawahnya akan menembus warna
+                         yang tembus pandang. --}}
                     <thead>
-                        <tr class="border-t border-garis-halus bg-permukaan-lembut/70 text-left text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
-                            <th class="px-5 py-3">DAS</th>
-                            <th class="px-5 py-3 text-center">Juru</th>
-                            <th class="px-5 py-3 text-center">Sudah</th>
-                            <th class="px-5 py-3 text-center">Belum</th>
-                            <th class="px-5 py-3 text-center">Laporan</th>
-                            <th class="px-5 py-3 text-center">Bangunan</th>
-                            <th class="px-5 py-3 text-center">Bermasalah</th>
+                        <tr class="text-left text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
+                            @php
+                                $kepala = 'sticky top-0 z-10 border-b border-garis-halus bg-permukaan-lembut px-5 py-3';
+                            @endphp
+                            <th class="{{ $kepala }}">DAS</th>
+                            <th class="{{ $kepala }} text-center">Juru</th>
+                            <th class="{{ $kepala }} text-center">Sudah</th>
+                            <th class="{{ $kepala }} text-center">Belum</th>
+                            <th class="{{ $kepala }} text-center">Laporan</th>
+                            <th class="{{ $kepala }} text-center">Bangunan</th>
+                            <th class="{{ $kepala }} text-center">Bermasalah</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-garis-halus text-[13.5px]">
@@ -113,14 +127,17 @@
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr class="border-t-2 border-garis bg-permukaan-lembut text-[13.5px] font-extrabold text-judul">
-                            <td class="px-5 py-3.5">TOTAL</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums">{{ $total['juru'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums text-aman-teks">{{ $total['sudah'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums {{ $total['belum'] > 0 ? 'text-peringatan-teks' : '' }}">{{ $total['belum'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums">{{ $total['laporan'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums">{{ $total['bangunan'] }}</td>
-                            <td class="px-5 py-3.5 text-center tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bahaya-teks' : '' }}">{{ $total['bermasalah'] }}</td>
+                        @php
+                            $kaki = 'sticky bottom-0 z-10 border-t-2 border-garis bg-permukaan-lembut px-5 py-3.5';
+                        @endphp
+                        <tr class="text-[13.5px] font-extrabold text-judul">
+                            <td class="{{ $kaki }}">TOTAL</td>
+                            <td class="{{ $kaki }} text-center tabular-nums">{{ $total['juru'] }}</td>
+                            <td class="{{ $kaki }} text-center tabular-nums text-aman-teks">{{ $total['sudah'] }}</td>
+                            <td class="{{ $kaki }} text-center tabular-nums {{ $total['belum'] > 0 ? 'text-peringatan-teks' : '' }}">{{ $total['belum'] }}</td>
+                            <td class="{{ $kaki }} text-center tabular-nums">{{ $total['laporan'] }}</td>
+                            <td class="{{ $kaki }} text-center tabular-nums">{{ $total['bangunan'] }}</td>
+                            <td class="{{ $kaki }} text-center tabular-nums {{ $total['bermasalah'] > 0 ? 'text-bahaya-teks' : '' }}">{{ $total['bermasalah'] }}</td>
                         </tr>
                     </tfoot>
                 </table>
