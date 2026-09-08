@@ -18,7 +18,7 @@ class WilayahSungaiWebController extends Controller
                     ->orWhere('kode_sungai', 'like', "%{$cari}%"));
             })
             ->orderBy('nama_sungai')
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         // Wilayah sungai tidak punya koordinat sendiri — ia wilayah, bukan

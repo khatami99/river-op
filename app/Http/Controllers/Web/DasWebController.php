@@ -23,7 +23,7 @@ class DasWebController extends Controller
                     ->orWhere('kode_das', 'like', "%{$cari}%"));
             })
             ->orderBy('nama_das')
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         // Peta DAS dulu berdiri sebagai halaman sendiri. Padahal peta itu cara
@@ -82,7 +82,7 @@ class DasWebController extends Controller
             ->with('juruSungai')
             ->withCount('itemInspeksi')
             ->orderByDesc('tanggal_inspeksi')
-            ->paginate(15);
+            ->paginate(10);
 
         return view('das.show', [
             'das' => $das,

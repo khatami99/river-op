@@ -18,7 +18,7 @@ class StafDinasWebController extends Controller
                     ->orWhere('username', 'like', "%{$cari}%"));
             })
             ->orderBy('nama')
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         return view('staf.index', [

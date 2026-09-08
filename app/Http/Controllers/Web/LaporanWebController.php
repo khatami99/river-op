@@ -47,7 +47,7 @@ class LaporanWebController extends Controller
                 ->withCount('itemInspeksi')
                 ->orderByDesc('tanggal_inspeksi')
                 ->orderByDesc('id')
-                ->paginate(20)
+                ->paginate(10)
                 ->withQueryString()]);
 
         // Permintaan potongan datang dari penyaring yang berubah di layar.

@@ -16,7 +16,7 @@ class LogAktivitasWebController extends Controller
             ->when($request->filled('jenis'), fn ($q) => $q->where('jenis_data', $request->input('jenis')))
             ->when($request->filled('aksi'), fn ($q) => $q->where('aksi', $request->input('aksi')))
             ->orderByDesc('id')
-            ->paginate(30)
+            ->paginate(10)
             ->withQueryString();
 
         return view('log.index', [

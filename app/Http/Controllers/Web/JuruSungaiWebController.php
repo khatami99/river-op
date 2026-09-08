@@ -24,7 +24,7 @@ class JuruSungaiWebController extends Controller
             })
             ->when($request->filled('das_id'), fn ($q) => $q->where('das_id', $request->integer('das_id')))
             ->orderBy('nama')
-            ->paginate(20)
+            ->paginate(10)
             ->withQueryString();
 
         return view('juru.index', [
@@ -47,7 +47,7 @@ class JuruSungaiWebController extends Controller
             ->with('das')
             ->withCount('itemInspeksi')
             ->orderByDesc('tanggal_inspeksi')
-            ->paginate(15)
+            ->paginate(10)
             ->withQueryString();
 
         // Bulan mana saja yang sudah dilaporkan pada tahun terpilih.
