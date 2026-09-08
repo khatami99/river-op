@@ -53,10 +53,15 @@
             ['rute' => 'laporan.index', 'aktif' => 'laporan.*', 'label' => 'Laporan OP',     'ikon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l5.4 5.4a1 1 0 01.3.7V19a2 2 0 01-2 2z'],
             ['rute' => 'rekap.index',   'aktif' => 'rekap.*',   'label' => 'Rekapitulasi',   'ikon' => 'M9 19v-6m4 6V7m4 12v-9M5 21h14a1 1 0 001-1V4a1 1 0 00-1-1H5a1 1 0 00-1 1v16a1 1 0 001 1z'],
         ],
+        // Master Data disusun menurut wadahnya: wilayah sungai menaungi DAS,
+        // dan DAS menaungi juru. Menunya jadi ikut menerangkan susunan
+        // datanya, dan itu pula urutan pengisiannya — DAS tidak bisa dibuat
+        // sebelum wilayah sungainya ada, juru tidak bisa ditugaskan sebelum
+        // DAS-nya ada.
         'Master Data' => [
-            ['rute' => 'juru.index',    'aktif' => 'juru.*',    'label' => 'Juru Sungai',    'ikon' => 'M17 20h5v-2a3 3 0 00-5.4-1.9M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.9M7 20H2v-2a3 3 0 015.4-1.9M7 20v-2c0-.7.1-1.3.4-1.9m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
-            ['rute' => 'das.index',     'aktif' => 'das.*',     'label' => 'DAS',            'ikon' => 'M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0'],
-            ['rute' => 'wilayah.index', 'aktif' => 'wilayah.*', 'label' => 'Wilayah Sungai', 'ikon' => 'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
+            ['rute' => 'wilayah.index', 'aktif' => 'wilayah.*', 'label' => 'Wilayah Sungai',       'ikon' => 'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
+            ['rute' => 'das.index',     'aktif' => 'das.*',     'label' => 'Daerah Aliran Sungai', 'ikon' => 'M3 15c2.5-2 5.5-2 8 0s5.5 2 8 0M3 9c2.5-2 5.5-2 8 0s5.5 2 8 0'],
+            ['rute' => 'juru.index',    'aktif' => 'juru.*',    'label' => 'Juru Sungai',          'ikon' => 'M17 20h5v-2a3 3 0 00-5.4-1.9M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.9M7 20H2v-2a3 3 0 015.4-1.9M7 20v-2c0-.7.1-1.3.4-1.9m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
         ],
         'Sistem' => [
             ['rute' => 'sinkronisasi.index', 'aktif' => 'sinkronisasi.*', 'label' => 'Sinkronisasi', 'ikon' => 'M4 4v5h5M20 20v-5h-5M20 9A8 8 0 006.3 5.3L4 8m16 8-2.3 2.7A8 8 0 014 15'],

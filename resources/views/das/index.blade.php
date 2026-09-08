@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('judul', 'DAS')
+@section('judul', 'Daerah Aliran Sungai')
 @section('subjudul', $das->total() . ' daerah aliran sungai terdaftar')
 
 @section('aksi-header')
