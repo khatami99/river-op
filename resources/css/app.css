@@ -100,7 +100,7 @@
     --color-teks-sedang: #334155;
     --color-teks-lembut: #475569;
     --color-teks-samar: #64748b;
-    --color-teks-pudar: #cbd5e1;         /* hiasan, bukan tulisan yang dibaca */
+    --color-teks-pudar: #94a3b8;         /* paling redup: ikon hiasan, kontrol mati */
     --color-judul: #0a2c48;
 
     /* Tindakan */
@@ -168,7 +168,7 @@
         --color-teks-sedang: #c2d9ea;
         --color-teks-lembut: #a4c2da;
         --color-teks-samar: #89abc6;
-        --color-teks-pudar: #46617a;
+        --color-teks-pudar: #5b7a94;
         --color-judul: #eaf3fa;
 
         --color-aksi: #5db8f8;
@@ -220,7 +220,7 @@
     --color-teks-sedang: #c2d9ea;
     --color-teks-lembut: #a4c2da;
     --color-teks-samar: #89abc6;
-    --color-teks-pudar: #46617a;
+    --color-teks-pudar: #5b7a94;
     --color-judul: #eaf3fa;
 
     --color-aksi: #5db8f8;
