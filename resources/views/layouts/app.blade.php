@@ -75,7 +75,7 @@
     $menu = collect($kelompok)->flatten(1)->all();
 @endphp
 
-<div class="flex min-h-screen flex-col overflow-hidden bg-permukaan lg:h-screen lg:flex-row">
+<div class="flex min-h-screen flex-col bg-permukaan lg:h-screen lg:flex-row lg:overflow-hidden">
 
         {{-- Rel navigasi --}}
         <aside class="hidden w-[248px] shrink-0 flex-col bg-sungai-950 lg:flex">
@@ -125,7 +125,23 @@
         {{-- Area konten --}}
         <div class="flex min-w-0 flex-1 flex-col lg:overflow-hidden">
 
-            <header class="shrink-0 border-b border-garis-halus px-5 pb-4 pt-5 sm:px-7">
+            {{-- Kop halaman melekat.
+
+                 Di layar lebar ia sudah tetap dengan sendirinya: rel navigasi
+                 dan kop adalah rangka, dan yang menggulung cuma area isi di
+                 dalamnya. Diukur pada halaman detail laporan, isi digulung
+                 1798px sementara kop tidak bergerak sedikit pun.
+
+                 Di layar sempit rangka itu tidak berlaku — seluruh halaman
+                 menggulung, dan pada 1500px tombol Blangko sudah berada
+                 1411px di luar layar. Padahal justru sesudah membaca daftar
+                 bangunan sampai bawah orang memutuskan mau mengunduh blangko.
+
+                 z-index-nya sengaja tinggi. Leaflet memberi kontrol petanya
+                 z-index 800, dan kontainer peta tidak membentuk konteks
+                 penumpukan sendiri — jadi tanpa angka di atas itu, tombol
+                 perbesar peta akan tergambar menembus kop yang melekat. --}}
+            <header class="sticky top-0 z-[1000] shrink-0 border-b border-garis-halus bg-permukaan px-5 pb-4 pt-5 sm:px-7">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div class="min-w-0">
                         <h1 class="truncate text-[22px] font-extrabold tracking-tight text-judul">
