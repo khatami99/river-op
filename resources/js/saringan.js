@@ -1,29 +1,33 @@
 /**
- * Penyaring langsung pada halaman Laporan OP.
+ * Penyaring langsung: hasil berubah begitu penyaringnya diubah, dan begitu
+ * pengguna berhenti mengetik — tanpa memuat ulang halaman.
  *
- * Hasil di bawah berubah begitu penyaring diubah, dan begitu pengguna berhenti
- * mengetik — tanpa tombol "terapkan", tanpa memuat ulang halaman.
+ * Kenapa tidak menyaring di sisi peramban saja? Karena daftarnya berpaginasi:
+ * yang ada di layar cuma sepuluh baris dari sekian puluh. Menyaring yang
+ * sepuluh itu akan menjawab "tidak ada hasil" padahal ada, hanya di halaman
+ * lain. Jadi penyaringannya tetap di server, tetapi yang dikirim ulang cuma
+ * area hasilnya. Kotak pencarian tidak pernah kehilangan kursor karena tidak
+ * pernah dibuat ulang.
  *
- * Kenapa tidak menyaring di sisi peramban saja? Karena tabelnya berpaginasi:
- * yang ada di layar hanya 20 baris dari sekian ratus. Menyaring yang 20 itu
- * akan menjawab "tidak ada hasil" padahal ada, hanya di halaman lain. Jadi
- * penyaringannya tetap di server, tetapi yang dikirim ulang cuma area hasilnya.
- * Kotak pencarian tidak pernah kehilangan kursor karena tidak pernah dibuat
- * ulang.
+ * Tombol "Cari" sengaja dibiarkan. Ia jalan keluar bila JavaScript gagal
+ * dimuat, dan sebagian orang memang menunggu ada tombol yang bisa ditekan.
+ *
+ * Dipasang pada tiap formulir yang menandai dirinya dengan data-saring,
+ * menunjuk wadah hasilnya lewat data-hasil. Satu mesin untuk semua halaman
+ * daftar; yang khas halaman Laporan OP — pemilih tabel/peta, tautan export,
+ * kepala kolom yang bisa diurutkan — dicari secara opsional dan diabaikan
+ * kalau tidak ada.
  */
 
-const formulir = document.getElementById('saringan-laporan');
-const wadahHasil = document.getElementById('hasil-laporan');
-
-if (formulir && wadahHasil) {
-    const kotakJumlah = document.getElementById('jumlah-hasil');
+function pasangSaringan(formulir, wadahHasil) {
+    const kotakJumlah = document.getElementById(formulir.dataset.jumlah || 'jumlah-hasil');
     const tautanExport = document.getElementById('tautan-export');
     const kolomTampilan = document.getElementById('tampilan-aktif');
 
     let tundaan = null;
     let permintaanBerjalan = null;
 
-    function alamatSekarang() {
+    const alamatSekarang = () => {
         const data = new FormData(formulir);
         const parameter = new URLSearchParams();
 
@@ -32,9 +36,9 @@ if (formulir && wadahHasil) {
         }
 
         return parameter;
-    }
+    };
 
-    async function segarkanHasil() {
+    const segarkanHasil = async () => {
         const parameter = alamatSekarang();
 
         // Alamat di bilah peramban ikut berubah supaya halaman ini bisa
@@ -78,7 +82,7 @@ if (formulir && wadahHasil) {
         } finally {
             wadahHasil.classList.remove('sedang-menyaring');
         }
-    }
+    };
 
     if (tautanExport) {
         tautanExport.dataset.dasar = tautanExport.href.split('?')[0];
@@ -178,6 +182,11 @@ if (formulir && wadahHasil) {
         formulir.querySelector('input[name="page"]')?.remove();
     });
 }
+
+document.querySelectorAll('form[data-saring]').forEach((formulir) => {
+    const wadah = document.getElementById(formulir.dataset.hasil);
+    if (wadah) pasangSaringan(formulir, wadah);
+});
 
 // Panel pilihan mengambang menutup sendiri ketika pengguna mengklik di luarnya,
 // seperti dropdown biasa. Elemen <details> tidak melakukan itu sendiri.

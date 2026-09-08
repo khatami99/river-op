@@ -46,11 +46,23 @@ class WilayahSungaiWebController extends Controller
                 'url_das' => route('das.index', ['cari' => '']),
             ]);
 
-        return view('wilayah.index', [
+        $data = [
             'dataPeta' => $dataPeta,
             'wilayah' => $wilayah,
             'filter' => ['cari' => $request->input('cari')],
-        ]);
+        ];
+
+        // Permintaan potongan datang dari penyaring yang berubah di layar.
+        // Hanya area hasilnya yang dikirim ulang, sehingga kursor pengguna
+        // tidak lepas dari kotak pencarian dan halaman tidak berkedip.
+        if ($request->boolean('fragmen')) {
+            return response()->json([
+                'hasil' => view('wilayah._hasil', $data)->render(),
+                'jumlah' => $data['wilayah']->total() . ' wilayah sungai terdaftar',
+            ]);
+        }
+
+        return view('wilayah.index', $data);
     }
 
     public function show(WilayahSungai $wilayah)

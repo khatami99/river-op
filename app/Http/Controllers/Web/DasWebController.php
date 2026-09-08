@@ -47,7 +47,7 @@ class DasWebController extends Controller
 
         $bolehTambahJuru = auth('staf')->user()?->isAdmin();
 
-        return view('das.index', [
+        $data = [
             'das' => $das,
             'filter' => ['cari' => $request->input('cari')],
             'dataPeta' => $semuaDas->filter(fn ($d) => $d->punyaKoordinat())->values()->map(fn ($d) => [
@@ -70,7 +70,19 @@ class DasWebController extends Controller
                 ])->values(),
             ]),
             'belumBerkoordinat' => $semuaDas->filter(fn ($d) => ! $d->punyaKoordinat())->values(),
-        ]);
+        ];
+
+        // Permintaan potongan datang dari penyaring yang berubah di layar.
+        // Hanya area hasilnya yang dikirim ulang, sehingga kursor pengguna
+        // tidak lepas dari kotak pencarian dan halaman tidak berkedip.
+        if ($request->boolean('fragmen')) {
+            return response()->json([
+                'hasil' => view('das._hasil', $data)->render(),
+                'jumlah' => $data['das']->total() . ' daerah aliran sungai terdaftar',
+            ]);
+        }
+
+        return view('das.index', $data);
     }
 
     public function show(Das $das)

@@ -21,10 +21,22 @@ class StafDinasWebController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('staf.index', [
+        $data = [
             'staf' => $staf,
             'filter' => ['cari' => $request->input('cari')],
-        ]);
+        ];
+
+        // Permintaan potongan datang dari penyaring yang berubah di layar.
+        // Hanya area hasilnya yang dikirim ulang, sehingga kursor pengguna
+        // tidak lepas dari kotak pencarian dan halaman tidak berkedip.
+        if ($request->boolean('fragmen')) {
+            return response()->json([
+                'hasil' => view('staf._hasil', $data)->render(),
+                'jumlah' => $data['staf']->total() . ' akun staf dinas',
+            ]);
+        }
+
+        return view('staf.index', $data);
     }
 
     public function create()

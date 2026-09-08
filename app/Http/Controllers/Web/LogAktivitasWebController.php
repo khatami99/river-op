@@ -19,7 +19,7 @@ class LogAktivitasWebController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('log.index', [
+        $data = [
             'log' => $log,
             'filter' => [
                 'pelaku' => $request->input('pelaku'),
@@ -28,6 +28,15 @@ class LogAktivitasWebController extends Controller
             ],
             'daftarPelaku' => StafDinas::orderBy('nama')->get(['id', 'nama']),
             'daftarJenis' => LogAktivitas::distinct()->orderBy('jenis_data')->pluck('jenis_data'),
-        ]);
+        ];
+
+        if ($request->boolean('fragmen')) {
+            return response()->json([
+                'hasil' => view('log._hasil', $data)->render(),
+                'jumlah' => $data['log']->total() . ' catatan aktivitas',
+            ]);
+        }
+
+        return view('log.index', $data);
     }
 }

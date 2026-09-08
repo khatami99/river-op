@@ -28,7 +28,8 @@
          Tidak ada tombol "terapkan": hasil di bawah berubah begitu penyaringnya
          diubah, dan begitu pengguna berhenti mengetik. Bentuknya tetap formulir
          sungguhan supaya tetap bekerja bila JavaScript gagal dimuat. --}}
-    <form method="GET" id="saringan-laporan" class="rounded-2xl bg-permukaan p-4 ring-1 ring-garis/70">
+    <form method="GET" id="saringan-laporan" data-saring data-hasil="hasil-laporan"
+          class="rounded-2xl bg-permukaan p-4 ring-1 ring-garis/70">
         {{-- Periode berdiri di barisnya sendiri.
 
              Ia satu-satunya isian yang butuh empat pilihan, dan ketika ditaruh

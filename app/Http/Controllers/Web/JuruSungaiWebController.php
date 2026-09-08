@@ -27,14 +27,26 @@ class JuruSungaiWebController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('juru.index', [
+        $data = [
             'juru' => $juru,
             'daftarDas' => Das::orderBy('nama_das')->get(),
             'filter' => [
                 'cari' => $request->input('cari'),
                 'das_id' => $request->input('das_id'),
             ],
-        ]);
+        ];
+
+        // Permintaan potongan datang dari penyaring yang berubah di layar.
+        // Hanya area hasilnya yang dikirim ulang, sehingga kursor pengguna
+        // tidak lepas dari kotak pencarian dan halaman tidak berkedip.
+        if ($request->boolean('fragmen')) {
+            return response()->json([
+                'hasil' => view('juru._hasil', $data)->render(),
+                'jumlah' => $data['juru']->total() . ' juru terdaftar',
+            ]);
+        }
+
+        return view('juru.index', $data);
     }
 
     public function show(Request $request, JuruSungai $juru)
