@@ -116,30 +116,10 @@
                 @endforeach
             </nav>
 
-            <div class="mx-3 mt-3 flex justify-center">
+            <div class="m-3 mt-4 flex justify-center">
                 <x-pengalih-tema class="w-full justify-center"/>
             </div>
 
-            <div class="m-3 rounded-2xl bg-white/5 p-3 ring-1 ring-white/10">
-                <div class="flex items-center gap-3">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emas-400 text-sm font-extrabold text-emas-900">
-                        {{ strtoupper(substr($staf->nama ?? 'S', 0, 1)) }}
-                    </div>
-                    <div class="min-w-0 flex-1 leading-tight">
-                        <p class="truncate text-[13px] font-semibold text-white">{{ $staf->nama ?? '-' }}</p>
-                        <p class="text-[11px] capitalize text-sungai-300/80">{{ $staf->role ?? '' }}</p>
-                    </div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" title="Keluar"
-                                class="flex h-8 w-8 items-center justify-center rounded-lg text-sungai-300/80 transition hover:bg-white/10 hover:text-white">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
         </aside>
 
         {{-- Area konten --}}
@@ -155,7 +135,13 @@
                             <p class="mt-0.5 truncate text-[13px] text-teks-samar">@yield('subjudul')</p>
                         @endif
                     </div>
-                    @yield('aksi-header')
+                    <div class="flex shrink-0 items-center gap-2.5">
+                        @hasSection('aksi-header')
+                            @yield('aksi-header')
+                            <span class="hidden h-7 w-px bg-garis sm:block"></span>
+                        @endif
+                        <x-menu-akun :staf="$staf"/>
+                    </div>
                 </div>
 
                 {{-- Navigasi ringkas untuk layar kecil --}}

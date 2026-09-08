@@ -6,7 +6,17 @@
 @section('subjudul', $laporan->juruSungai?->nama . ' · ' . optional($laporan->tanggal_inspeksi)->format('d F Y'))
 
 @section('aksi-header')
-    <div class="flex shrink-0 gap-2">
+    <div class="flex shrink-0 items-center gap-2">
+        <a href="{{ route('laporan.index') }}"
+           class="inline-flex items-center gap-1.5 rounded-lg px-2 py-2 text-[13px] font-semibold text-teks-samar transition hover:bg-permukaan-sedang hover:text-teks-sedang">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Kembali
+        </a>
+
+        <span class="hidden h-7 w-px bg-garis sm:block"></span>
+
         <a href="{{ route('laporan.blangko', $laporan) }}" data-unduh
            class="inline-flex items-center gap-2 rounded-xl bg-aksi px-3.5 py-2.5 text-[13px] font-bold text-aksi-teks transition hover:bg-aksi-sorot">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -15,7 +25,7 @@
             Blangko Excel
         </a>
         <a href="{{ route('laporan.blangko.pdf', $laporan) }}" data-unduh
-           class="inline-flex items-center gap-2 rounded-xl bg-bata-600 px-3.5 py-2.5 text-[13px] font-bold text-white transition hover:bg-bata-700">
+           class="inline-flex items-center gap-2 rounded-xl bg-permukaan-sedang px-3.5 py-2.5 text-[13px] font-bold text-teks-sedang transition hover:bg-permukaan-kuat">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
             </svg>
@@ -28,13 +38,6 @@
             </svg>
             Cetak
         </button>
-        <a href="{{ route('laporan.index') }}"
-           class="inline-flex items-center gap-1.5 rounded-xl bg-permukaan-sedang px-3.5 py-2.5 text-[13px] font-bold text-teks-sedang transition hover:bg-permukaan-kuat">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Kembali
-        </a>
     </div>
 @endsection
 
