@@ -5,24 +5,9 @@
 @section('judul', 'Dashboard')
 @section('subjudul', 'Ringkasan pelaporan ' . Bulan::nama($bulan) . ' ' . $tahun)
 
-@section('aksi-header')
-    <form method="GET" class="flex shrink-0 items-center gap-1.5 rounded-xl bg-slate-100 p-1">
-        <select name="bulan" onchange="this.form.submit()"
-                class="rounded-lg border-0 bg-transparent py-1.5 pl-2.5 pr-7 text-[13px] font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sungai-500">
-            @foreach (Bulan::NAMA as $nomor => $nama)
-                <option value="{{ $nomor }}" @selected($nomor === $bulan)>{{ $nama }}</option>
-            @endforeach
-        </select>
-        <select name="tahun" onchange="this.form.submit()"
-                class="rounded-lg border-0 bg-transparent py-1.5 pl-2.5 pr-7 text-[13px] font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sungai-500">
-            @foreach ($daftarTahun as $t)
-                <option value="{{ $t }}" @selected($t === $tahun)>{{ $t }}</option>
-            @endforeach
-        </select>
-    </form>
-@endsection
-
 @section('konten')
+
+    <x-pemilih-periode :bulan="$bulan" :tahun="$tahun" :daftar-tahun="$daftarTahun"/>
 
     @php
         $keliling = 2 * M_PI * 42;

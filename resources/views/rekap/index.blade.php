@@ -6,33 +6,18 @@
 @section('subjudul', 'Rekap pelaporan ' . Bulan::nama($bulan) . ' ' . $tahun)
 
 @section('aksi-header')
-    <div class="flex shrink-0 flex-wrap items-center gap-2">
-        <form method="GET" class="flex items-center gap-1.5 rounded-xl bg-slate-100 p-1">
-            <select name="bulan" onchange="this.form.submit()"
-                    class="rounded-lg border-0 bg-transparent py-1.5 pl-2.5 pr-7 text-[13px] font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sungai-500">
-                @foreach (Bulan::NAMA as $nomor => $nama)
-                    <option value="{{ $nomor }}" @selected($nomor === $bulan)>{{ $nama }}</option>
-                @endforeach
-            </select>
-            <select name="tahun" onchange="this.form.submit()"
-                    class="rounded-lg border-0 bg-transparent py-1.5 pl-2.5 pr-7 text-[13px] font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sungai-500">
-                @foreach ($daftarTahun as $t)
-                    <option value="{{ $t }}" @selected($t === $tahun)>{{ $t }}</option>
-                @endforeach
-            </select>
-        </form>
-
-        <a href="{{ route('rekap.export', ['bulan' => $bulan, 'tahun' => $tahun]) }}" data-unduh
-           class="inline-flex items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-            </svg>
-            Export Rekap
-        </a>
-    </div>
+    <a href="{{ route('rekap.export', ['bulan' => $bulan, 'tahun' => $tahun]) }}" data-unduh
+       class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sungai-950 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-sungai-950/15 transition hover:bg-sungai-900">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        Export Rekap
+    </a>
 @endsection
 
 @section('konten')
+
+    <x-pemilih-periode :bulan="$bulan" :tahun="$tahun" :daftar-tahun="$daftarTahun"/>
 
     @php $persen = $total['juru'] > 0 ? (int) round($total['sudah'] / $total['juru'] * 100) : 0; @endphp
 
