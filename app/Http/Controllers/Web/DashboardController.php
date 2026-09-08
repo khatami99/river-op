@@ -25,17 +25,28 @@ class DashboardController extends Controller
         $sudahLapor = $idSudahLapor->count();
         $belumLapor = max($juruAktif - $sudahLapor, 0);
 
+        // Hanya lima yang ditampilkan, jadi hanya lima yang diambil. Dulu
+        // seluruhnya ditarik lalu digulung di dalam kotak setinggi 340px —
+        // tidak terasa dengan enam juru, tetapi wilayah sungai berikutnya
+        // bisa membawa puluhan.
+        //
+        // Jumlah sebenarnya tidak ikut terpotong: ia dihitung terpisah pada
+        // $belumLapor, dari juru aktif dikurangi yang sudah melapor.
         $juruBelumLapor = JuruSungai::with('das')
             ->where('aktif', true)
             ->whereNotIn('id', $idSudahLapor)
             ->orderBy('nama')
+            ->limit(5)
             ->get();
 
         $persentase = $juruAktif > 0 ? (int) round($sudahLapor / $juruAktif * 100) : 0;
 
+        // Lima, bukan delapan. Kata "terbaru" berhenti bermakna lewat itu,
+        // dan panel yang lebih pendek membuat dua kolom di bawah dashboard
+        // tingginya seimbang.
         $laporanTerbaru = LaporanOp::with(['juruSungai', 'das'])
             ->latest('synced_at')
-            ->limit(8)
+            ->limit(5)
             ->get();
 
         $totalLaporanPeriode = LaporanOp::where('bulan', $bulan)

@@ -190,7 +190,18 @@
         <div class="overflow-hidden rounded-2xl bg-permukaan ring-1 ring-garis/70 lg:col-span-2">
             <div class="flex items-center justify-between px-5 py-4">
                 <h2 class="text-sm font-bold text-judul">Belum Melapor</h2>
-                <x-lencana warna="emas">{{ $juruBelumLapor->count() }} juru</x-lencana>
+                <div class="flex items-center gap-2.5">
+                    <x-lencana warna="emas">{{ $belumLapor }} juru</x-lencana>
+                    @if ($belumLapor > $juruBelumLapor->count())
+                        <a href="{{ route('rekap.index', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                           class="inline-flex items-center gap-1 text-[13px] font-semibold text-info-teks transition hover:underline">
+                            Lihat semua
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    @endif
+                </div>
             </div>
 
             @if ($juruBelumLapor->isEmpty())
@@ -204,7 +215,7 @@
                     <p class="mt-1 text-[13px] text-teks-samar">Periode {{ Bulan::nama($bulan) }} {{ $tahun }}</p>
                 </div>
             @else
-                <ul class="max-h-[340px] divide-y divide-garis-halus overflow-y-auto border-t border-garis-halus scrollbar-halus">
+                <ul class="divide-y divide-garis-halus border-t border-garis-halus">
                     @foreach ($juruBelumLapor as $orang)
                         <li>
                             <a href="{{ route('juru.show', $orang) }}"
