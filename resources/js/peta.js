@@ -37,16 +37,13 @@ function petaDasar(elemen, pusat, zoom) {
     // diklik, dan mati lagi begitu penunjuk keluar.
     peta.on('click', () => peta.scrollWheelZoom.enable());
     elemen.addEventListener('mouseleave', () => peta.scrollWheelZoom.disable());
-    // Ubinnya tetap OpenStreetMap di kedua tema.
+    // Ubinnya sama persis di mode terang maupun gelap.
     //
-    // Sempat dipakai basemap gelap CARTO, tetapi layanan itu kini menuntut
-    // kunci API: ubinnya tetap datang, hanya bertuliskan "API KEY REQUIRED"
-    // melintang di seluruh peta.
-    //
-    // Peredupannya dikerjakan CSS (lihat peta.css) dengan menurunkan
-    // kecerahan, bukan membalik warna. Membalik akan menjadikan air cokelat
-    // dan hutan ungu — peta yang berbohong. Diredupkan, ia cuma peta yang
-    // sama dilihat di tempat teduh: birunya tetap biru, hijaunya tetap hijau.
+    // Sempat dicoba dua cara menggelapkannya: basemap gelap CARTO, yang kini
+    // menuntut kunci API sehingga ubinnya datang bertuliskan "API KEY
+    // REQUIRED" melintang; lalu meredupkan ubin OpenStreetMap lewat CSS.
+    // Yang kedua berhasil secara teknis tetapi terlihat salah — peta jadi
+    // seperti rusak, bukan seperti menyesuaikan diri.
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; Kontributor OpenStreetMap',
@@ -303,7 +300,7 @@ function siapkanPetaLaporan() {
             .addTo(peta)
             .bindPopup(
                 `<strong>Bangunan ${t.nomor}</strong><br>${judul}<br>` +
-                `<span style="color:var(--color-teks-samar)">${t.lat.toFixed(5)}, ${t.lng.toFixed(5)}</span>`
+                `<span style="color:#64748b">${t.lat.toFixed(5)}, ${t.lng.toFixed(5)}</span>`
             );
     });
 
@@ -343,12 +340,12 @@ function siapkanPetaSebaran() {
             `<strong>${lolos(t.jenis)}</strong>`,
             t.nama ? lolos(t.nama) : null,
             t.sungai ? `Sungai ${lolos(t.sungai)}` : null,
-            t.das ? `<span style="color:var(--color-teks-samar)">${lolos(t.das)}</span>` : null,
-            t.juru ? `<span style="color:var(--color-teks-samar)">${lolos(t.juru)} &middot; ${t.tanggal || ''}</span>` : null,
+            t.das ? `<span style="color:#64748b">${lolos(t.das)}</span>` : null,
+            t.juru ? `<span style="color:#64748b">${lolos(t.juru)} &middot; ${t.tanggal || ''}</span>` : null,
             bermasalah
-                ? `<span style="color:var(--color-bahaya-teks);font-weight:700">${t.bermasalah} temuan bermasalah</span>`
-                : '<span style="color:var(--color-aman-teks)">Tidak ada temuan bermasalah</span>',
-            t.url ? `<a href="${t.url}" style="color:var(--color-info-teks);font-weight:700">Buka laporan</a>` : null,
+                ? `<span style="color:#a50e26;font-weight:700">${t.bermasalah} temuan bermasalah</span>`
+                : '<span style="color:#0d6132">Tidak ada temuan bermasalah</span>',
+            t.url ? `<a href="${t.url}" style="color:#12639e;font-weight:700">Buka laporan</a>` : null,
         ].filter(Boolean);
 
         L.circleMarker([t.lat, t.lng], {
@@ -369,8 +366,8 @@ function siapkanPetaSebaran() {
             .addTo(lapisanDas)
             .bindPopup(
                 `<strong>${lolos(d.nama)}</strong><br>` +
-                `<span style="color:var(--color-teks-samar)">${lolos(d.kode)} &middot; titik perkiraan</span><br>` +
-                `<a href="${d.url}" style="color:var(--color-info-teks);font-weight:700">Detail DAS</a>`
+                `<span style="color:#64748b">${lolos(d.kode)} &middot; titik perkiraan</span><br>` +
+                `<a href="${d.url}" style="color:#12639e;font-weight:700">Detail DAS</a>`
             );
     });
 

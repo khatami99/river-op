@@ -14,7 +14,6 @@
  */
 
 const KUNCI = 'tema';
-const sistemGelap = window.matchMedia('(prefers-color-scheme: dark)');
 
 function pilihanTersimpan() {
     try {
@@ -24,19 +23,6 @@ function pilihanTersimpan() {
         // Peramban yang memblokir penyimpanan situs melempar di sini.
         return 'sistem';
     }
-}
-
-function sedangGelap() {
-    const dipasang = document.documentElement.dataset.tema;
-    if (dipasang === 'gelap') return true;
-    if (dipasang === 'terang') return false;
-    return sistemGelap.matches;
-}
-
-function kabarkan() {
-    document.dispatchEvent(new CustomEvent('tema-berubah', {
-        detail: { gelap: sedangGelap() },
-    }));
 }
 
 function tandaiTombol(pilihan) {
@@ -69,7 +55,6 @@ function terapkan(pilihan) {
     }
 
     tandaiTombol(pilihan);
-    kabarkan();
 }
 
 document.addEventListener('click', (e) => {
@@ -77,14 +62,7 @@ document.addEventListener('click', (e) => {
     if (tombol) terapkan(tombol.dataset.temaPilihan);
 });
 
-// Saat pengguna memakai pilihan "ikut sistem", mengubah setelan di perangkat
-// harus langsung terlihat tanpa memuat ulang halaman.
-sistemGelap.addEventListener('change', () => {
-    if (pilihanTersimpan() === 'sistem') kabarkan();
-});
-
+// Perubahan setelan perangkat saat pengguna memakai "ikut sistem" ditangani
+// CSS sendiri lewat prefers-color-scheme; tidak ada yang perlu dikerjakan
+// JavaScript di situ.
 tandaiTombol(pilihanTersimpan());
-
-// Peta dimuat dari berkas terpisah, jadi ia bertanya lewat jendela, bukan
-// lewat impor.
-window.temaGelap = sedangGelap;
