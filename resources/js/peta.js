@@ -215,8 +215,13 @@ function siapkanPetaWs() {
 
         L.marker([w.lat, w.lng], { icon: penandaPolos(w.aktif ? '#935c13' : '#475569') })
             .addTo(peta)
+            // Muncul saat penunjuk lewat, bukan terus-menerus: label yang
+            // selalu tampil menutupi peta yang justru ingin dilihat.
+            //
+            // Sengaja bukan saat diklik. Klik sudah membuka panel di sebelah
+            // yang memuat nama, kode, jumlah DAS, juru, dan laporan — label
+            // yang muncul bersamaan cuma mengulang yang sudah terbaca di situ.
             .bindTooltip(`${lolos(namaPendek)} &middot; ${w.das} DAS`, {
-                permanent: true,
                 direction: 'right',
                 offset: [10, 0],
                 className: 'label-peta',
