@@ -56,6 +56,11 @@ Route::middleware('auth:staf')->group(function () {
 
         // Pengisian kabupaten sekaligus untuk seluruh DAS. Satu per satu
         // lewat formulir edit berarti 62 kali buka-simpan.
+        // Memindahkan juru yang sudah ada ke DAS ini. Sengaja "pindah", bukan
+        // "tambah": satu juru cuma punya satu DAS, jadi menugaskannya ke sini
+        // berarti mencabutnya dari DAS lamanya.
+        Route::post('/das/{das}/pindah-juru', [DasWebController::class, 'pindahJuru'])->name('das.pindah-juru');
+
         Route::get('/das/kabupaten', [DasWebController::class, 'kabupaten'])->name('das.kabupaten');
         Route::post('/das/kabupaten', [DasWebController::class, 'simpanKabupaten'])->name('das.kabupaten.simpan');
 
