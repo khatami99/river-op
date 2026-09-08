@@ -20,6 +20,22 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class LaporanWebController extends Controller
 {
     /**
+     * Kolom yang boleh dipakai mengurutkan.
+     *
+     * Daftar putih, bukan sekadar penyaringan. Nama kolom yang datang dari
+     * alamat halaman tidak boleh menyentuh orderBy secara langsung — di situ
+     * letak lubang SQL injection, dan ini basis data dinas.
+     *
+     * Juru dan DAS sengaja tidak masuk: keduanya sudah punya penyaring, dan
+     * menyaring lebih baik daripada mengurutkan. Diurutkan menurut nama, satu
+     * juru tetap tersebar di beberapa halaman; disaring, yang muncul hanya
+     * miliknya, dan jumlah di subjudul ikut benar.
+     */
+    private const URUTAN = [
+        'tanggal' => 'tanggal_inspeksi',
+        'bangunan' => 'item_inspeksi_count',
+    ];
+    /**
      * Daftar laporan, dalam dua bentuk tampilan atas penyaring yang sama.
      *
      * Peta sebaran dulu berdiri sebagai halaman sendiri dengan penyaring yang
@@ -37,16 +53,22 @@ class LaporanWebController extends Controller
             'daftarJenis' => JenisBangunan::where('aktif', true)->orderBy('urutan')->get(),
             'daftarTahun' => $this->daftarTahun(),
             'filter' => $this->filterAktif($request),
+
+            // Urutan disimpan terpisah dari penyaring. Ia tidak mengubah data
+            // mana yang muncul, hanya susunannya — jadi tombol "Reset" tidak
+            // boleh ikut menyala hanya karena kolomnya diurutkan.
+            'urutan' => $this->urutanAktif($request),
             'tampilan' => $tampilan,
         ];
 
         $data = $bersama + ($tampilan === 'peta'
             ? $this->dataPeta($request) + ['laporan' => null]
-            : ['laporan' => $this->queryTerfilter($request)
-                ->with(['juruSungai', 'das'])
-                ->withCount('itemInspeksi')
-                ->orderByDesc('tanggal_inspeksi')
-                ->orderByDesc('id')
+            : ['laporan' => $this->terapkanUrutan(
+                    $this->queryTerfilter($request)
+                        ->with(['juruSungai', 'das'])
+                        ->withCount('itemInspeksi'),
+                    $bersama['urutan']
+                )
                 ->paginate(10)
                 ->withQueryString()]);
 
@@ -169,11 +191,17 @@ class LaporanWebController extends Controller
 
     public function export(Request $request)
     {
-        $laporan = $this->queryTerfilter($request)
-            ->with(['juruSungai', 'das.wilayahSungai',
-            'das.kabupaten', 'itemInspeksi.temuanKondisi'])
-            ->orderByDesc('tanggal_inspeksi')
-            ->get();
+        // Urutannya ikut, bukan cuma penyaringnya. Tabel yang diurutkan
+        // menurut jumlah bangunan tetapi berkasnya urut tanggal membuat janji
+        // "sesuai filter" jadi setengah benar — dan itu jenis ketidakcocokan
+        // yang baru ketahuan setelah berkasnya dibuka di rapat.
+        $laporan = $this->terapkanUrutan(
+            $this->queryTerfilter($request)
+                ->with(['juruSungai', 'das.wilayahSungai',
+                'das.kabupaten', 'itemInspeksi.temuanKondisi'])
+                ->withCount('itemInspeksi'),
+            $this->urutanAktif($request)
+        )->get();
 
         $tabel = (new TabelExcel('Laporan OP'))
             ->judul('DAFTAR LAPORAN OP SUNGAI')
@@ -379,6 +407,27 @@ class LaporanWebController extends Controller
             'jenis_bangunan_id' => $request->input('jenis_bangunan_id'),
             'bermasalah' => $request->boolean('bermasalah'),
         ];
+    }
+
+    private function urutanAktif(Request $request): array
+    {
+        $kolom = $request->input('urut');
+
+        return [
+            'kolom' => array_key_exists($kolom, self::URUTAN) ? $kolom : 'tanggal',
+            'arah' => $request->input('arah') === 'asc' ? 'asc' : 'desc',
+        ];
+    }
+
+    private function terapkanUrutan($query, array $urutan)
+    {
+        return $query
+            ->orderBy(self::URUTAN[$urutan['kolom']], $urutan['arah'])
+            // Pemutus seri wajib ada. Beberapa laporan jatuh pada tanggal yang
+            // sama, dan tanpa pengurut kedua, basis data bebas menyusunnya
+            // berbeda pada tiap permintaan — sehingga satu baris bisa muncul
+            // dua kali di halaman 1 dan 2, atau lenyap sama sekali.
+            ->orderByDesc('id');
     }
 
     private function daftarTahun(): array

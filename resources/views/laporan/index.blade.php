@@ -144,6 +144,12 @@
 
         <input type="hidden" name="tampilan" id="tampilan-aktif" value="{{ $tampilan }}">
 
+        {{-- Urutan ikut menumpang formulir penyaring: dengan begitu ia terbawa
+             sendiri ke alamat halaman, ke permintaan potongan, dan ke tautan
+             export — tanpa satu pun dari ketiganya perlu tahu soal urutan. --}}
+        <input type="hidden" name="urut" id="urut-aktif" value="{{ $urutan['kolom'] }}">
+        <input type="hidden" name="arah" id="arah-aktif" value="{{ $urutan['arah'] }}">
+
         <div class="mt-3.5 flex flex-wrap items-center justify-between gap-3 border-t border-garis-halus pt-3.5">
             <label class="flex cursor-pointer items-center gap-2.5 text-[13px] text-teks-sedang">
                 <input type="checkbox" name="bermasalah" value="1" @checked($filter['bermasalah'])

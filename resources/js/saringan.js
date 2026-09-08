@@ -126,6 +126,30 @@ if (formulir && wadahHasil) {
         segarkanHasil();
     });
 
+    // Kepala kolom yang bisa diurutkan berada di dalam area hasil, yang
+    // diganti tiap penyaringan — jadi pendengarnya dipasang pada wadahnya,
+    // bukan pada tautannya sendiri.
+    wadahHasil.addEventListener('click', (e) => {
+        const tautan = e.target.closest('[data-urut]');
+        if (! tautan) return;
+
+        e.preventDefault();
+
+        const kolomUrut = document.getElementById('urut-aktif');
+        const kolomArah = document.getElementById('arah-aktif');
+        if (! kolomUrut || ! kolomArah) return;
+
+        kolomUrut.value = tautan.dataset.urut;
+        kolomArah.value = tautan.dataset.arah;
+
+        // Mengganti urutan selalu mengembalikan pembaca ke halaman pertama.
+        // Tetap di halaman tiga setelah urutannya berubah menyodorkan baris
+        // yang seolah acak, sebab yang di situ sekarang bukan lagi yang tadi.
+        formulir.querySelector('input[name="page"]')?.remove();
+
+        segarkanHasil();
+    });
+
     // Tautan halaman berikutnya ikut ditangani agar paginasi tidak memuat
     // ulang seluruh halaman dan membuat penyaring berkedip.
     wadahHasil.addEventListener('click', (e) => {

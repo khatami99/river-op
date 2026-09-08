@@ -60,11 +60,11 @@
                 <table class="w-full">
                     <thead>
                         <tr class="bg-permukaan-lembut/70 text-left text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
-                            <th class="px-5 py-3">Tanggal</th>
+                            <x-kepala-urut kunci="tanggal" :urutan="$urutan">Tanggal</x-kepala-urut>
                             <th class="px-5 py-3">Juru Sungai</th>
                             <th class="px-5 py-3">DAS</th>
                             <th class="px-5 py-3">Periode</th>
-                            <th class="px-5 py-3 text-center">Total Bangunan</th>
+                            <x-kepala-urut kunci="bangunan" :urutan="$urutan" kelas="text-center">Total Bangunan</x-kepala-urut>
                             <th class="px-5 py-3">Cuaca</th>
                             <th class="px-5 py-3"></th>
                         </tr>
