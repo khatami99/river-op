@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Das;
-use App\Models\JuruSungai;
 use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
@@ -100,47 +99,7 @@ class DasWebController extends Controller
         return view('das.show', [
             'das' => $das,
             'laporan' => $laporan,
-
-            // Juru dari DAS lain, untuk pilihan pemindahan. DAS asalnya ikut
-            // dibawa supaya tulisannya bisa menyebutkan dari mana orang itu
-            // akan dicabut — tanpa itu, admin bisa mengosongkan sebuah DAS
-            // tanpa sadar.
-            'juruLain' => JuruSungai::with('das')
-                ->where('das_id', '!=', $das->id)
-                ->where('aktif', true)
-                ->orderBy('nama')
-                ->get(),
         ]);
-    }
-
-    /**
-     * Memindahkan juru yang sudah ada ke DAS ini.
-     *
-     * Bukan "menambah": satu juru hanya punya satu DAS, sehingga menugaskannya
-     * ke sini berarti mencabutnya dari DAS lamanya. Pesan setelahnya menyebut
-     * kedua DAS, sebab yang ditinggalkan bisa jadi malah kosong.
-     */
-    public function pindahJuru(Request $request, Das $das)
-    {
-        $data = $request->validate([
-            'juru_sungai_id' => ['required', 'exists:juru_sungai,id'],
-        ]);
-
-        $juru = JuruSungai::with('das')->findOrFail($data['juru_sungai_id']);
-
-        if ($juru->das_id === $das->id) {
-            return back()->with('sukses', $juru->nama . ' memang sudah bertugas di DAS ini.');
-        }
-
-        $asal = $juru->das?->nama_das;
-        $juru->update(['das_id' => $das->id]);
-
-        return redirect()->route('das.show', $das)->with(
-            'sukses',
-            $asal
-                ? "{$juru->nama} dipindahkan dari {$asal} ke {$das->nama_das}."
-                : "{$juru->nama} ditugaskan ke {$das->nama_das}."
-        );
     }
 
     public function create()

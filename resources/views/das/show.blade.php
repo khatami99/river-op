@@ -74,7 +74,7 @@
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/>
                         </svg>
-                        Juru Baru
+                        Tambah Juru ke DAS Ini
                     </a>
                 @endif
             </div>
@@ -100,41 +100,6 @@
                         </li>
                     @endforeach
                 </ul>
-            @endif
-
-            @if (auth('staf')->user()?->isAdmin() && $juruLain->isNotEmpty())
-                {{-- Sengaja berkata "pindahkan", bukan "tambahkan".
-
-                     Satu juru hanya punya satu DAS, sehingga menugaskannya ke
-                     sini mencabutnya dari DAS lamanya. Kalau tombolnya berkata
-                     "tambah", suatu hari ada admin yang mengosongkan sebuah DAS
-                     tanpa sadar — karena itu DAS asal tiap orang ikut tertulis
-                     pada pilihannya. --}}
-                <form method="POST" action="{{ route('das.pindah-juru', $das) }}"
-                      class="border-t border-garis-halus px-5 py-4">
-                    @csrf
-                    <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
-                        Pindahkan juru dari DAS lain
-                    </label>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <select name="juru_sungai_id" required
-                                class="w-full max-w-md rounded-xl border-0 bg-permukaan-lembut px-3 py-2 text-[13px] font-medium text-teks ring-1 ring-inset ring-garis transition focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none">
-                            <option value="">Pilih juru&hellip;</option>
-                            @foreach ($juruLain as $orang)
-                                <option value="{{ $orang->id }}">
-                                    {{ $orang->nama }} &mdash; sekarang di {{ $orang->das?->nama_das ?? 'tanpa DAS' }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <button type="submit"
-                                class="rounded-xl bg-cari px-4 py-2 text-[13px] font-bold text-cari-teks transition hover:bg-cari-sorot">
-                            Pindahkan ke DAS ini
-                        </button>
-                    </div>
-                    <p class="mt-1.5 text-[12px] text-teks-samar">
-                        Juru yang dipindah akan berhenti bertugas di DAS asalnya.
-                    </p>
-                </form>
             @endif
         </div>
     </div>
