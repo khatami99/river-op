@@ -12,13 +12,28 @@
     @php
         $keliling = 2 * M_PI * 42;
         $sisa = $keliling * (1 - $persentase / 100);
+
+        /* Semua kartu ringkasan bisa diklik, dan itu disengaja.
+
+           Angka di dashboard itu pintu masuk, bukan pengumuman. Begitu membaca
+           "6 laporan bermasalah", pertanyaan berikutnya cuma satu: yang mana?
+           Angka yang tidak bisa menjawabnya jadi jalan buntu.
+
+           Dulu hanya satu kartu yang bisa diklik sementara empat lainnya
+           tampak persis sama. Akibatnya bukan cuma empat kartu yang rugi:
+           pengguna yang mencoba mengklik salah satunya lalu tidak terjadi
+           apa-apa menyimpulkan kartu di sini memang bukan tombol, dan tidak
+           pernah menemukan yang satu-satunya berfungsi. */
+        $kartuBisaDiklik = 'block transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-sungai-950/10'
+            . ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sungai-500';
     @endphp
 
     {{-- Bento ringkasan --}}
     <div class="grid grid-cols-2 gap-3.5 xl:grid-cols-4">
 
         {{-- Kartu utama: progres pelaporan --}}
-        <div class="relative col-span-2 overflow-hidden rounded-2xl bg-sungai-950 p-6 xl:row-span-2">
+        <a href="{{ route('rekap.index', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+           class="{{ $kartuBisaDiklik }} relative col-span-2 overflow-hidden rounded-2xl bg-sungai-950 p-6 xl:row-span-2">
             <svg class="pointer-events-none absolute -bottom-8 -right-10 w-72 opacity-20" viewBox="0 0 400 120" fill="none">
                 <path d="M0 40c40-24 80-24 120 0s80 24 120 0 80-24 120 0 80 24 120 0" stroke="#5db8f8" stroke-width="9" stroke-linecap="round"/>
                 <path d="M0 76c40-24 80-24 120 0s80 24 120 0 80-24 120 0 80 24 120 0" stroke="#127cc4" stroke-width="9" stroke-linecap="round"/>
@@ -53,20 +68,22 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
 
         {{-- Belum melapor: satu-satunya kartu beraksen penuh, karena ini yang perlu ditindaklanjuti --}}
-        <div class="relative overflow-hidden rounded-2xl bg-alarm-latar p-5">
+        <a href="{{ route('rekap.index', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+           class="{{ $kartuBisaDiklik }} relative overflow-hidden rounded-2xl bg-alarm-latar p-5">
             <p class="text-[12px] font-bold uppercase tracking-wider text-alarm-teks">Belum Melapor</p>
             <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums text-alarm-tegas">{{ $belumLapor }}</p>
             <p class="mt-1.5 text-[12px] font-semibold text-alarm-teks">perlu ditindaklanjuti</p>
             <svg class="absolute -bottom-4 -right-3 h-20 w-20 text-alarm-teks/15" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>
             </svg>
-        </div>
+        </a>
 
         {{-- Sudah melapor --}}
-        <div class="rounded-2xl bg-permukaan p-5 ring-1 ring-garis/70">
+        <a href="{{ route('laporan.index', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+           class="{{ $kartuBisaDiklik }} rounded-2xl bg-permukaan p-5 ring-1 ring-garis/70">
             <div class="flex items-center justify-between">
                 <p class="text-[12px] font-bold uppercase tracking-wider text-teks-lembut">Sudah Melapor</p>
                 <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-aman-latar">
@@ -77,10 +94,11 @@
             </div>
             <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums text-aman-teks">{{ $sudahLapor }}</p>
             <p class="mt-1.5 text-[12px] font-medium text-teks-samar">periode ini</p>
-        </div>
+        </a>
 
         {{-- Juru aktif --}}
-        <div class="rounded-2xl bg-permukaan p-5 ring-1 ring-garis/70">
+        <a href="{{ route('juru.index') }}"
+           class="{{ $kartuBisaDiklik }} rounded-2xl bg-permukaan p-5 ring-1 ring-garis/70">
             <div class="flex items-center justify-between">
                 <p class="text-[12px] font-bold uppercase tracking-wider text-teks-lembut">Juru Aktif</p>
                 <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-info-latar">
@@ -91,12 +109,12 @@
             </div>
             <p class="mt-2 text-[40px] font-extrabold leading-none tabular-nums text-judul">{{ $juruAktif }}</p>
             <p class="mt-1.5 text-[12px] font-medium text-teks-samar">terdaftar di sistem</p>
-        </div>
+        </a>
 
         {{-- Laporan bermasalah --}}
-        <a href="{{ route('laporan.index', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
-           class="rounded-2xl p-5 ring-1 transition hover:ring-2
-                  {{ $laporanBermasalah > 0 ? 'bg-bahaya-latar ring-bahaya-teks/25 hover:ring-bata-500/40' : 'bg-permukaan ring-garis/70 hover:ring-garis-kuat' }}">
+        <a href="{{ route('laporan.index', ['bulan' => $bulan, 'tahun' => $tahun, 'bermasalah' => 1]) }}"
+           class="{{ $kartuBisaDiklik }} rounded-2xl p-5 ring-1
+                  {{ $laporanBermasalah > 0 ? 'bg-bahaya-latar ring-bahaya-teks/25' : 'bg-permukaan ring-garis/70' }}">
             <div class="flex items-center justify-between">
                 <p class="text-[12px] font-bold uppercase tracking-wider {{ $laporanBermasalah > 0 ? 'text-bahaya-teks' : 'text-teks-lembut' }}">
                     Laporan Bermasalah
