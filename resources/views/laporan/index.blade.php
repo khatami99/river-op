@@ -111,7 +111,7 @@
 
             <div>
                 <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-teks-lembut">DAS</label>
-                <select name="das_id" class="{{ $kelasInput }}">
+                <select name="das_id" class="{{ $kelasInput }}" data-pilihan-cari="Semua DAS &mdash; ketik untuk mencari&hellip;">
                     <option value="">Semua DAS</option>
                     @foreach ($daftarDas as $w)
                         <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->namaRingkas() }}</option>

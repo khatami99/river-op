@@ -41,10 +41,22 @@
 
         <x-kolom label="DAS Wilayah Kerja" nama="das_id" :wajib="true"
                  petunjuk="Menentukan daerah aliran sungai yang menjadi tanggung jawab juru ini.">
-            <select id="das_id" name="das_id" class="{{ $ki }}" required>
-                <option value="">Pilih DAS</option>
+            @php $dasTerpilih = old('das_id', $juru->das_id); @endphp
+            <select id="das_id" name="das_id" class="{{ $ki }}" required
+                    data-pilihan-cari="Ketik nama DAS&hellip;">
+                {{-- Pilihan kosong hanya ada selagi memang belum ada yang
+                     dipilih. Pada formulir ubah, DAS-nya sudah pasti terisi,
+                     sehingga barisnya cuma jadi sampah di puncak daftar.
+
+                     Pada formulir baru ia WAJIB ada: tanpa itu, DAS pertama
+                     menurut abjad akan terpilih diam-diam, dan admin yang lupa
+                     menyentuh kolom ini menugaskan juru ke DAS yang salah
+                     tanpa pernah tahu. --}}
+                @unless ($dasTerpilih)
+                    <option value="">Pilih DAS</option>
+                @endunless
                 @foreach ($daftarDas as $d)
-                    <option value="{{ $d->id }}" @selected((string) old('das_id', $juru->das_id) === (string) $d->id)>
+                    <option value="{{ $d->id }}" @selected((string) $dasTerpilih === (string) $d->id)>
                         {{ $d->namaRingkas() }} ({{ $d->kode_das }})
                     </option>
                 @endforeach
