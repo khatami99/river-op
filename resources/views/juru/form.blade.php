@@ -45,7 +45,7 @@
                 <option value="">Pilih DAS</option>
                 @foreach ($daftarDas as $d)
                     <option value="{{ $d->id }}" @selected((string) old('das_id', $juru->das_id) === (string) $d->id)>
-                        {{ $d->nama_das }} ({{ $d->kode_das }})
+                        {{ $d->namaRingkas() }} ({{ $d->kode_das }})
                     </option>
                 @endforeach
             </select>

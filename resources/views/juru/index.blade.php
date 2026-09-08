@@ -42,7 +42,7 @@
                 <select name="das_id" class="{{ $kelasInput }}">
                     <option value="">Semua DAS</option>
                     @foreach ($daftarDas as $w)
-                        <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->nama_das }}</option>
+                        <option value="{{ $w->id }}" @selected((string) $filter['das_id'] === (string) $w->id)>{{ $w->namaRingkas() }}</option>
                     @endforeach
                 </select>
             </div>

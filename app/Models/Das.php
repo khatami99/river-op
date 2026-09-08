@@ -35,6 +35,25 @@ class Das extends Model
         'koordinat_lng' => 'decimal:7',
     ];
 
+    /**
+     * Nama tanpa awalan "DAS", khusus untuk tulisan di dalam daftar pilihan.
+     *
+     * Peramban punya ketik-cepat bawaan: saat daftar pilihan terbuka, menekan
+     * huruf melompat ke pilihan yang diawali huruf itu. Kemampuan itu mati
+     * total di sini, sebab keenam puluh dua nama DAS diawali kata yang sama —
+     * hurufnya cuma satu macam, "D". Menekan "K" untuk mencari Kintap tidak
+     * melakukan apa-apa.
+     *
+     * Tanpa awalannya, huruf pertamanya jadi dua belas macam dan mengetik
+     * "kin" langsung melompat ke Kintap. Awalannya tidak hilang dari data,
+     * hanya dari tulisan pilihan — dan di situ ia memang mubazir, sebab
+     * labelnya sudah berkata DAS.
+     */
+    public function namaRingkas(): string
+    {
+        return preg_replace('/^DAS\s+/iu', '', $this->nama_das ?? '');
+    }
+
     public function punyaKoordinat(): bool
     {
         return $this->koordinat_lat !== null && $this->koordinat_lng !== null;
