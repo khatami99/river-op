@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Di balik Cloudflare atau proxy hosting, permintaan sampai ke Laravel
+        // sebagai HTTP biasa. Tanpa ini Laravel menuliskan alamat aset sebagai
+        // http:// pada halaman yang dilayani https://, dan peramban memblokir
+        // seluruhnya — dasbor terbuka tanpa gaya dan tanpa tombol yang jalan.
+        $middleware->trustProxies(at: '*');
+
         // Dashboard dinas memakai guard 'staf'; tamu diarahkan ke halaman login web.
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(fn () => route('dashboard'));
