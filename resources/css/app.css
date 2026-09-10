@@ -253,18 +253,31 @@
     color-scheme: light;
 }
 
-/* Tombol tema yang sedang dipilih. Warnanya ditentukan di sini, bukan di
-   JavaScript, sebab pengalih yang sama dipakai di atas rel navigasi yang
-   selalu gelap dan di kepala halaman yang ikut berubah. */
-[data-pengalih-tema='rel'] .tema-aktif {
-    background: rgb(255 255 255 / 0.15);
-    color: #fff;
+/* Ikon sakelar tema. Yang ditampilkan adalah tujuannya, bukan keadaan
+   sekarang: di tema terang muncul bulan yang berarti "ganti ke gelap", dan
+   sebaliknya. Pemilihan ikonnya diserahkan ke CSS dan bukan ke JavaScript,
+   supaya ikon sudah benar sejak halaman digambar pertama kali dan tidak
+   sempat berkedip salah menunggu skrip dimuat. */
+[data-sakelar-tema] .ikon-matahari {
+    display: none;
 }
 
-[data-pengalih-tema='halaman'] .tema-aktif {
-    background: var(--color-permukaan);
-    color: var(--color-teks);
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+@media (prefers-color-scheme: dark) {
+    :root:not([data-tema='terang']) [data-sakelar-tema] .ikon-bulan {
+        display: none;
+    }
+
+    :root:not([data-tema='terang']) [data-sakelar-tema] .ikon-matahari {
+        display: block;
+    }
+}
+
+:root[data-tema='gelap'] [data-sakelar-tema] .ikon-bulan {
+    display: none;
+}
+
+:root[data-tema='gelap'] [data-sakelar-tema] .ikon-matahari {
+    display: block;
 }
 
 /* Scrollbar tipis agar panel dalam shell tidak terlihat berat */

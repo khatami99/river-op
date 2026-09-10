@@ -121,10 +121,6 @@
                 @endforeach
             </nav>
 
-            <div class="m-3 mt-4 flex justify-center">
-                <x-pengalih-tema class="w-full justify-center"/>
-            </div>
-
         </aside>
 
         {{-- Area konten --}}
@@ -161,13 +157,13 @@
                             @yield('aksi-header')
                             <span class="hidden h-7 w-px bg-garis sm:block"></span>
                         @endif
+                        <x-pengalih-tema/>
                         <x-menu-akun :staf="$staf"/>
                     </div>
                 </div>
 
                 {{-- Navigasi ringkas untuk layar kecil --}}
-                <div class="mt-4 flex items-center gap-2 lg:hidden">
-                <nav class="-mx-1 flex flex-1 gap-1 overflow-x-auto scrollbar-halus">
+                <nav class="scrollbar-halus -mx-1 mt-4 flex gap-1 overflow-x-auto lg:hidden">
                     @foreach ($menu as $item)
                         <a href="{{ route($item['rute']) }}"
                            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-semibold
@@ -178,8 +174,6 @@
                         </a>
                     @endforeach
                 </nav>
-                <x-pengalih-tema gaya="halaman" class="shrink-0"/>
-                </div>
             </header>
 
             <main class="flex-1 bg-dasar px-5 py-5 scrollbar-halus sm:px-7 lg:overflow-y-auto">

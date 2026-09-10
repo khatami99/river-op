@@ -3,66 +3,69 @@
  *
  * Bawaannya mengikuti setelan perangkat: selama pengguna belum memilih apa
  * pun, tidak ada atribut apa pun di <html> dan CSS yang menentukan lewat
- * prefers-color-scheme. Begitu pengguna memilih sendiri, pilihannya menimpa
+ * prefers-color-scheme. Begitu pengguna memencet sakelar, pilihannya menimpa
  * setelan sistem dan diingat — tetapi hanya di peramban itu, sebab ini
  * kenyamanan pribadi, bukan data dinas yang perlu disimpan di server.
  *
  * Pemasangan awalnya TIDAK di berkas ini, melainkan pada skrip kecil di
  * <head>. Modul ini dimuat setelah halaman digambar, dan menunggu sampai ke
  * sini berarti halaman sempat berkedip putih sepersekian detik sebelum
- * berubah gelap.
+ * berubah gelap. Rupa ikon sakelarnya pun bukan urusan berkas ini melainkan
+ * CSS, dengan alasan yang sama.
  */
 
 const KUNCI = 'tema';
 
-function pilihanTersimpan() {
-    try {
-        const nilai = localStorage.getItem(KUNCI);
-        return nilai === 'gelap' || nilai === 'terang' ? nilai : 'sistem';
-    } catch (e) {
-        // Peramban yang memblokir penyimpanan situs melempar di sini.
-        return 'sistem';
+/**
+ * Tema yang sedang TERLIHAT, bukan yang tersimpan.
+ *
+ * Keduanya berbeda selama pengguna belum pernah memilih: yang tersimpan
+ * kosong, yang terlihat ditentukan perangkat. Sakelar harus bekerja atas
+ * yang terlihat — kalau tidak, pencetan pertama di perangkat bermode gelap
+ * malah menyalakan mode gelap lagi dan seolah-olah tombolnya rusak.
+ */
+function temaTerlihat() {
+    const dipaksa = document.documentElement.dataset.tema;
+
+    if (dipaksa === 'gelap' || dipaksa === 'terang') {
+        return dipaksa;
     }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'gelap' : 'terang';
 }
 
-function tandaiTombol(pilihan) {
-    document.querySelectorAll('[data-pengalih-tema] [data-tema-pilihan]').forEach((tombol) => {
-        const aktif = tombol.dataset.temaPilihan === pilihan;
-        tombol.setAttribute('aria-pressed', aktif ? 'true' : 'false');
+function tandaiSakelar() {
+    const berikutnya = temaTerlihat() === 'gelap' ? 'terang' : 'gelap';
+    const label = `Ganti ke mode ${berikutnya}`;
 
-        // Rupa pilihan aktif diserahkan ke CSS: tombol yang sama dipakai di
-        // atas rel navigasi yang gelap dan di kepala halaman yang mengikuti
-        // tema, dan keduanya butuh warna berbeda.
-        tombol.classList.toggle('tema-aktif', aktif);
+    document.querySelectorAll('[data-sakelar-tema]').forEach((tombol) => {
+        tombol.title = label;
+        tombol.setAttribute('aria-label', label);
     });
 }
 
 function terapkan(pilihan) {
-    const akar = document.documentElement;
-
-    if (pilihan === 'gelap' || pilihan === 'terang') {
-        akar.dataset.tema = pilihan;
-    } else {
-        delete akar.dataset.tema;
-    }
+    document.documentElement.dataset.tema = pilihan;
 
     try {
-        pilihan === 'sistem'
-            ? localStorage.removeItem(KUNCI)
-            : localStorage.setItem(KUNCI, pilihan);
+        localStorage.setItem(KUNCI, pilihan);
     } catch (e) {
-        // Tidak apa-apa: temanya tetap berubah, cuma tidak diingat.
+        // Peramban yang memblokir penyimpanan situs melempar di sini. Tidak
+        // apa-apa: temanya tetap berubah, cuma tidak diingat.
     }
 
-    tandaiTombol(pilihan);
+    tandaiSakelar();
 }
 
 document.addEventListener('click', (e) => {
-    const tombol = e.target.closest('[data-tema-pilihan]');
-    if (tombol) terapkan(tombol.dataset.temaPilihan);
+    if (e.target.closest('[data-sakelar-tema]')) {
+        terapkan(temaTerlihat() === 'gelap' ? 'terang' : 'gelap');
+    }
 });
 
-// Perubahan setelan perangkat saat pengguna memakai "ikut sistem" ditangani
-// CSS sendiri lewat prefers-color-scheme; tidak ada yang perlu dikerjakan
-// JavaScript di situ.
-tandaiTombol(pilihanTersimpan());
+// Selama pengguna masih ikut setelan perangkat, temanya sendiri sudah diurus
+// CSS lewat prefers-color-scheme. Yang tidak ikut berubah cuma tulisan pada
+// tombolnya, dan itulah satu-satunya alasan pendengar ini ada.
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', tandaiSakelar);
+
+tandaiSakelar();
