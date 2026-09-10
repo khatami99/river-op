@@ -170,7 +170,11 @@ function pasangChip(kolom) {
         }
 
         ketik.value = '';
-        tutupSaran();
+
+        // Panel dibuka lagi, tidak ditutup. Menutupnya sesudah pilihan pertama
+        // tidak memberi tanda apa pun bahwa masih boleh menambah — orang yang
+        // baru pertama memakainya wajar mengira pekerjaannya sudah selesai.
+        gambarSaran();
     };
 
     const buatBaris = (nilai, sorot) => {

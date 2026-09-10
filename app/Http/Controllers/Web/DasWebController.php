@@ -118,7 +118,7 @@ class DasWebController extends Controller
 
         $das = Das::create(Arr::except($data, ['kabupaten_ids', 'juru_ids']));
         $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
-        $kabar = $this->tugaskanJuru($das, $data['juru_ids'] ?? null);
+        $kabar = $this->tugaskanJuru($das, $data['juru_ids'] ?? []);
 
         return redirect()->route('das.index')
             ->with('sukses', trim('DAS berhasil ditambahkan. ' . $kabar));
@@ -142,7 +142,7 @@ class DasWebController extends Controller
 
         $das->update(Arr::except($data, ['kabupaten_ids', 'juru_ids']));
         $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
-        $kabar = $this->tugaskanJuru($das, $data['juru_ids'] ?? null);
+        $kabar = $this->tugaskanJuru($das, $data['juru_ids'] ?? []);
 
         return redirect()->route('das.index')
             ->with('sukses', trim('Data DAS diperbarui. ' . $kabar));
@@ -202,15 +202,11 @@ class DasWebController extends Controller
      * lain tidak boleh berlalu tanpa disebut — admin harus tahu bahwa DAS
      * Kusan barusan kehilangan jurunya.
      */
-    private function tugaskanJuru(Das $das, ?string $isian): string
+    private function tugaskanJuru(Das $das, array $diminta): string
     {
-        $diminta = collect(explode(',', (string) $isian))
-            ->map(fn ($n) => (int) trim($n))
-            ->filter()
-            ->unique()
-            ->values();
-
-        $sah = JuruSungai::whereIn('id', $diminta)->pluck('id')->all();
+        $sah = JuruSungai::whereIn('id', collect($diminta)->map('intval')->unique())
+            ->pluck('id')
+            ->all();
         $tanpaSah = $sah === [] ? [0] : $sah;
 
         $dipindah = JuruSungai::whereIn('id', $sah)
@@ -250,19 +246,15 @@ class DasWebController extends Controller
             'deskripsi' => ['nullable', 'string'],
             'koordinat_lat' => ['nullable', 'numeric', 'between:-90,90', 'required_with:koordinat_lng'],
             'koordinat_lng' => ['nullable', 'numeric', 'between:-180,180', 'required_with:koordinat_lat'],
-            // Datang sebagai satu untai id dipisah koma, sebab bentuk dasar
-            // isian chip adalah kolom teks biasa — itu pula yang membuatnya
-            // tetap bisa dipakai tanpa JavaScript.
-            'juru_ids' => ['nullable', 'string', 'max:500', function ($atribut, $nilai, $gagal) {
-                $diminta = collect(explode(',', (string) $nilai))
-                    ->map(fn ($n) => (int) trim($n))
-                    ->filter()
-                    ->unique();
-
-                if ($diminta->isNotEmpty() && JuruSungai::whereIn('id', $diminta)->count() !== $diminta->count()) {
-                    $gagal('Ada juru yang sudah tidak terdaftar lagi. Muat ulang halaman ini lalu pilih kembali.');
-                }
-            }],
+            // Kotak centang sungguhan, jadi datang sebagai larik. Sebelumnya
+            // isian ini berbentuk chip dan mengirim untai id dipisah koma;
+            // panel centang tidak memerlukan perantara itu dan sekaligus tetap
+            // bekerja tanpa JavaScript.
+            'juru_ids' => ['nullable', 'array'],
+            'juru_ids.*' => [
+                'integer',
+                Rule::exists('juru_sungai', 'id')->whereNull('deleted_at'),
+            ],
 
             'kabupaten_ids' => ['nullable', 'array'],
 
@@ -278,6 +270,7 @@ class DasWebController extends Controller
             ],
         ], [
             'kabupaten_ids.*.exists' => 'Kabupaten yang dipilih tidak disinggung wilayah sungai ini. Tambahkan lebih dulu pada data wilayah sungainya.',
+            'juru_ids.*.exists' => 'Ada juru yang sudah tidak terdaftar lagi. Muat ulang halaman ini lalu pilih kembali.',
         ], [
             'nama_das' => 'nama DAS',
             'kode_das' => 'kode DAS',

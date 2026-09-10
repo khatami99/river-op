@@ -89,29 +89,12 @@
                             </a>.
                         </p>
                     @else
-                        <details class="relative" data-panel-pilihan>
-                            <summary class="flex cursor-pointer select-none items-center justify-between gap-2 rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] ring-1 ring-inset ring-garis transition hover:bg-permukaan
-                                            list-none [&::-webkit-details-marker]:hidden">
-                                <span data-ringkasan-kabupaten class="truncate {{ $namaTerpilih->isEmpty() ? 'text-teks-samar' : 'text-teks-tegas' }}">
-                                    {{ $namaTerpilih->isEmpty() ? 'Pilih kabupaten' : $namaTerpilih->join(', ') }}
-                                </span>
-                                <svg class="h-4 w-4 shrink-0 text-teks-samar" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/>
-                                </svg>
-                            </summary>
-
-                            <div class="absolute left-0 right-0 z-30 mt-2 rounded-2xl bg-permukaan p-1.5 shadow-lg shadow-sungai-950/10 ring-1 ring-garis">
-                                @foreach ($w->kabupaten as $k)
-                                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] text-teks-sedang transition hover:bg-permukaan-lembut">
-                                        <input type="checkbox" name="kabupaten_ids[]" value="{{ $k->id }}"
-                                               @checked($terpilih->contains((string) $k->id))
-                                               @unless ($aktif) disabled @endunless
-                                               class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
-                                        {{ $k->nama }}
-                                    </label>
-                                @endforeach
-                            </div>
-                        </details>
+                        <x-panel-pilih
+                            nama="kabupaten_ids[]"
+                            kosong="Pilih kabupaten"
+                            :matikan="! $aktif"
+                            :terpilih="$terpilih"
+                            :pilihan="$w->kabupaten->map(fn ($k) => ['nilai' => $k->id, 'label' => $k->nama])"/>
                     @endif
                 </div>
             @endforeach
@@ -119,37 +102,35 @@
 
         {{-- Juru yang bertugas di DAS ini.
 
-             Perhatikan bahwa juru_sungai.das_id berarti satu juru punya
-             TEPAT SATU DAS. Jadi menambahkan juru yang sedang bertugas di DAS
-             lain bukan menyalin, melainkan memindahkan — dan itu harus
-             terbaca sebelum diklik, bukan ketahuan sesudah tersimpan. Karena
-             itu tiap pilihan membawa keterangan "kini di DAS Anu".
+             Perhatikan bahwa juru_sungai.das_id berarti satu juru punya TEPAT
+             SATU DAS. Jadi mencentang juru yang sedang bertugas di DAS lain
+             bukan menyalin, melainkan memindahkan — dan itu harus terbaca
+             sebelum dicentang, bukan ketahuan sesudah tersimpan. Karena itu
+             tiap baris membawa keterangan "kini di DAS Anu".
 
-             Mencopot juru meninggalkannya tanpa DAS. Itu keadaan yang sah,
-             bukan kerusakan: juru bisa didata lebih dulu sementara wilayah
-             tugasnya belum diputuskan. Tetapi selama menggantung, laporan
-             yang ia kirim masuk tanpa DAS dan tidak muncul di Rekapitulasi,
-             jadi peringatannya keluar begitu ada yang dicopot. --}}
+             Melepas centang meninggalkan juru itu tanpa DAS. Itu keadaan yang
+             sah, bukan kerusakan: juru bisa didata lebih dulu sementara
+             wilayah tugasnya belum diputuskan. Tetapi selama menggantung,
+             laporan yang ia kirim masuk tanpa DAS dan tidak muncul di
+             Rekapitulasi.
+
+             Bentuknya sama persis dengan kabupaten di atas, memakai komponen
+             yang sama. Sebelumnya ia berupa chip, dan dua rupa berbeda untuk
+             pekerjaan yang sama di satu halaman tidak punya pembenaran. --}}
         <x-kolom label="Juru yang Bertugas" nama="juru_ids"
-                 petunjuk="Memilih juru yang sedang bertugas di DAS lain akan memindahkannya ke sini.">
-            @php
-                $juruTerpilih = collect(old('juru_ids', $das->exists ? $das->juruSungai->pluck('id')->all() : []))
-                    ->map(fn ($v) => (string) $v);
-            @endphp
-            <input id="juru_ids" name="juru_ids" type="text" class="{{ $ki }}"
-                   value="{{ $juruTerpilih->join(', ') }}"
-                   data-chip
-                   data-chip-petunjuk="Ketik nama juru, atau klik untuk melihat semuanya&hellip;"
-                   data-chip-kosong="Belum ada juru sungai yang terdaftar di sistem." 
-                   data-chip-peringatan="{nama} akan menjadi juru tanpa DAS. Selama begitu, laporan yang dikirim tidak masuk Rekapitulasi mana pun."
-                   data-chip-pilihan="{{ $daftarJuru->map(fn ($j) => [
-                        'nilai' => (string) $j->id,
-                        'label' => $j->nama,
-                        'catatan' => ($j->das_id === $das->id
-                            ? 'sudah di DAS ini'
-                            : ($j->das ? 'kini di ' . $j->das->nama_das : 'belum ditugaskan'))
-                            . ($j->aktif ? '' : ' · nonaktif'),
-                   ])->toJson() }}">
+                 petunjuk="Mencentang juru yang sedang bertugas di DAS lain akan memindahkannya ke sini.">
+            <x-panel-pilih
+                nama="juru_ids[]"
+                kosong="Pilih juru"
+                :terpilih="old('juru_ids', $das->exists ? $das->juruSungai->pluck('id')->all() : [])"
+                :pilihan="$daftarJuru->map(fn ($j) => [
+                    'nilai' => $j->id,
+                    'label' => $j->nama,
+                    'catatan' => ($j->das_id === $das->id
+                        ? 'sudah di DAS ini'
+                        : ($j->das ? 'kini di ' . $j->das->nama_das : 'belum ditugaskan'))
+                        . ($j->aktif ? '' : ' · nonaktif'),
+                ])"/>
         </x-kolom>
 
         <x-kolom label="Deskripsi" nama="deskripsi">

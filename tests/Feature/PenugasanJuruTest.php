@@ -27,7 +27,7 @@ class PenugasanJuruTest extends TestCase
         $this->siapkanMasterData();
     }
 
-    private function simpanDas($das, string $juruIds)
+    private function simpanDas($das, array $juruIds)
     {
         return $this->actingAs($this->buatStaf('admin'), 'staf')
             ->put("/das/{$das->id}", [
@@ -45,7 +45,7 @@ class PenugasanJuruTest extends TestCase
         $satu = $this->buatJuru(null, 'Ahmad Fauzi');
         $dua = $this->buatJuru(null, 'Budi Santoso');
 
-        $this->simpanDas($das, "{$satu->id}, {$dua->id}")
+        $this->simpanDas($das, [$satu->id, $dua->id])
             ->assertSessionHasNoErrors();
 
         // DAS itu wilayah yang luas; membatasinya pada satu juru bukan aturan
@@ -62,7 +62,7 @@ class PenugasanJuruTest extends TestCase
         $tujuan = $this->buatDas('DAS Tujuan');
         $juru = $this->buatJuru($asal, 'Ahmad Fauzi');
 
-        $this->simpanDas($tujuan, (string) $juru->id);
+        $this->simpanDas($tujuan, [$juru->id]);
 
         // Bukan menyalin: satu juru cuma punya satu das_id, jadi DAS asal
         // benar-benar kehilangan orangnya.
@@ -78,7 +78,7 @@ class PenugasanJuruTest extends TestCase
 
         // Tindakan di satu layar yang berakibat pada layar lain tidak boleh
         // berlalu tanpa disebut; admin harus tahu DAS Asal barusan kosong.
-        $this->simpanDas($tujuan, (string) $juru->id)
+        $this->simpanDas($tujuan, [$juru->id])
             ->assertSessionHas('sukses', fn ($pesan) => str_contains($pesan, '1 juru dipindahkan dari DAS lain'));
     }
 
@@ -89,7 +89,7 @@ class PenugasanJuruTest extends TestCase
 
         // Keadaan sah, bukan kerusakan: juru boleh didata lebih dulu selagi
         // wilayah tugasnya belum diputuskan.
-        $this->simpanDas($das, '')
+        $this->simpanDas($das, [])
             ->assertSessionHas('sukses', fn ($pesan) => str_contains($pesan, '1 juru kini tanpa DAS'));
 
         $this->assertNull($juru->fresh()->das_id);
@@ -100,8 +100,8 @@ class PenugasanJuruTest extends TestCase
         $das = $this->buatDas('DAS Kusan');
         $juru = $this->buatJuru($das, 'Ahmad Fauzi');
 
-        $this->simpanDas($das, "{$juru->id}, 999999")
-            ->assertSessionHasErrors('juru_ids');
+        $this->simpanDas($das, [$juru->id, 999999])
+            ->assertSessionHasErrors('juru_ids.1');
 
         // Penolakan tidak boleh menyisakan perubahan separuh jalan.
         $this->assertSame($das->id, $juru->fresh()->das_id);
@@ -116,7 +116,7 @@ class PenugasanJuruTest extends TestCase
 
         // Menyimpan DAS Kusan dengan daftar kosong hanya boleh menyentuh
         // orang-orangnya sendiri.
-        $this->simpanDas($das, '');
+        $this->simpanDas($das, []);
 
         $this->assertNull($juru->fresh()->das_id);
         $this->assertSame($tetangga->id, $jiran->fresh()->das_id);
