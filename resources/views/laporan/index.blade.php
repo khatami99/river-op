@@ -187,7 +187,12 @@
         <div id="pemilih-tampilan" class="flex w-fit items-center gap-1 rounded-xl bg-permukaan-sedang p-1">
             @foreach (['tabel' => 'Tabel', 'peta' => 'Peta'] as $nilai => $label)
                 <button type="button" data-tampilan="{{ $nilai }}"
-                        class="rounded-lg px-4 py-1.5 text-[13px] font-bold transition {{ $tampilan === $nilai ? 'bg-permukaan text-judul shadow-sm' : 'text-teks-samar hover:text-teks-sedang' }}">
+                        {{-- Yang tidak terpilih memakai teks-lembut, bukan teks-samar.
+                             Keduanya duduk di atas permukaan-sedang, dan di situ
+                             teks-samar cuma 4,34 — di bawah ambang 4,5. Bedanya
+                             dengan yang terpilih tetap terbaca lewat pil putih dan
+                             bayangannya, bukan lewat teks yang dipudarkan. --}}
+                        class="rounded-lg px-4 py-1.5 text-[13px] font-bold transition {{ $tampilan === $nilai ? 'bg-permukaan text-judul shadow-sm' : 'text-teks-lembut hover:text-teks-tegas' }}">
                     {{ $label }}
                 </button>
             @endforeach

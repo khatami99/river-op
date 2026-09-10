@@ -166,7 +166,7 @@
                            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-semibold
                                   {{ request()->routeIs($item['aktif'])
                                      ? 'bg-aksi text-aksi-teks'
-                                     : 'text-teks-samar hover:bg-permukaan-sedang' }}">
+                                     : 'text-teks-samar hover:bg-permukaan-sedang hover:text-teks-sedang' }}">
                             {{ $item['label'] }}
                         </a>
                     @endforeach
