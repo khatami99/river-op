@@ -45,13 +45,43 @@ class TataLetakPeriodeTest extends TestCase
         }
     }
 
-    public function test_export_rekap_tetap_di_kop_dan_terpisah_dari_periode(): void
+    /**
+     * Uji ini dulu berbunyi terbalik: Export dijaga TETAP di kop. Alasannya
+     * waktu itu ia tindakan, bukan kendali, jadi tidak ikut pindah bersama
+     * pemilih periode.
+     *
+     * Alasan itu runtuh sesudah akun dan sakelar tema menempati pojok kanan
+     * atas. Kop sekarang menjawab satu hal saja — sedang di halaman apa dan
+     * masuk sebagai siapa — dan tombol Export di sebelah nama pengguna
+     * mencampur identitas dengan tindakan. Tempatnya ikut turun ke badan
+     * halaman.
+     */
+    public function test_tombol_tindakan_berada_di_badan_bukan_di_kop(): void
     {
-        $html = $this->halaman('/rekap');
-        $kop = $this->potong($html, '<header', '<main');
+        $tindakan = [
+            '/rekap' => 'Export Rekap',
+            '/das' => 'Tambah DAS',
+            '/juru' => 'Tambah Juru',
+            '/wilayah' => 'Tambah Wilayah',
+        ];
 
-        $this->assertStringContainsString('Export Rekap', $kop);
-        $this->assertStringNotContainsString('Export Rekap', substr($html, strpos($html, '<main')));
+        foreach ($tindakan as $alamat => $tombol) {
+            $html = $this->halaman($alamat);
+            $kop = $this->potong($html, '<header', '<main');
+            $badan = substr($html, strpos($html, '<main'));
+
+            $this->assertStringNotContainsString($tombol, $kop, "{$tombol} masih di kop {$alamat}");
+            $this->assertStringContainsString($tombol, $badan, "{$tombol} hilang dari badan {$alamat}");
+        }
+    }
+
+    /** Kop tetap memegang identitas: itulah yang tersisa sesudah tindakan pindah. */
+    public function test_kop_masih_memegang_akun_dan_tema(): void
+    {
+        $kop = $this->potong($this->halaman('/rekap'), '<header', '<main');
+
+        $this->assertStringContainsString('data-sakelar-tema', $kop);
+        $this->assertStringContainsString('data-panel-pilihan', $kop);
     }
 
     public function test_periode_masih_mengubah_isi_halaman(): void

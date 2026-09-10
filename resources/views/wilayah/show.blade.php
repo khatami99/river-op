@@ -3,21 +3,13 @@
 @section('judul', $wilayah->nama_sungai)
 @section('subjudul', $wilayah->kode_sungai)
 
-@section('aksi-header')
-    <a href="{{ route('wilayah.index') }}"
-       class="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-permukaan-sedang px-3.5 py-2.5 text-[13px] font-bold text-teks-sedang transition hover:bg-permukaan-kuat">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-        </svg>
-        Kembali
-    </a>
-@endsection
-
 @push('kepala')
     @vite('resources/js/peta.js')
 @endpush
 
 @section('konten')
+
+    <x-aksi-halaman :kembali="route('wilayah.index')"/>
 
     <div class="relative overflow-hidden rounded-2xl bg-sungai-950 p-5">
             <svg class="pointer-events-none absolute -bottom-6 -right-8 w-56 opacity-20" viewBox="0 0 400 120" fill="none">

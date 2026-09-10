@@ -128,15 +128,16 @@
 
             {{-- Kop halaman melekat.
 
-                 Di layar lebar ia sudah tetap dengan sendirinya: rel navigasi
-                 dan kop adalah rangka, dan yang menggulung cuma area isi di
-                 dalamnya. Diukur pada halaman detail laporan, isi digulung
-                 1798px sementara kop tidak bergerak sedikit pun.
+                 Isinya kini cuma dua pertanyaan: aku sedang di halaman apa,
+                 dan sedang masuk sebagai siapa. Tombol tindakan sudah pindah
+                 ke badan halaman lewat komponen aksi-halaman — kop bukan
+                 tempat kendali, dan alasan itu sama persis dengan alasan
+                 pemilih bulan dulu dikeluarkan dari sini.
 
-                 Di layar sempit rangka itu tidak berlaku — seluruh halaman
-                 menggulung, dan pada 1500px tombol Blangko sudah berada
-                 1411px di luar layar. Padahal justru sesudah membaca daftar
-                 bangunan sampai bawah orang memutuskan mau mengunduh blangko.
+                 Tetap melekat walau isinya menyusut, sebab di layar sempit
+                 seluruh halaman menggulung dan navigasi ringkasnya ikut hilang
+                 bersama kop. Orientasi dan jalan keluar harus selalu ada, tak
+                 peduli sudah berapa jauh digulung.
 
                  z-index-nya sengaja tinggi. Leaflet memberi kontrol petanya
                  z-index 800, dan kontainer peta tidak membentuk konteks
@@ -153,10 +154,6 @@
                         @endif
                     </div>
                     <div class="flex shrink-0 items-center gap-2.5">
-                        @hasSection('aksi-header')
-                            @yield('aksi-header')
-                            <span class="hidden h-7 w-px bg-garis sm:block"></span>
-                        @endif
                         <x-pengalih-tema/>
                         <x-menu-akun :staf="$staf"/>
                     </div>

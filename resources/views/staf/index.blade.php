@@ -5,7 +5,13 @@
     <span id="jumlah-hasil">{{ $staf->total() }}{{ ' akun staf dinas' }}</span>
 @endsection
 
-@section('aksi-header')
+@php
+    $ki = 'w-full rounded-xl border-0 bg-permukaan-lembut px-3 py-2 text-[13px] font-medium text-teks ring-1 ring-inset ring-garis transition focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
+@endphp
+
+@section('konten')
+
+    <x-aksi-halaman>
     <a href="{{ route('staf.create') }}"
        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-aksi px-4 py-2.5 text-[13px] font-bold text-aksi-teks shadow-lg shadow-aksi/25 transition hover:bg-aksi-sorot">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
@@ -13,13 +19,7 @@
         </svg>
         Tambah Akun
     </a>
-@endsection
-
-@php
-    $ki = 'w-full rounded-xl border-0 bg-permukaan-lembut px-3 py-2 text-[13px] font-medium text-teks ring-1 ring-inset ring-garis transition focus:bg-permukaan focus:ring-2 focus:ring-inset focus:ring-sungai-500 focus:outline-none';
-@endphp
-
-@section('konten')
+    </x-aksi-halaman>
 
     @error('hapus')
         <div class="mb-3.5 rounded-2xl bg-bahaya-latar px-4 py-3 text-[13px] font-medium text-bahaya-teks ring-1 ring-bahaya-teks/25">

@@ -5,18 +5,13 @@
 @section('judul', 'Detail Laporan OP')
 @section('subjudul', $laporan->juruSungai?->nama . ' · ' . optional($laporan->tanggal_inspeksi)->format('d F Y'))
 
-@section('aksi-header')
-    <div class="flex shrink-0 items-center gap-2">
-        <a href="{{ route('laporan.index') }}"
-           class="inline-flex items-center gap-1.5 rounded-lg px-2 py-2 text-[13px] font-semibold text-teks-samar transition hover:bg-permukaan-sedang hover:text-teks-sedang">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Kembali
-        </a>
+@push('kepala')
+    @vite('resources/js/peta.js')
+@endpush
 
-        <span class="hidden h-7 w-px bg-garis sm:block"></span>
+@section('konten')
 
+    <x-aksi-halaman :kembali="route('laporan.index')">
         <a href="{{ route('laporan.blangko', $laporan) }}" data-unduh
            class="inline-flex items-center gap-2 rounded-xl bg-aksi px-3.5 py-2.5 text-[13px] font-bold text-aksi-teks transition hover:bg-aksi-sorot">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -38,14 +33,7 @@
             </svg>
             Cetak
         </button>
-    </div>
-@endsection
-
-@push('kepala')
-    @vite('resources/js/peta.js')
-@endpush
-
-@section('konten')
+    </x-aksi-halaman>
 
     @php
         $semuaTemuan = $laporan->itemInspeksi->flatMap->temuanKondisi;

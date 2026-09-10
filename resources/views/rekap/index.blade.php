@@ -5,7 +5,9 @@
 @section('judul', 'Rekapitulasi')
 @section('subjudul', 'Rekap pelaporan ' . Bulan::nama($bulan) . ' ' . $tahun)
 
-@section('aksi-header')
+@section('konten')
+
+    <x-aksi-halaman>
     <a href="{{ route('rekap.export', ['bulan' => $bulan, 'tahun' => $tahun]) }}" data-unduh
        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-aksi px-4 py-2.5 text-[13px] font-bold text-aksi-teks shadow-lg shadow-aksi/25 transition hover:bg-aksi-sorot">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -13,9 +15,7 @@
         </svg>
         Export Rekap
     </a>
-@endsection
-
-@section('konten')
+    </x-aksi-halaman>
 
     <x-pemilih-periode :bulan="$bulan" :tahun="$tahun" :daftar-tahun="$daftarTahun"/>
 

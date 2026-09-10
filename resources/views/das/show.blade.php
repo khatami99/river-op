@@ -5,17 +5,9 @@
 @section('judul', $das->nama_das)
 @section('subjudul', $das->wilayahSungai?->nama_sungai ?? 'Wilayah sungai belum diatur')
 
-@section('aksi-header')
-    <a href="{{ route('das.index') }}"
-       class="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-permukaan-sedang px-3.5 py-2.5 text-[13px] font-bold text-teks-sedang transition hover:bg-permukaan-kuat">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-        </svg>
-        Kembali
-    </a>
-@endsection
-
 @section('konten')
+
+    <x-aksi-halaman :kembali="route('das.index')"/>
 
     <div class="grid gap-3.5 lg:grid-cols-3">
 
