@@ -39,22 +39,21 @@
                    value="{{ old('nomor_sk', $juru->nomor_sk) }}">
         </x-kolom>
 
-        <x-kolom label="DAS Wilayah Kerja" nama="das_id" :wajib="true"
-                 petunjuk="Menentukan daerah aliran sungai yang menjadi tanggung jawab juru ini.">
+        <x-kolom label="DAS Wilayah Kerja" nama="das_id"
+                 petunjuk="Daerah aliran sungai yang menjadi tanggung jawab juru ini. Boleh dikosongkan bila wilayah tugasnya belum diputuskan — tetapi selama begitu, laporan yang ia kirim masuk tanpa DAS dan tidak muncul di Rekapitulasi.">
             @php $dasTerpilih = old('das_id', $juru->das_id); @endphp
-            <select id="das_id" name="das_id" class="{{ $ki }}" required
+            <select id="das_id" name="das_id" class="{{ $ki }}"
                     data-pilihan-cari="Ketik nama DAS&hellip;">
-                {{-- Pilihan kosong hanya ada selagi memang belum ada yang
-                     dipilih. Pada formulir ubah, DAS-nya sudah pasti terisi,
-                     sehingga barisnya cuma jadi sampah di puncak daftar.
+                {{-- Pilihan kosong selalu ada sekarang, sebab "belum
+                     ditugaskan" adalah keadaan yang sah: juru bisa didata
+                     lebih dulu sementara wilayah kerjanya belum diputuskan,
+                     dan harus ada cara mengembalikannya ke keadaan itu.
 
-                     Pada formulir baru ia WAJIB ada: tanpa itu, DAS pertama
-                     menurut abjad akan terpilih diam-diam, dan admin yang lupa
-                     menyentuh kolom ini menugaskan juru ke DAS yang salah
-                     tanpa pernah tahu. --}}
-                @unless ($dasTerpilih)
-                    <option value="">Pilih DAS</option>
-                @endunless
+                     Ia juga mencegah kecelakaan yang lebih halus: tanpa
+                     baris ini, DAS pertama menurut abjad akan terpilih
+                     diam-diam, dan admin yang lupa menyentuh kolom ini
+                     menugaskan juru ke DAS yang salah tanpa pernah tahu. --}}
+                <option value="">Belum ditugaskan</option>
                 @foreach ($daftarDas as $d)
                     <option value="{{ $d->id }}" @selected((string) $dasTerpilih === (string) $d->id)>
                         {{ $d->namaRingkas() }} ({{ $d->kode_das }})

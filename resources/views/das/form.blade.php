@@ -118,6 +118,40 @@
             @endforeach
         </x-kolom>
 
+        {{-- Juru yang bertugas di DAS ini.
+
+             Perhatikan bahwa juru_sungai.das_id berarti satu juru punya
+             TEPAT SATU DAS. Jadi menambahkan juru yang sedang bertugas di DAS
+             lain bukan menyalin, melainkan memindahkan — dan itu harus
+             terbaca sebelum diklik, bukan ketahuan sesudah tersimpan. Karena
+             itu tiap pilihan membawa keterangan "kini di DAS Anu".
+
+             Mencopot juru meninggalkannya tanpa DAS. Itu keadaan yang sah,
+             bukan kerusakan: juru bisa didata lebih dulu sementara wilayah
+             tugasnya belum diputuskan. Tetapi selama menggantung, laporan
+             yang ia kirim masuk tanpa DAS dan tidak muncul di Rekapitulasi,
+             jadi peringatannya keluar begitu ada yang dicopot. --}}
+        <x-kolom label="Juru yang Bertugas" nama="juru_ids"
+                 petunjuk="Ketik nama juru yang sudah terdaftar di sistem. Boleh lebih dari satu; satu DAS memang bisa dipegang beberapa juru.">
+            @php
+                $juruTerpilih = collect(old('juru_ids', $das->exists ? $das->juruSungai->pluck('id')->all() : []))
+                    ->map(fn ($v) => (string) $v);
+            @endphp
+            <input id="juru_ids" name="juru_ids" type="text" class="{{ $ki }}"
+                   value="{{ $juruTerpilih->join(', ') }}"
+                   data-chip
+                   data-chip-petunjuk="Ketik nama juru&hellip;"
+                   data-chip-peringatan="{nama} akan menjadi juru tanpa DAS. Selama begitu, laporan yang dikirim tidak masuk Rekapitulasi mana pun."
+                   data-chip-pilihan="{{ $daftarJuru->map(fn ($j) => [
+                        'nilai' => (string) $j->id,
+                        'label' => $j->nama,
+                        'catatan' => ($j->das_id === $das->id
+                            ? 'sudah di DAS ini'
+                            : ($j->das ? 'kini di ' . $j->das->nama_das : 'belum ditugaskan'))
+                            . ($j->aktif ? '' : ' · nonaktif'),
+                   ])->toJson() }}">
+        </x-kolom>
+
         <x-kolom label="Deskripsi" nama="deskripsi">
             <textarea id="deskripsi" name="deskripsi" rows="3" class="{{ $ki }}"
                       placeholder="Keterangan singkat mengenai DAS ini">{{ old('deskripsi', $das->deskripsi) }}</textarea>

@@ -27,7 +27,17 @@
                                     <span class="font-semibold text-teks">{{ $orang->nama }}</span>
                                 </div>
                             </td>
-                                                            <td class="px-5 py-3 text-teks-samar">{{ $orang->das?->nama_das ?? '-' }}</td>
+                                                            <td class="px-5 py-3 text-teks-samar">
+                                                                @if ($orang->das)
+                                                                    {{ $orang->das->nama_das }}
+                                                                @else
+                                                                    {{-- Bukan tanda hubung: juru tanpa DAS bukan data
+                                                                         yang kosong melainkan pekerjaan yang belum
+                                                                         selesai, dan laporannya tidak masuk
+                                                                         Rekapitulasi selama begini. --}}
+                                                                    <x-lencana warna="emas">Belum ditugaskan</x-lencana>
+                                                                @endif
+                                                            </td>
                             <td class="px-5 py-3 text-center">
                                 <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-permukaan-sedang px-1.5 text-[12px] font-bold tabular-nums text-teks-lembut">
                                     {{ $orang->laporan_op_count }}

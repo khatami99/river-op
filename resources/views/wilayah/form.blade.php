@@ -52,8 +52,10 @@
             <input id="kabupaten_nama" name="kabupaten_nama" type="text" class="{{ $ki }}"
                    value="{{ old('kabupaten_nama', $wilayah->exists ? $wilayah->kabupaten->pluck('nama')->join(', ') : '') }}"
                    placeholder="Kotabaru, Tanah Bumbu, Tanah Laut"
-                   data-chip-kabupaten
-                   data-saran="{{ $daftarKabupaten->pluck('nama')->toJson() }}">
+                   data-chip
+                   data-chip-baru="Tambah kabupaten baru"
+                   data-chip-petunjuk="Ketik nama kabupaten&hellip;"
+                   data-chip-pilihan="{{ $daftarKabupaten->map(fn ($k) => ['nilai' => $k->nama, 'label' => $k->nama])->toJson() }}">
 
             {{-- Ejaan yang sudah dipakai, untuk disalin apa adanya. Hanya
                  berguna pada bentuk dasar; begitu chip terpasang, sarannya

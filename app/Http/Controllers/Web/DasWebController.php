@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Das;
+use App\Models\JuruSungai;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,6 +107,7 @@ class DasWebController extends Controller
         return view('das.form', [
             'das' => new Das(['aktif' => true]),
             'daftarWilayah' => $this->wilayahBesertaKabupaten(),
+            'daftarJuru' => $this->daftarJuru(),
         ]);
     }
 
@@ -114,19 +116,22 @@ class DasWebController extends Controller
         $data = $this->validasi($request);
         $data['aktif'] = $request->boolean('aktif');
 
-        $das = Das::create(Arr::except($data, 'kabupaten_ids'));
+        $das = Das::create(Arr::except($data, ['kabupaten_ids', 'juru_ids']));
         $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
+        $kabar = $this->tugaskanJuru($das, $data['juru_ids'] ?? null);
 
-        return redirect()->route('das.index')->with('sukses', 'DAS berhasil ditambahkan.');
+        return redirect()->route('das.index')
+            ->with('sukses', trim('DAS berhasil ditambahkan. ' . $kabar));
     }
 
     public function edit(Das $das)
     {
-        $das->load('kabupaten');
+        $das->load(['kabupaten', 'juruSungai' => fn ($q) => $q->orderBy('nama')]);
 
         return view('das.form', [
             'das' => $das,
             'daftarWilayah' => $this->wilayahBesertaKabupaten(),
+            'daftarJuru' => $this->daftarJuru(),
         ]);
     }
 
@@ -135,10 +140,12 @@ class DasWebController extends Controller
         $data = $this->validasi($request, $das);
         $data['aktif'] = $request->boolean('aktif');
 
-        $das->update(Arr::except($data, 'kabupaten_ids'));
+        $das->update(Arr::except($data, ['kabupaten_ids', 'juru_ids']));
         $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
+        $kabar = $this->tugaskanJuru($das, $data['juru_ids'] ?? null);
 
-        return redirect()->route('das.index')->with('sukses', 'Data DAS diperbarui.');
+        return redirect()->route('das.index')
+            ->with('sukses', trim('Data DAS diperbarui. ' . $kabar));
     }
 
     public function destroy(Das $das)
@@ -170,6 +177,67 @@ class DasWebController extends Controller
             ->get();
     }
 
+    /**
+     * Semua juru, bukan hanya yang aktif.
+     *
+     * Juru nonaktif pun tetap tercatat memegang DAS, dan kalau ia tidak ikut
+     * di daftar ini chipnya akan tampil sebagai angka id tanpa nama —
+     * kelihatan seperti data rusak padahal cuma tidak dikenali.
+     */
+    private function daftarJuru()
+    {
+        return JuruSungai::with('das')->orderBy('nama')->get();
+    }
+
+    /**
+     * Menetapkan siapa saja yang bertugas di DAS ini.
+     *
+     * juru_sungai.das_id berarti satu juru punya tepat satu DAS, jadi ini
+     * bukan tabel penghubung yang bisa disinkronkan: menugaskan juru ke sini
+     * otomatis mencabutnya dari DAS sebelumnya, dan mencopotnya dari sini
+     * meninggalkannya tanpa DAS sama sekali.
+     *
+     * Keduanya dihitung lebih dulu lalu dikabarkan pada pesan berhasil.
+     * Perpindahan yang diminta lewat satu layar tetapi berakibat pada layar
+     * lain tidak boleh berlalu tanpa disebut — admin harus tahu bahwa DAS
+     * Kusan barusan kehilangan jurunya.
+     */
+    private function tugaskanJuru(Das $das, ?string $isian): string
+    {
+        $diminta = collect(explode(',', (string) $isian))
+            ->map(fn ($n) => (int) trim($n))
+            ->filter()
+            ->unique()
+            ->values();
+
+        $sah = JuruSungai::whereIn('id', $diminta)->pluck('id')->all();
+        $tanpaSah = $sah === [] ? [0] : $sah;
+
+        $dipindah = JuruSungai::whereIn('id', $sah)
+            ->whereNotNull('das_id')
+            ->where('das_id', '!=', $das->id)
+            ->count();
+
+        $dicopot = JuruSungai::where('das_id', $das->id)
+            ->whereNotIn('id', $tanpaSah)
+            ->count();
+
+        DB::transaction(function () use ($das, $sah, $tanpaSah) {
+            JuruSungai::where('das_id', $das->id)
+                ->whereNotIn('id', $tanpaSah)
+                ->update(['das_id' => null]);
+
+            if ($sah !== []) {
+                JuruSungai::whereIn('id', $sah)->update(['das_id' => $das->id]);
+            }
+        });
+
+        return collect([
+            $dipindah > 0 ? "{$dipindah} juru dipindahkan dari DAS lain." : null,
+            $dicopot > 0 ? "{$dicopot} juru kini tanpa DAS." : null,
+        ])->filter()->join(' ');
+    }
+
     private function validasi(Request $request, ?Das $das = null): array
     {
         return $request->validate([
@@ -182,6 +250,20 @@ class DasWebController extends Controller
             'deskripsi' => ['nullable', 'string'],
             'koordinat_lat' => ['nullable', 'numeric', 'between:-90,90', 'required_with:koordinat_lng'],
             'koordinat_lng' => ['nullable', 'numeric', 'between:-180,180', 'required_with:koordinat_lat'],
+            // Datang sebagai satu untai id dipisah koma, sebab bentuk dasar
+            // isian chip adalah kolom teks biasa — itu pula yang membuatnya
+            // tetap bisa dipakai tanpa JavaScript.
+            'juru_ids' => ['nullable', 'string', 'max:500', function ($atribut, $nilai, $gagal) {
+                $diminta = collect(explode(',', (string) $nilai))
+                    ->map(fn ($n) => (int) trim($n))
+                    ->filter()
+                    ->unique();
+
+                if ($diminta->isNotEmpty() && JuruSungai::whereIn('id', $diminta)->count() !== $diminta->count()) {
+                    $gagal('Ada juru yang sudah tidak terdaftar lagi. Muat ulang halaman ini lalu pilih kembali.');
+                }
+            }],
+
             'kabupaten_ids' => ['nullable', 'array'],
 
             // Bukan sekadar "kabupaten ini ada", melainkan "kabupaten ini
@@ -201,6 +283,7 @@ class DasWebController extends Controller
             'kode_das' => 'kode DAS',
             'wilayah_sungai_id' => 'wilayah sungai',
             'kabupaten_ids' => 'kabupaten',
+            'juru_ids' => 'juru',
         ]);
     }
 }

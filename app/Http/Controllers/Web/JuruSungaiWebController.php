@@ -155,7 +155,7 @@ class JuruSungaiWebController extends Controller
                 Rule::unique('juru_sungai', 'username')->ignore($juru?->id)->whereNull('deleted_at'),
             ],
             'password' => [$juru ? 'nullable' : 'required', 'string', 'min:6', 'max:255'],
-            'das_id' => ['required', 'exists:das,id'],
+            'das_id' => ['nullable', 'exists:das,id'],
         ], [], [
             'no_telepon' => 'nomor telepon',
             'nomor_sk' => 'nomor SK',
