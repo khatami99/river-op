@@ -48,13 +48,17 @@ class DasWebController extends Controller
         $data = [
             'das' => $das,
             'filter' => ['cari' => $request->input('cari')],
-            'dataPeta' => $semuaDas->filter(fn ($d) => $d->punyaKoordinat())->values()->map(fn ($d) => [
+            // DAS yang sudah punya batas wilayah ikut dikirim walau titiknya
+            // belum ada: batas itulah wujud sesungguhnya, dan titiknya cuma
+            // perkiraan letak yang dipakai selama batasnya belum turun.
+            'dataPeta' => $semuaDas->filter(fn ($d) => $d->punyaKoordinat() || $d->poligon)->values()->map(fn ($d) => [
                 'id' => $d->id,
                 'nama' => $d->nama_das,
                 'kode' => $d->kode_das,
                 'wilayah' => $d->wilayahSungai?->nama_sungai ?? '-',
-                'lat' => (float) $d->koordinat_lat,
-                'lng' => (float) $d->koordinat_lng,
+                'lat' => $d->punyaKoordinat() ? (float) $d->koordinat_lat : null,
+                'lng' => $d->punyaKoordinat() ? (float) $d->koordinat_lng : null,
+                'poligon' => $d->poligon ? json_decode($d->poligon) : null,
                 'juru' => $d->jumlah_juru,
                 'laporan' => $d->jumlah_laporan,
                 'bermasalah' => (int) $d->temuan_bermasalah,
@@ -66,7 +70,11 @@ class DasWebController extends Controller
                     'url' => route('juru.show', $j),
                 ])->values(),
             ]),
-            'belumBerkoordinat' => $semuaDas->filter(fn ($d) => ! $d->punyaKoordinat())->values(),
+            // DAS berbatas sudah tergambar di peta walau titiknya belum ada,
+            // jadi ia tidak lagi termasuk yang "tidak muncul di peta".
+            'belumBerkoordinat' => $semuaDas
+                ->filter(fn ($d) => ! $d->punyaKoordinat() && ! $d->poligon)
+                ->values(),
         ];
 
         // Permintaan potongan datang dari penyaring yang berubah di layar.

@@ -23,7 +23,14 @@ class WilayahSungai extends Model
 
     protected $casts = [
         'aktif' => 'boolean',
+        'poligon_diperbarui_at' => 'datetime',
     ];
+
+    /** Lihat alasannya pada Das::getLabelAttribute(). */
+    public function getLabelAttribute(): string
+    {
+        return $this->nama_sungai ?? '';
+    }
 
     public function das(): HasMany
     {

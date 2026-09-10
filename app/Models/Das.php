@@ -31,6 +31,7 @@ class Das extends Model
 
     protected $casts = [
         'aktif' => 'boolean',
+        'poligon_diperbarui_at' => 'datetime',
         'koordinat_lat' => 'decimal:7',
         'koordinat_lng' => 'decimal:7',
     ];
@@ -70,6 +71,19 @@ class Das extends Model
         return $this->belongsToMany(Kabupaten::class, 'das_kabupaten', 'das_id', 'kabupaten_id')
             ->withTimestamps()
             ->orderBy('nama');
+    }
+
+    /**
+     * Nama untuk ditampilkan, tanpa peduli tabel asalnya.
+     *
+     * Berupa accessor, bukan atribut yang disetel dari luar: layar batas
+     * wilayah memperlakukan DAS dan wilayah sungai dengan cara yang sama, dan
+     * menempelkan atribut palsu pada model membuat save() mencoba menulis
+     * kolom yang tidak ada.
+     */
+    public function getLabelAttribute(): string
+    {
+        return $this->nama_das ?? '';
     }
 
     /** Daftar nama kabupaten siap tampil, atau tanda hubung bila belum diisi. */

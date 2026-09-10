@@ -106,6 +106,32 @@ function petaDasar(elemen, pusat, zoom) {
 const PUSAT_KALSEL = [-3.0926, 115.2838];
 
 /* ---------- Halaman peta sebaran DAS ---------- */
+/**
+ * Menggambar batas wilayah, kalau ada.
+ *
+ * Dipasang SEBELUM penanda supaya penandanya tetap berada di atas dan tetap
+ * bisa diklik — Leaflet menumpuk lapisan menurut urutan pemasangan.
+ *
+ * Isian bidangnya sangat tipis dengan sengaja. Batas ini latar, bukan pokok
+ * perhatian: yang ditanyakan orang di peta ini tetap "DAS mana yang jurunya
+ * belum melapor", dan bidang pekat akan menenggelamkan penandanya.
+ */
+function gambarBatas(peta, daftar, warna) {
+    const berbatas = daftar.filter((d) => d.poligon);
+
+    if (!berbatas.length) return null;
+
+    const lapisan = L.geoJSON(
+        berbatas.map((d) => ({ type: 'Feature', properties: { nama: d.nama }, geometry: d.poligon })),
+        {
+            style: { color: warna, weight: 1.5, opacity: 0.8, fillColor: warna, fillOpacity: 0.07 },
+            interactive: false,
+        }
+    ).addTo(peta);
+
+    return lapisan;
+}
+
 function siapkanPetaDas() {
     const wadah = document.getElementById('peta-das');
     if (!wadah || wadah._leaflet_id) return;
@@ -114,10 +140,19 @@ function siapkanPetaDas() {
     const berkoordinat = daftar.filter((d) => d.lat !== null && d.lng !== null);
 
     const peta = petaDasar(wadah, PUSAT_KALSEL, 8);
+    const batas = gambarBatas(peta, daftar, '#12639e');
 
     // Diserahkan ke petaDasar supaya batas pandang selalu dihitung ulang
     // setiap kontainernya berubah ukuran, bukan sekali saja di awal.
-    if (berkoordinat.length) {
+    //
+    // Bila batas wilayahnya sudah ada, pandangan dihitung dari bidangnya, bukan
+    // dari titik-titiknya. Titik DAS cuma perkiraan letak, sedangkan batas
+    // adalah wilayah sungguhan — dan 46 DAS yang belum bertitik tetap ikut
+    // terlihat selama batasnya ada.
+    if (batas) {
+        peta.aturPandangan = () => peta.fitBounds(batas.getBounds(), { padding: [40, 40], maxZoom: 11 });
+        requestAnimationFrame(peta.segarkan);
+    } else if (berkoordinat.length) {
         peta.aturPandangan = () => peta.fitBounds(
             berkoordinat.map((d) => [d.lat, d.lng]),
             { padding: [60, 60], maxZoom: 11 }
@@ -194,6 +229,8 @@ function siapkanPetaWs() {
     if (!daftar.length) return;
 
     const peta = petaDasar(wadah, [daftar[0].lat, daftar[0].lng], 8);
+    gambarBatas(peta, daftar, '#935c13');
+
     const panel = document.getElementById('panel-ws');
     const kosong = document.getElementById('panel-ws-kosong');
 
@@ -359,9 +396,12 @@ function siapkanPetaSebaran() {
 
     const peta = petaDasar(wadah, [titik[0].lat, titik[0].lng], 9);
 
-    // Bangunan dan DAS dipisah ke lapisan sendiri-sendiri. Kelak, bila batas
-    // wilayah DAS sudah didapat, lapisan DAS tinggal diganti isinya menjadi
-    // poligon tanpa mengubah apa pun di sekitarnya.
+    // Batas wilayah digambar paling bawah supaya penanda bangunan tetap di
+    // atasnya dan tetap bisa diklik.
+    gambarBatas(peta, daftarDas, '#12639e');
+
+    // Bangunan dan DAS dipisah ke lapisan sendiri-sendiri, sehingga penanda
+    // DAS bisa disembunyikan tanpa menyentuh penanda bangunannya.
     const lapisanBangunan = L.layerGroup().addTo(peta);
     const lapisanDas = L.layerGroup().addTo(peta);
 

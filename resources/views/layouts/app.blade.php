@@ -72,6 +72,11 @@
 
     // Manajemen pengguna dan jejak perubahan hanya relevan bagi admin.
     if ($staf?->isAdmin()) {
+        // Batas wilayah masuk Master Data, bukan Sistem: yang dikerjakan di
+        // sana adalah melengkapi data DAS dan wilayah sungai, bukan mengurus
+        // aplikasinya.
+        $kelompok['Master Data'][] = ['rute' => 'batas.index', 'aktif' => 'batas.*', 'label' => 'Batas Wilayah', 'ikon' => 'M9 20l-5.4-2.7A1 1 0 013 16.4V5.6a1 1 0 011.4-.9L9 7m0 13l6-3m-6 3V7m6 10l4.6 2.3a1 1 0 001.4-.9V7.6a1 1 0 00-.6-.9L15 4m0 13V4M9 7l6-3'];
+
         $kelompok['Sistem'][] = ['rute' => 'staf.index', 'aktif' => 'staf.*', 'label' => 'Pengguna', 'ikon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'];
         $kelompok['Sistem'][] = ['rute' => 'log.index', 'aktif' => 'log.*', 'label' => 'Log Aktivitas', 'ikon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l4.4 4.4a1 1 0 01.3.7V19a2 2 0 01-2 2z'];
     }

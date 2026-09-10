@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\BatasWilayahWebController;
 use App\Http\Controllers\Web\DasWebController;
 use App\Http\Controllers\Web\JuruSungaiWebController;
 use App\Http\Controllers\Web\LaporanWebController;
@@ -65,6 +66,15 @@ Route::middleware('auth:staf')->group(function () {
         Route::get('/wilayah/{wilayah}/edit', [WilayahSungaiWebController::class, 'edit'])->name('wilayah.edit');
         Route::put('/wilayah/{wilayah}', [WilayahSungaiWebController::class, 'update'])->name('wilayah.update');
         Route::delete('/wilayah/{wilayah}', [WilayahSungaiWebController::class, 'destroy'])->name('wilayah.destroy');
+
+        // Batas wilayah dari BWS. Ditaruh di sini, bukan di dalam formulir DAS,
+        // sebab satu berkas memuat puluhan wilayah sekaligus dan dikerjakan
+        // sekali dalam beberapa tahun — bukan bagian dari menyunting satu DAS.
+        Route::get('/batas-wilayah', [BatasWilayahWebController::class, 'index'])->name('batas.index');
+        Route::post('/batas-wilayah', [BatasWilayahWebController::class, 'telaah'])->name('batas.telaah');
+        Route::get('/batas-wilayah/{tanda}', [BatasWilayahWebController::class, 'pratinjau'])->name('batas.pratinjau');
+        Route::post('/batas-wilayah/{tanda}', [BatasWilayahWebController::class, 'simpan'])->name('batas.simpan');
+        Route::delete('/batas-wilayah/{jenis}/{id}', [BatasWilayahWebController::class, 'hapus'])->name('batas.hapus');
 
         Route::get('/log', [LogAktivitasWebController::class, 'index'])->name('log.index');
 

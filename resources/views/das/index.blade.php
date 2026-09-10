@@ -38,7 +38,9 @@
                 </p>
                 <p class="mt-1 text-[12px] leading-relaxed text-peringatan-teks">
                     Buka DAS-nya lalu tentukan titiknya dengan mengklik peta pada formulir.
-                    Titik ini perkiraan saja &mdash; DAS sebenarnya berupa wilayah, bukan titik.
+                    Titik ini perkiraan saja &mdash; DAS sebenarnya berupa wilayah, bukan titik,
+                    dan titiknya tidak lagi diperlukan begitu batas wilayahnya dimasukkan lewat
+                    <a href="{{ route('batas.index') }}" class="font-semibold underline underline-offset-2">Batas Wilayah</a>.
                 </p>
             </div>
         </div>

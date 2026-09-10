@@ -40,6 +40,7 @@ class WilayahSungaiWebController extends Controller
                 'kode' => $w->kode_sungai,
                 'lat' => round($w->das->avg('koordinat_lat'), 7),
                 'lng' => round($w->das->avg('koordinat_lng'), 7),
+                'poligon' => $w->poligon ? json_decode($w->poligon) : null,
                 'das' => $w->das_count,
                 'das_bertitik' => $w->das->count(),
                 'juru' => $w->juru_sungai_count,
@@ -91,15 +92,16 @@ class WilayahSungaiWebController extends Controller
             ->withQueryString();
 
         $dataPeta = $wilayah->das
-            ->filter(fn ($d) => $d->punyaKoordinat())
+            ->filter(fn ($d) => $d->punyaKoordinat() || $d->poligon)
             ->values()
             ->map(fn ($d) => [
                 'id' => $d->id,
                 'nama' => $d->nama_das,
                 'kode' => $d->kode_das,
                 'wilayah' => $wilayah->nama_sungai,
-                'lat' => (float) $d->koordinat_lat,
-                'lng' => (float) $d->koordinat_lng,
+                'lat' => $d->punyaKoordinat() ? (float) $d->koordinat_lat : null,
+                'lng' => $d->punyaKoordinat() ? (float) $d->koordinat_lng : null,
+                'poligon' => $d->poligon ? json_decode($d->poligon) : null,
                 'juru' => $d->juru_sungai_count,
                 'laporan' => $d->laporan_op_count,
                 'bermasalah' => 0,

@@ -136,11 +136,15 @@ class LaporanWebController extends Controller
                 'bermasalah' => (int) $b->jumlah_bermasalah,
                 'url' => $b->laporanOp ? route('laporan.show', $b->laporanOp) : null,
             ]),
-            'dataDas' => Das::whereNotNull('koordinat_lat')->whereNotNull('koordinat_lng')
+            'dataDas' => Das::where(fn ($q) => $q
+                    ->whereNotNull('poligon')
+                    ->orWhere(fn ($t) => $t->whereNotNull('koordinat_lat')->whereNotNull('koordinat_lng')))
                 ->orderBy('nama_das')->get()
                 ->map(fn ($d) => [
                     'nama' => $d->nama_das, 'kode' => $d->kode_das,
-                    'lat' => (float) $d->koordinat_lat, 'lng' => (float) $d->koordinat_lng,
+                    'lat' => $d->punyaKoordinat() ? (float) $d->koordinat_lat : null,
+                    'lng' => $d->punyaKoordinat() ? (float) $d->koordinat_lng : null,
+                    'poligon' => $d->poligon ? json_decode($d->poligon) : null,
                     'url' => route('das.show', $d),
                 ]),
             'jumlahBermasalah' => $bangunan->filter(fn ($b) => $b->jumlah_bermasalah > 0)->count(),
