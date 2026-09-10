@@ -26,21 +26,20 @@
                    value="{{ old('nama', $juru->nama) }}" required>
         </x-kolom>
 
-        <x-kolom label="Nomor Telepon" nama="no_telepon"
-                 petunjuk="Dipakai saat dinas perlu menghubungi juru yang belum melapor.">
+        <x-kolom label="Nomor Telepon" nama="no_telepon">
             <input id="no_telepon" name="no_telepon" type="tel" class="{{ $ki }}"
                    placeholder="08xxxxxxxxxx"
                    value="{{ old('no_telepon', $juru->no_telepon) }}">
         </x-kolom>
 
         <x-kolom label="Nomor SK Pengangkatan" nama="nomor_sk"
-                 petunjuk="Diterbitkan per angkatan, sehingga satu SK biasanya memuat beberapa juru. Karena itu nomor SK bukan pembeda antarjuru.">
+                 petunjuk="Satu SK biasanya memuat beberapa juru, jadi nomornya boleh sama.">
             <input id="nomor_sk" name="nomor_sk" type="text" class="{{ $ki }}"
                    value="{{ old('nomor_sk', $juru->nomor_sk) }}">
         </x-kolom>
 
         <x-kolom label="DAS Wilayah Kerja" nama="das_id"
-                 petunjuk="Daerah aliran sungai yang menjadi tanggung jawab juru ini. Boleh dikosongkan bila wilayah tugasnya belum diputuskan — tetapi selama begitu, laporan yang ia kirim masuk tanpa DAS dan tidak muncul di Rekapitulasi.">
+                 petunjuk="Boleh dikosongkan bila belum diputuskan — selama itu laporannya tidak masuk Rekapitulasi.">
             @php $dasTerpilih = old('das_id', $juru->das_id); @endphp
             <select id="das_id" name="das_id" class="{{ $ki }}"
                     data-pilihan-cari="Ketik nama DAS&hellip;">

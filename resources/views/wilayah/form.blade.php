@@ -43,7 +43,7 @@
              punya identitas, sehingga bisa ditawarkan di formulir DAS dan
              tetap bisa dikelompokkan di Export Excel. --}}
         <x-kolom label="Kabupaten yang Dilalui" nama="kabupaten_nama"
-                 petunjuk="Tulis nama kabupatennya, pisahkan dengan koma. Nama yang belum terdaftar akan dibuatkan sendiri, jadi kabupaten baru hasil pemekaran cukup diketik di sini. Hanya yang tertulis di sini yang bisa dipilih pada DAS di bawahnya.">
+                 petunjuk="Hanya yang tertulis di sini yang bisa dipilih pada DAS di bawahnya.">
             {{-- Kolom koma inilah bentuk dasarnya, dan bentuk inilah yang
                  dikirim ke server. JavaScript menyembunyikannya lalu menaruh
                  tampilan chip di atasnya, sambil terus menyelaraskan nilainya

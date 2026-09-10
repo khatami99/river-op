@@ -31,8 +31,7 @@
                    value="{{ old('kode_das', $das->kode_das) }}" placeholder="DAS-TABA-01" required>
         </x-kolom>
 
-        <x-kolom label="Wilayah Sungai" nama="wilayah_sungai_id" :wajib="true"
-                 petunjuk="Wilayah sungai yang menaungi DAS ini.">
+        <x-kolom label="Wilayah Sungai" nama="wilayah_sungai_id" :wajib="true">
             <select id="wilayah_sungai_id" name="wilayah_sungai_id" class="{{ $ki }}" required>
                 <option value="">Pilih wilayah sungai</option>
                 @foreach ($daftarWilayah as $w)
@@ -64,7 +63,7 @@
              Panel yang benar sudah terbuka sejak dari server, jadi tanpa
              JavaScript formulir ini masih terisi dengan benar. --}}
         <x-kolom label="Kabupaten" nama="kabupaten_ids"
-                 petunjuk="Diambil dari kabupaten yang tertulis pada wilayah sungainya. Boleh lebih dari satu, boleh juga dikosongkan bila belum diketahui.">
+                 petunjuk="Mengikuti kabupaten yang tertulis pada wilayah sungainya.">
             @php
                 $terpilih = collect(old('kabupaten_ids', $das->exists ? $das->kabupaten->pluck('id')->all() : []))
                     ->map(fn ($v) => (string) $v);
@@ -132,7 +131,7 @@
              yang ia kirim masuk tanpa DAS dan tidak muncul di Rekapitulasi,
              jadi peringatannya keluar begitu ada yang dicopot. --}}
         <x-kolom label="Juru yang Bertugas" nama="juru_ids"
-                 petunjuk="Ketik nama juru yang sudah terdaftar di sistem. Boleh lebih dari satu; satu DAS memang bisa dipegang beberapa juru.">
+                 petunjuk="Memilih juru yang sedang bertugas di DAS lain akan memindahkannya ke sini.">
             @php
                 $juruTerpilih = collect(old('juru_ids', $das->exists ? $das->juruSungai->pluck('id')->all() : []))
                     ->map(fn ($v) => (string) $v);
