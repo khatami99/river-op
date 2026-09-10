@@ -178,14 +178,10 @@ function tampilkanPanel(d, panel, kosong) {
 
         <div class="px-2 py-2">${daftarJuru}</div>
 
-        <div class="flex flex-wrap gap-2 border-t border-garis-halus px-5 py-4">
+        <div class="border-t border-garis-halus px-5 py-4">
             <a href="${d.url}" class="rounded-xl bg-permukaan-sedang px-3.5 py-2 text-[13px] font-bold text-teks-sedang transition hover:bg-permukaan-kuat">
                 Detail DAS
             </a>
-            ${d.url_tambah_juru ? `
-                <a href="${d.url_tambah_juru}" class="rounded-xl bg-aksi px-3.5 py-2 text-[13px] font-bold text-aksi-teks transition hover:bg-aksi-sorot">
-                    Tambah Juru
-                </a>` : ''}
         </div>`;
 }
 

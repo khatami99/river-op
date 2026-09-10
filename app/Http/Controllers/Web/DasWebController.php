@@ -45,8 +45,6 @@ class DasWebController extends Controller
             ->orderBy('nama_das')
             ->get();
 
-        $bolehTambahJuru = auth('staf')->user()?->isAdmin();
-
         $data = [
             'das' => $das,
             'filter' => ['cari' => $request->input('cari')],
@@ -61,7 +59,6 @@ class DasWebController extends Controller
                 'laporan' => $d->jumlah_laporan,
                 'bermasalah' => (int) $d->temuan_bermasalah,
                 'url' => route('das.show', $d),
-                'url_tambah_juru' => $bolehTambahJuru ? route('juru.create', ['das_id' => $d->id]) : null,
                 'daftar_juru' => $d->juruSungai->map(fn ($j) => [
                     'nama' => $j->nama,
                     'telepon' => $j->no_telepon ?: '-',

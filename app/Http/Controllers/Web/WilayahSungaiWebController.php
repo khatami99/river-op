@@ -78,8 +78,7 @@ class WilayahSungaiWebController extends Controller
 
         // Peta di sini menjawab pertanyaan yang khas halaman ini: DAS mana saja
         // yang bernaung di bawah wilayah sungai ini, dan letaknya di mana.
-        $bolehTambahJuru = auth('staf')->user()?->isAdmin();
-
+        //
         // Dua kumpulan yang berbeda dengan sengaja: peta memerlukan seluruh
         // DAS yang bertitik, sedangkan daftar di bawahnya cukup sepuluh per
         // halaman seperti daftar lain di aplikasi ini. Memaksa keduanya
@@ -105,7 +104,6 @@ class WilayahSungaiWebController extends Controller
                 'laporan' => $d->laporan_op_count,
                 'bermasalah' => 0,
                 'url' => route('das.show', $d),
-                'url_tambah_juru' => $bolehTambahJuru ? route('juru.create', ['das_id' => $d->id]) : null,
                 'daftar_juru' => $d->juruSungai->map(fn ($j) => [
                     'nama' => $j->nama,
                     'telepon' => $j->no_telepon ?: '-',
