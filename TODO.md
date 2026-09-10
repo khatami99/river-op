@@ -1,7 +1,7 @@
 # TODO — Sistem Informasi OP Sungai
 
 Daftar pekerjaan yang belum selesai, diurutkan dari yang paling mendesak.
-Diperbarui 7 September 2026.
+Diperbarui 10 September 2026.
 
 ---
 
@@ -206,27 +206,79 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 ---
 
-## Prioritas sedang
+## Selesai 10 Sep 2026
 
-- [ ] **Batas wilayah DAS dan WS pada peta.** Keduanya wilayah, bukan titik.
-      Perlu shapefile atau GeoJSON resmi — dapat diminta ke BWS Kalimantan III
-      selaku pengelola WS Cengal-Batulicin, BPDAS wilayah Kalsel, atau diunduh
-      dari Ina-Geoportal (BIG). Peta lampiran yang sudah ada membuktikan
-      berkasnya memang ada, sebab garis batasnya dicetak dari data geospasial.
+- [x] **Batas wilayah DAS dan WS dapat dimasukkan sendiri** lewat Master Data →
+      Batas Wilayah. Menerima `.zip` shapefile apa adanya dari BWS, atau
+      `.geojson`. Reproyeksi sengaja tidak dikerjakan: berkas berkoordinat UTM
+      ditolak dengan petunjuk QGIS yang bisa langsung diikuti, sebab menerimanya
+      berarti seluruh batas tergambar di tempat yang salah tanpa ada yang
+      menyadarinya. Poligon di luar kotak Kalimantan Selatan juga ditolak.
+      Poligon rapat dipangkas Douglas-Peucker sampai muat anggaran 800 titik.
+      DAS yang sudah berbatas muncul di peta walau titik perkiraannya kosong.
 
-      Setelah dapat: titik DAS turun menjadi cadangan, titik GPS bangunan bisa
-      dicocokkan otomatis ke DAS-nya sehingga juru yang salah pilih DAS
-      ketahuan sendiri, dan urusan kabupaten selesai karena bisa dinilai per
-      titik. Poligon mentah perlu disederhanakan dulu agar peta tidak berat.
+- [x] **Kabupaten jadi bertingkat.** Ditulis pada wilayah sungai lebih dulu,
+      dan hanya yang tertulis di sana yang bisa dipilih pada DAS di bawahnya.
+      Ketiga belas kabupaten dan kota Kalsel tersedia sejak awal, dan nama baru
+      hasil pemekaran cukup diketik — sebelumnya tabelnya cuma berisi tiga baris
+      tanpa satu pun layar untuk menambah, jadi wilayah sungai baru di Tabalong
+      akan mentok tanpa jalan keluar.
 
-      Batas sengaja tidak digambar sendiri karena batas yang keliru lebih
-      berbahaya bagi sistem instansi daripada tidak ada peta sama sekali.
+- [x] **Juru ditugaskan langsung dari formulir DAS**, beberapa juru per DAS.
+      Memindahkan dari DAS lain terbaca sebelum dicentang dan dikabarkan
+      sesudah tersimpan. Juru tanpa DAS kini keadaan yang sah — ditandai
+      "Belum ditugaskan" pada daftarnya, dan formulir juru tidak lagi mewajibkan
+      DAS.
+
+- [x] **Notifikasi ke juru** saat laporannya terkirim atau tertahan, di aplikasi
+      Android. Tidak berkabar bila tidak ada yang dikerjakan, dan kabar gagal
+      ditarik sendiri begitu antreannya bersih.
+
+- [x] **Cadangan otomatis** tiap hari pukul 01.00 lewat `riverop:cadangkan`,
+      berisi dump basis data dan seluruh foto. Dump ditulis dengan PHP, bukan
+      memanggil `mysqldump`, supaya tidak bergantung pada berkas yang belum tentu
+      ada di server dinas. Sudah diuji pulih: seluruh tabel identik baris demi
+      baris sesudah dimuat ke basis data kosong.
+
+- [x] **PANDUAN-ADMIN.md** untuk staf dinas, bukan untuk programmer.
+
+- [x] **Tombol tindakan turun dari kop ke badan halaman** dan dirata-kirikan;
+      sakelar tema jadi satu tombol di sudut kanan atas bersama menu akun.
+
+- [x] **Isian banyak-nilai diseragamkan.** Kabupaten pada wilayah sungai berupa
+      chip yang bisa membuat nilai baru; kabupaten dan juru pada DAS berupa panel
+      centang dengan penyaring. Aturannya: memilih dari daftar yang ada memakai
+      panel, mengetik untuk membuat memakai chip.
 
 ---
 
 ## Prioritas rendah
 
-- [ ] **Notifikasi** ke juru saat sinkronisasi berhasil atau gagal.
+- [ ] **Satu juru untuk beberapa DAS.** Sekarang `juru_sungai.das_id` berarti
+      satu juru tepat satu DAS. Bukan mustahil, tetapi menuntut tabel penghubung,
+      perubahan `AuthController`, dan aplikasi Android harus bertanya "laporan ini
+      untuk DAS mana" tiap kali. Ditunda sampai ada kebutuhan sungguhan.
+
+---
+
+## Risiko yang harus diketahui pemelihara berikutnya
+
+- **Pustaka `gasparesganga/php-shapefile` akan patah di PHP 9.** Ia memakai
+  bentuk penulisan yang sudah *deprecated* pada PHP 8.4 dan menjadi galat fatal
+  pada PHP 9. Sebelum menaikkan versi PHP, perbarui pustakanya lebih dulu lalu
+  pastikan halaman Batas Wilayah masih bisa membaca berkas `.zip`.
+
+- **Cadangan tersimpan di server yang sama.** Ia melindungi dari penghapusan tak
+  sengaja, bukan dari kerusakan disk. Harus ada manusia yang menyalinnya keluar
+  secara berkala; tidak ada bagian sistem yang bisa memaksakan itu.
+
+- **Jadwal harian tidak berjalan tanpa entri cron di server.** Bila entri itu
+  belum dipasang, tidak ada pesan galat apa pun — cadangan cuma diam-diam tidak
+  pernah dibuat. Periksa sekali dengan `php artisan schedule:list`.
+
+- **Buatlah minimal dua akun administrator.** Tidak ada "lupa password" di layar
+  masuk, dan yang bisa mengatur ulang hanya admin lain. Bila semuanya terkunci,
+  jalan satu-satunya lewat baris perintah di server.
 
 ---
 
