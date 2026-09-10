@@ -14,9 +14,23 @@
      bersama halaman, sebagaimana mestinya sesuatu yang berlaku hanya untuk
      halaman itu.
 
-     Kembali di kiri, tindakan di kanan. Bukan selera: satu membawa keluar,
-     yang lain mengerjakan sesuatu di sini, dan menaruhnya berdampingan dalam
-     satu kelompok membuat "pergi" terlihat setara dengan "kerjakan". --}}
+     Semuanya rata kiri, termasuk tombol tindakan. Rata kanan itu kebiasaan
+     yang dipinjam dari kop kartu, dan di sana ia masuk akal karena ada judul
+     di seberangnya yang menahan. Baris ini tidak punya seberang: isinya cuma
+     tombol, sehingga rata kanan meninggalkannya terdampar di ujung layar,
+     seribu piksel lebih dari tempat mata sedang membaca. Kolom isi mulai di
+     kiri, judul di kiri, tabel di kiri — tombolnya ikut.
+
+     Kembali dan tindakan tetap dipisah segaris tipis. Satu membawa keluar
+     halaman, yang lain mengerjakan sesuatu di dalamnya, dan berdempetan tanpa
+     jeda membuat "pergi" terbaca setara dengan "kerjakan". --}}
+@php $adaTindakan = trim($slot) !== ''; @endphp
+
+{{-- Tidak tergambar sama sekali bila kosong. Di halaman daftar, tombol
+     Tambah dibungkus penjagaan peran, sehingga bagi akun peninjau slotnya
+     hanya berisi spasi — dan wadah kosong pun tetap menyisakan jarak bawahnya
+     sebagai celah hampa yang tak jelas asalnya. --}}
+@if ($kembali || $adaTindakan)
 <div {{ $attributes->merge(['class' => 'mb-4 flex flex-wrap items-center gap-2.5']) }}>
     @if ($kembali)
         <a href="{{ $kembali }}"
@@ -26,11 +40,16 @@
             </svg>
             {{ $labelKembali }}
         </a>
+
+        @if ($adaTindakan)
+            <span class="hidden h-7 w-px shrink-0 bg-garis sm:block"></span>
+        @endif
     @endif
 
-    @if (trim($slot) !== '')
-        <div class="ml-auto flex flex-wrap items-center gap-2.5">
+    @if ($adaTindakan)
+        <div class="flex flex-wrap items-center gap-2.5">
             {{ $slot }}
         </div>
     @endif
 </div>
+@endif

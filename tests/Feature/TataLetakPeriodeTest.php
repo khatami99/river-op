@@ -75,6 +75,22 @@ class TataLetakPeriodeTest extends TestCase
         }
     }
 
+    /**
+     * Baris tindakan tidak boleh tergambar kosong. Tombol Tambah dibungkus
+     * penjagaan peran, jadi bagi peninjau slotnya cuma berisi spasi — dan
+     * wadah kosong tetap menyisakan jarak bawahnya sebagai celah hampa.
+     */
+    public function test_baris_tindakan_hilang_sama_sekali_bagi_peninjau(): void
+    {
+        $html = $this->actingAs($this->buatStaf('viewer'), 'staf')
+            ->get('/juru')->assertOk()->getContent();
+
+        $badan = substr($html, strpos($html, '<main'));
+
+        $this->assertStringNotContainsString('Tambah Juru', $badan);
+        $this->assertStringNotContainsString('mb-4 flex flex-wrap items-center gap-2.5', $badan);
+    }
+
     /** Kop tetap memegang identitas: itulah yang tersisa sesudah tindakan pindah. */
     public function test_kop_masih_memegang_akun_dan_tema(): void
     {
