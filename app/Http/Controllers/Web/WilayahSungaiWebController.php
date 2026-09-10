@@ -135,8 +135,8 @@ class WilayahSungaiWebController extends Controller
         $data = $this->validasi($request);
         $data['aktif'] = $request->boolean('aktif');
 
-        $wilayah = WilayahSungai::create(Arr::except($data, 'kabupaten_ids'));
-        $wilayah->kabupaten()->sync($data['kabupaten_ids'] ?? []);
+        $wilayah = WilayahSungai::create(Arr::except($data, 'kabupaten_nama'));
+        $wilayah->kabupaten()->sync($this->idKabupaten($request->input('kabupaten_nama')));
 
         return redirect()->route('wilayah.index')->with('sukses', 'Wilayah sungai berhasil ditambahkan.');
     }
@@ -157,16 +157,59 @@ class WilayahSungaiWebController extends Controller
         $data['aktif'] = $request->boolean('aktif');
 
         $wilayah->load('kabupaten');
-        $pilihan = array_map('intval', $data['kabupaten_ids'] ?? []);
+        $nama = $this->uraikanNama($request->input('kabupaten_nama'));
 
-        if ($keberatan = $this->kabupatenMasihDipakai($wilayah, $pilihan)) {
-            return back()->withInput()->withErrors(['kabupaten_ids' => $keberatan]);
+        // Pencocokan dulu, pembuatan belakangan. Bila simpanan ini nanti
+        // ditolak, tidak boleh ada kabupaten baru yang terlanjur lahir dan
+        // menggantung tanpa pemilik.
+        $sudahAda = $this->cocokkanNama($nama);
+
+        if ($keberatan = $this->kabupatenMasihDipakai($wilayah, $sudahAda)) {
+            return back()->withInput()->withErrors(['kabupaten_nama' => $keberatan]);
         }
 
-        $wilayah->update(Arr::except($data, 'kabupaten_ids'));
-        $wilayah->kabupaten()->sync($pilihan);
+        $wilayah->update(Arr::except($data, 'kabupaten_nama'));
+        $wilayah->kabupaten()->sync($this->idKabupaten($request->input('kabupaten_nama')));
 
         return redirect()->route('wilayah.index')->with('sukses', 'Data wilayah sungai diperbarui.');
+    }
+
+    /**
+     * Isian "Kotabaru, Tanah Bumbu, Tanah Laut" menjadi daftar nama.
+     *
+     * Nama kosong dibuang dan nama kembar disatukan tanpa memedulikan huruf
+     * besar-kecil, sebab mengetik "Kotabaru, kotabaru" jelas bukan maksud
+     * menyebut dua kabupaten.
+     */
+    private function uraikanNama(?string $isian)
+    {
+        return collect(explode(',', (string) $isian))
+            ->map(fn ($n) => Kabupaten::rapikanNama($n))
+            ->filter()
+            ->unique(fn ($n) => mb_strtolower($n))
+            ->values();
+    }
+
+    /** Id kabupaten yang namanya sudah dikenal — tanpa membuat yang baru. */
+    private function cocokkanNama($nama): array
+    {
+        $dikenal = Kabupaten::withTrashed()->get()->keyBy(fn ($k) => mb_strtolower($k->nama));
+
+        return $nama
+            ->map(fn ($n) => $dikenal->get(mb_strtolower($n))?->id)
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /** Seperti cocokkanNama, tetapi nama yang belum dikenal dibuatkan. */
+    private function idKabupaten(?string $isian): array
+    {
+        return DB::transaction(fn () => $this->uraikanNama($isian)
+            ->map(fn ($n) => Kabupaten::dariNama($n)?->id)
+            ->filter()
+            ->values()
+            ->all());
     }
 
     /**
@@ -234,12 +277,11 @@ class WilayahSungaiWebController extends Controller
                 Rule::unique('wilayah_sungai', 'kode_sungai')->ignore($wilayah?->id)->whereNull('deleted_at'),
             ],
             'deskripsi' => ['nullable', 'string'],
-            'kabupaten_ids' => ['nullable', 'array'],
-            'kabupaten_ids.*' => ['integer', 'exists:kabupaten,id'],
+            'kabupaten_nama' => ['nullable', 'string', 'max:500'],
         ], [], [
             'nama_sungai' => 'nama wilayah sungai',
             'kode_sungai' => 'kode',
-            'kabupaten_ids' => 'kabupaten',
+            'kabupaten_nama' => 'kabupaten',
         ]);
     }
 }

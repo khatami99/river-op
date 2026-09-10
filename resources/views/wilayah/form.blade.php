@@ -29,27 +29,34 @@
 
         {{-- Kabupaten yang disinggung wilayah sungai ini.
 
-             Bukan sekadar keterangan: inilah daftar yang nanti ditawarkan
-             kepada DAS di bawahnya. Wilayah sungai adalah gabungan DAS-nya,
-             jadi sebuah DAS mustahil berada di kabupaten yang tidak ada di
-             sini — dan dengan dibatasi begini, kekeliruan itu tidak bisa
-             diketik sama sekali, bukan sekadar tidak dianjurkan. --}}
-        <x-kolom label="Kabupaten yang Dilalui" nama="kabupaten_ids"
-                 petunjuk="Centang semua kabupaten yang disinggung wilayah sungai ini. Hanya yang tercentang di sini yang bisa dipilih pada DAS di bawahnya, jadi lebih baik kelebihan satu daripada kurang.">
-            @php
-                $terpilih = collect(old('kabupaten_ids', $wilayah->exists ? $wilayah->kabupaten->pluck('id')->all() : []))
-                    ->map(fn ($v) => (string) $v);
-            @endphp
-            <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($daftarKabupaten as $k)
-                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-sedang ring-1 ring-inset ring-garis transition hover:bg-permukaan hover:ring-info-teks/40">
-                        <input type="checkbox" name="kabupaten_ids[]" value="{{ $k->id }}"
-                               @checked($terpilih->contains((string) $k->id))
-                               class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
-                        {{ $k->nama }}
-                    </label>
-                @endforeach
-            </div>
+             Diketik, bukan dicentang dari daftar tetap. Alasannya pemekaran:
+             daftar kabupaten Kalimantan Selatan bukan sesuatu yang berlaku
+             selamanya — Tanah Bumbu dan Balangan sendiri baru lahir pada
+             2003. Daftar yang dikunci di dalam kode berarti suatu hari nanti
+             ada kabupaten yang tidak bisa dipakai sampai aplikasinya diubah
+             programmer, dan itu tidak boleh terjadi untuk sesuatu sesederhana
+             nama wilayah.
+
+             Yang diketik tetap disimpan sebagai data, bukan sebagai tulisan
+             bebas: nama yang cocok memakai kabupaten yang sudah ada, nama
+             yang belum dikenal dibuatkan barunya. Dengan begitu ia tetap
+             punya identitas, sehingga bisa ditawarkan di formulir DAS dan
+             tetap bisa dikelompokkan di Export Excel. --}}
+        <x-kolom label="Kabupaten yang Dilalui" nama="kabupaten_nama"
+                 petunjuk="Tulis nama kabupatennya, pisahkan dengan koma. Nama yang belum terdaftar akan dibuatkan sendiri, jadi kabupaten baru hasil pemekaran cukup diketik di sini. Hanya yang tertulis di sini yang bisa dipilih pada DAS di bawahnya.">
+            <input id="kabupaten_nama" name="kabupaten_nama" type="text" class="{{ $ki }}"
+                   value="{{ old('kabupaten_nama', $wilayah->exists ? $wilayah->kabupaten->pluck('nama')->join(', ') : '') }}"
+                   placeholder="Kotabaru, Tanah Bumbu, Tanah Laut">
+
+            {{-- Ejaan yang sudah dipakai ditampilkan supaya bisa disalin apa
+                 adanya. Tanpa ini "Kotabaru" dan "Kota Baru" akan hidup
+                 berdampingan sebagai dua kabupaten berbeda. --}}
+            @if ($daftarKabupaten->isNotEmpty())
+                <p class="mt-2 text-[12px] leading-relaxed text-teks-samar">
+                    <span class="font-semibold text-teks-lembut">Sudah terdaftar:</span>
+                    {{ $daftarKabupaten->pluck('nama')->join(', ') }}.
+                </p>
+            @endif
         </x-kolom>
 
         <x-kolom label="Deskripsi" nama="deskripsi">

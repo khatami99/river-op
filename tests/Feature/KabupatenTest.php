@@ -63,34 +63,91 @@ class KabupatenTest extends TestCase
             ]);
     }
 
-    private function simpanWilayah(WilayahSungai $wilayah, array $kabupatenIds, string $peran = 'admin')
+    private function simpanWilayah(WilayahSungai $wilayah, string $namaKabupaten, string $peran = 'admin')
     {
         return $this->actingAs($this->buatStaf($peran), 'staf')
             ->put("/wilayah/{$wilayah->id}", [
                 'nama_sungai' => $wilayah->nama_sungai,
                 'kode_sungai' => $wilayah->kode_sungai,
-                'kabupaten_ids' => $kabupatenIds,
+                'kabupaten_nama' => $namaKabupaten,
                 'aktif' => 1,
             ]);
     }
 
     /**
-     * Inilah jalan buntu yang membuat tingkatan ini dibuat: dulu tabel
-     * kabupaten cuma berisi tiga baris yang kebetulan disinggung WS
-     * Cengal-Batulicin, sedangkan layar untuk menambah kabupaten tidak ada
-     * dan memang tidak akan dibuat. Wilayah sungai baru di Tabalong berarti
-     * mentok tanpa jalan keluar.
+     * Dulu tabel kabupaten cuma berisi tiga baris yang kebetulan disinggung
+     * WS Cengal-Batulicin, sedangkan layar untuk menambahnya tidak ada sama
+     * sekali. Wilayah sungai baru di Tabalong berarti mentok tanpa jalan
+     * keluar. Ketiga belasnya kini tersedia sejak awal — sebagai titik mula,
+     * bukan sebagai pagar; uji berikutnya menjaga bagian "bukan pagar"-nya.
      */
-    public function test_seluruh_kabupaten_kalsel_tersedia(): void
+    public function test_kabupaten_kalsel_tersedia_sejak_awal(): void
     {
         $this->assertSame(13, Kabupaten::count());
 
         foreach (['Tabalong', 'Balangan', 'Hulu Sungai Utara', 'Kota Banjarmasin'] as $nama) {
             $this->assertTrue(
                 Kabupaten::where('nama', $nama)->exists(),
-                "{$nama} harus bisa dipilih tanpa perlu menyunting basis data."
+                "{$nama} harus tersedia tanpa perlu menyunting basis data."
             );
         }
+    }
+
+    /**
+     * Pemekaran wilayah itu nyata: Tanah Bumbu dan Balangan sendiri baru
+     * lahir pada 2003. Daftar yang terkunci di dalam kode berarti suatu hari
+     * ada kabupaten yang tidak bisa dipakai sampai programmernya turun
+     * tangan — dan itu tidak boleh terjadi untuk sekadar nama wilayah.
+     */
+    public function test_kabupaten_baru_lahir_dari_ketikan(): void
+    {
+        $wilayah = $this->wilayah();
+
+        $this->simpanWilayah($wilayah, 'Kotabaru, Hulu Sungai Barat')
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(14, Kabupaten::count(), 'Nama yang belum dikenal harus dibuatkan tempatnya.');
+        $this->assertEqualsCanonicalizing(
+            ['Hulu Sungai Barat', 'Kotabaru'],
+            $wilayah->fresh()->kabupaten->pluck('nama')->all()
+        );
+
+        // Kode tidak pernah tampil di layar dan tidak diminta kepada admin,
+        // tetapi kolomnya wajib dan unik, jadi harus terisi sendiri.
+        $this->assertNotEmpty(Kabupaten::where('nama', 'Hulu Sungai Barat')->value('kode'));
+    }
+
+    public function test_ejaan_berbeda_tidak_menggandakan_kabupaten(): void
+    {
+        $wilayah = $this->wilayah();
+
+        // Huruf besar-kecil dan spasi berlebih bukan maksud menyebut
+        // kabupaten lain; kalau digandakan, dua baris yang di layar terlihat
+        // sama persis akan hidup berdampingan selamanya.
+        $this->simpanWilayah($wilayah, '  kotabaru ,  TANAH   LAUT ')
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(13, Kabupaten::count());
+        $this->assertEqualsCanonicalizing(
+            [$this->tanahLaut->id, Kabupaten::where('nama', 'Kotabaru')->value('id')],
+            $wilayah->fresh()->kabupaten->pluck('id')->all()
+        );
+    }
+
+    public function test_kabupaten_baru_tidak_lahir_bila_simpanan_ditolak(): void
+    {
+        $wilayah = $this->wilayah();
+        $wilayah->kabupaten()->sync([$this->tanahLaut->id]);
+
+        $das = $this->buatDas('DAS Angsana');
+        $das->kabupaten()->sync([$this->tanahLaut->id]);
+
+        // Tanah Laut dicabut padahal masih dipakai, sekaligus ada nama baru
+        // diketik. Penolakan tidak boleh menyisakan kabupaten menggantung.
+        $this->simpanWilayah($wilayah, 'Hulu Sungai Barat')
+            ->assertSessionHasErrors('kabupaten_nama');
+
+        $this->assertSame(13, Kabupaten::count());
     }
 
     public function test_formulir_das_hanya_menawarkan_kabupaten_wilayah_sungainya(): void
@@ -147,12 +204,12 @@ class KabupatenTest extends TestCase
         $das = $this->buatDas('DAS Angsana');
         $das->kabupaten()->sync([$this->tanahLaut->id]);
 
-        $jawaban = $this->simpanWilayah($wilayah, [$this->tanahBumbu->id])
-            ->assertSessionHasErrors('kabupaten_ids');
+        $jawaban = $this->simpanWilayah($wilayah, 'Tanah Bumbu')
+            ->assertSessionHasErrors('kabupaten_nama');
 
         // Pesannya harus menyebut apa yang menghalangi, bukan sekadar
         // menolak: admin perlu tahu DAS mana yang harus dibereskan dulu.
-        $pesan = $jawaban->getSession()->get('errors')->first('kabupaten_ids');
+        $pesan = $jawaban->getSession()->get('errors')->first('kabupaten_nama');
         $this->assertStringContainsString('Tanah Laut', $pesan);
         $this->assertStringContainsString('DAS Angsana', $pesan);
 
@@ -173,7 +230,7 @@ class KabupatenTest extends TestCase
         $das = $this->buatDas();
         $das->kabupaten()->sync([$this->tanahLaut->id]);
 
-        $this->simpanWilayah($wilayah, [$this->tanahLaut->id, $this->tanahBumbu->id])
+        $this->simpanWilayah($wilayah, 'Tanah Laut, Tanah Bumbu')
             ->assertSessionHasNoErrors();
 
         $this->assertEqualsCanonicalizing(
@@ -187,7 +244,7 @@ class KabupatenTest extends TestCase
         $wilayah = $this->wilayah();
         $wilayah->kabupaten()->sync([$this->tanahLaut->id]);
 
-        $this->simpanWilayah($wilayah, [$this->tanahBumbu->id], 'viewer')
+        $this->simpanWilayah($wilayah, 'Tanah Bumbu', 'viewer')
             ->assertForbidden();
 
         $this->assertSame(
