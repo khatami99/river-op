@@ -74,7 +74,7 @@
              BWS dan langkah yang bisa langsung diikuti. --}}
         <div class="lg:col-span-2">
             <div class="rounded-2xl bg-catatan-latar p-5 ring-1 ring-catatan-teks/20">
-                <h2 class="text-[14px] font-bold text-catatan-teks">Belum punya berkasnya?</h2>
+                <h2 class="text-[14px] font-bold text-catatan-teks-pekat">Belum punya berkasnya?</h2>
 
                 <p class="mt-2 text-[12.5px] leading-relaxed text-catatan-teks-pekat">
                     Batas wilayah tidak dibuat sendiri — ia diminta dari instansi yang
@@ -95,7 +95,7 @@
                 </p>
 
                 <div class="mt-4 border-t border-catatan-teks/20 pt-3">
-                    <h3 class="text-[13px] font-bold text-catatan-teks">Kalau berkasnya ditolak</h3>
+                    <h3 class="text-[13px] font-bold text-catatan-teks-pekat">Kalau berkasnya ditolak</h3>
                     <p class="mt-1.5 text-[12.5px] leading-relaxed text-catatan-teks-pekat">
                         Pesan penolakannya menyebutkan sebabnya. Yang paling sering:
                         koordinatnya belum WGS 84. Perbaikannya sekali jalan dengan
