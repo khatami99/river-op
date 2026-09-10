@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => \App\Http\Middleware\PastikanAdmin::class,
+            'juru.aktif' => \App\Http\Middleware\PastikanJuruAktif::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -100,6 +100,19 @@ DAS itu wilayah yang luas. Centang sebanyak yang diperlukan.
 > tidak bertugas, **nonaktifkan akunnya** lewat Ubah, jangan cuma dicopot
 > DAS-nya.
 
+### Menonaktifkan juru
+
+**Berlaku seketika, termasuk pada HP yang sudah dipegangnya.** Begitu
+dinonaktifkan, aplikasinya menolak mengirim laporan dan meminta juru itu masuk
+ulang — yang tidak akan berhasil selama akunnya masih nonaktif.
+
+Menonaktifkan bersifat sementara dan aman dibatalkan: mengaktifkannya kembali
+memulihkan keadaan tanpa perlu menghubungi juru atau menyuruhnya memasang ulang
+aplikasi.
+
+Laporan yang sudah pernah ia kirim **tetap utuh**. Menonaktifkan tidak menghapus
+apa pun.
+
 ---
 
 ## 4. Batas wilayah dari BWS
@@ -171,14 +184,21 @@ kali HP-nya mengabarkan diri.
 Aplikasi juru mencoba mengirim sendiri tiap lima belas menit selama ada
 jaringan, dan juru mendapat notifikasi bila laporannya gagal terkirim.
 
+Sesi masuk di HP berumur **30 hari**. Sesudah itu — atau bila akunnya
+dinonaktifkan — aplikasi memberi tahu juru bahwa ia harus masuk ulang, dan
+menahan laporannya di HP sampai itu dikerjakan. Tidak ada yang hilang.
+
 Yang perlu diperiksa bila sebuah laporan tidak kunjung muncul:
 
-1. **Apakah HP-nya pernah mengabarkan diri?** Kolom terakhir pada halaman
+1. **Apakah akunnya masih aktif?** Juru yang dinonaktifkan tidak bisa mengirim
+   apa pun. Aplikasinya memberi tahu dia dan meminta masuk ulang, tetapi bila
+   penonaktifannya tidak disengaja, dialah yang akan menelepon lebih dulu.
+2. **Apakah HP-nya pernah mengabarkan diri?** Kolom terakhir pada halaman
    Sinkronisasi. Bila kosong sama sekali, juru itu belum pernah berhasil
    terhubung — biasanya salah alamat server atau belum pernah masuk.
-2. **Apakah antreannya berisi?** Angka "tertunda" yang tidak turun-turun
+3. **Apakah antreannya berisi?** Angka "tertunda" yang tidak turun-turun
    berarti HP-nya tidak mendapat jaringan.
-3. **Apakah gagalnya banyak?** Angka "gagal" berarti kiriman sampai ke server
+4. **Apakah gagalnya banyak?** Angka "gagal" berarti kiriman sampai ke server
    tetapi ditolak. Ini perlu petugas IT.
 
 Data laporan **tidak pernah hilang** karena gagal terkirim; ia tetap tersimpan

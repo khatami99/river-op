@@ -12,7 +12,10 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+// 'juru.aktif' berjaga di belakang 'auth:sanctum': token yang sah pun ditolak
+// bila akunnya sudah dinonaktifkan dinas. Logout sengaja ikut dijaga — juru
+// nonaktif tetap boleh keluar, dan itu ditangani aplikasi sebagai sesi habis.
+Route::middleware(['auth:sanctum', 'juru.aktif'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/master/sync', [MasterController::class, 'sync']);
     Route::get('/master/profil', [MasterController::class, 'profil']);

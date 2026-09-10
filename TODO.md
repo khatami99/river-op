@@ -242,6 +242,33 @@ itu admin diarahkan untuk menonaktifkan saja agar riwayat tetap utuh.
 
 - [x] **PANDUAN-ADMIN.md** untuk staf dinas, bukan untuk programmer.
 
+- [x] **Sesi juru benar-benar diperiksa.** Sebelumnya kolom `aktif` hanya
+      dilihat sekali saat login, sehingga menonaktifkan juru — yang justru
+      disuruh oleh panduan admin — tidak mengerjakan apa pun terhadap HP yang
+      sudah memegang token: ia tetap mencatat sampai tiga puluh hari ke depan
+      dan laporannya tetap diterima sebagai laporan resmi. Middleware
+      `juru.aktif` kini berjaga di seluruh rute API.
+
+      Di sisi aplikasi, keputusan "boleh langsung masuk" dulu dibuat sendirian
+      oleh HP dengan melihat jamnya sendiri; server tidak pernah ditanya. Kini
+      ditanya lebih dulu, tetapi HANYA jawaban 401 yang mengeluarkan juru —
+      jaringan mati atau server tumbang tetap dipersilakan masuk, sebab
+      mengunci juru di luar aplikasinya sendiri di tepi sungai jauh lebih
+      merusak daripada yang sedang dicegah. Batas tunggunya enam detik.
+
+      Penolakan 401 pada pekerja latar dulu sepenuhnya bisu: `Result.failure()`
+      tanpa membuang token dan tanpa membatalkan jadwal, sehingga HP itu
+      mengetuk server dengan token mati sembilan puluh enam kali sehari
+      selamanya, dan juru tidak pernah diberi tahu. Kini sesinya dibuang dan
+      juru dikabari lewat saluran notifikasi tersendiri berprioritas tinggi —
+      terpisah dari kabar sinkronisasi rutin yang sengaja dibuat mudah
+      diabaikan.
+
+      Ikut ketahuan dan diperbaiki: laporan yang membeku berstatus SYNCING
+      karena percobaan sebelumnya mati di tengah jalan tidak pernah dijemput
+      lagi oleh `getUnsyncedLaporan()` — hilang diam-diam tanpa pernah tampak
+      sebagai gagal.
+
 - [x] **Tombol tindakan turun dari kop ke badan halaman** dan dirata-kirikan;
       sakelar tema jadi satu tombol di sudut kanan atas bersama menu akun.
 
