@@ -4,3 +4,4 @@ import './gerak';
 import './saringan';
 import './pilihan-cari';
 import './kabupaten-das';
+import './chip-kabupaten';

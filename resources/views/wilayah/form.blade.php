@@ -44,15 +44,22 @@
              tetap bisa dikelompokkan di Export Excel. --}}
         <x-kolom label="Kabupaten yang Dilalui" nama="kabupaten_nama"
                  petunjuk="Tulis nama kabupatennya, pisahkan dengan koma. Nama yang belum terdaftar akan dibuatkan sendiri, jadi kabupaten baru hasil pemekaran cukup diketik di sini. Hanya yang tertulis di sini yang bisa dipilih pada DAS di bawahnya.">
+            {{-- Kolom koma inilah bentuk dasarnya, dan bentuk inilah yang
+                 dikirim ke server. JavaScript menyembunyikannya lalu menaruh
+                 tampilan chip di atasnya, sambil terus menyelaraskan nilainya
+                 ke sini — jadi controller tidak perlu tahu apa-apa soal chip,
+                 dan tanpa JavaScript formulir ini masih bisa dipakai. --}}
             <input id="kabupaten_nama" name="kabupaten_nama" type="text" class="{{ $ki }}"
                    value="{{ old('kabupaten_nama', $wilayah->exists ? $wilayah->kabupaten->pluck('nama')->join(', ') : '') }}"
-                   placeholder="Kotabaru, Tanah Bumbu, Tanah Laut">
+                   placeholder="Kotabaru, Tanah Bumbu, Tanah Laut"
+                   data-chip-kabupaten
+                   data-saran="{{ $daftarKabupaten->pluck('nama')->toJson() }}">
 
-            {{-- Ejaan yang sudah dipakai ditampilkan supaya bisa disalin apa
-                 adanya. Tanpa ini "Kotabaru" dan "Kota Baru" akan hidup
-                 berdampingan sebagai dua kabupaten berbeda. --}}
+            {{-- Ejaan yang sudah dipakai, untuk disalin apa adanya. Hanya
+                 berguna pada bentuk dasar; begitu chip terpasang, sarannya
+                 muncul sambil mengetik dan baris ini disembunyikan. --}}
             @if ($daftarKabupaten->isNotEmpty())
-                <p class="mt-2 text-[12px] leading-relaxed text-teks-samar">
+                <p data-daftar-ejaan class="mt-2 text-[12px] leading-relaxed text-teks-samar">
                     <span class="font-semibold text-teks-lembut">Sudah terdaftar:</span>
                     {{ $daftarKabupaten->pluck('nama')->join(', ') }}.
                 </p>
