@@ -26,7 +26,7 @@
             } catch (e) {}
         })();
     </script>
-    <title>@yield('judul', 'Dashboard') — Sistem Informasi OP Sungai</title>
+    <title>@yield('judul', 'Beranda') — Sistem Informasi OP Sungai</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ asset('gambar/ikon-layar-depan.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +49,7 @@
      */
     $kelompok = [
         'Pemantauan' => [
-            ['rute' => 'dashboard',     'aktif' => 'dashboard', 'label' => 'Dashboard',      'ikon' => 'M3.5 11.5 12 4l8.5 7.5M6 10v9a1 1 0 001 1h3v-5h4v5h3a1 1 0 001-1v-9'],
+            ['rute' => 'dashboard',     'aktif' => 'dashboard', 'label' => 'Beranda',        'ikon' => 'M3.5 11.5 12 4l8.5 7.5M6 10v9a1 1 0 001 1h3v-5h4v5h3a1 1 0 001-1v-9'],
             ['rute' => 'laporan.index', 'aktif' => 'laporan.*', 'label' => 'Laporan OP',     'ikon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l5.4 5.4a1 1 0 01.3.7V19a2 2 0 01-2 2z'],
             ['rute' => 'rekap.index',   'aktif' => 'rekap.*',   'label' => 'Rekapitulasi',   'ikon' => 'M9 19v-6m4 6V7m4 12v-9M5 21h14a1 1 0 001-1V4a1 1 0 00-1-1H5a1 1 0 00-1 1v16a1 1 0 001 1z'],
         ],
@@ -152,7 +152,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div class="min-w-0">
                         <h1 class="truncate text-[22px] font-extrabold tracking-tight text-judul">
-                            @yield('judul', 'Dashboard')
+                            @yield('judul', 'Beranda')
                         </h1>
                         @hasSection('subjudul')
                             <p class="mt-0.5 truncate text-[13px] text-teks-samar">@yield('subjudul')</p>

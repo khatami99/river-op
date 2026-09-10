@@ -10,7 +10,7 @@
                 <thead>
                     <tr class="bg-permukaan-lembut/70 text-left text-[12px] font-bold uppercase tracking-wider text-teks-lembut">
                         <th class="px-5 py-3">Nama</th>
-                        <th class="px-5 py-3">Username</th>
+                        <th class="px-5 py-3">Nama Pengguna</th>
                         <th class="px-5 py-3">Peran</th>
                         <th class="px-5 py-3">Status</th>
                         <th class="px-5 py-3"></th>

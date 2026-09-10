@@ -275,6 +275,29 @@ dari kode. Untuk build rilis, `riverop.baseUrl.release` **wajib** diisi dan
 harus `https://` — bila tidak, pembangunannya menolak berjalan. Itu disengaja,
 supaya aplikasi rilis tidak pernah terkirim dengan alamat pengembangan.
 
+### Bahasa sistem
+
+Seluruh pesan sistem berbahasa Indonesia, termasuk pesan kesalahan pengisian
+formulir. Terjemahannya ada di `lang/id/`.
+
+Bila kelak server dipasang ulang, pastikan `.env` memuat:
+
+```
+APP_LOCALE=id
+APP_FALLBACK_LOCALE=id
+```
+
+Berkas `.env` tidak ikut dalam repositori, jadi nilai ini harus disalin sendiri
+dari `.env.example`. Bila baris itu tertulis `en`, sebagian pesan kembali
+berbahasa Inggris tanpa ada galat apa pun — cukup diperbaiki lalu jalankan
+`php artisan config:clear`.
+
+Untuk memeriksa apakah ada terjemahan yang tertinggal:
+
+```
+php scripts/periksa-terjemahan.php
+```
+
 ### Catatan pemeliharaan
 
 Pustaka pembaca shapefile (`gasparesganga/php-shapefile`) memakai bentuk

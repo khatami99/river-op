@@ -46,20 +46,20 @@ class TataLetakPeriodeTest extends TestCase
     }
 
     /**
-     * Uji ini dulu berbunyi terbalik: Export dijaga TETAP di kop. Alasannya
+     * Uji ini dulu berbunyi terbalik: tombol unduh dijaga TETAP di kop. Alasannya
      * waktu itu ia tindakan, bukan kendali, jadi tidak ikut pindah bersama
      * pemilih periode.
      *
      * Alasan itu runtuh sesudah akun dan sakelar tema menempati pojok kanan
      * atas. Kop sekarang menjawab satu hal saja — sedang di halaman apa dan
-     * masuk sebagai siapa — dan tombol Export di sebelah nama pengguna
+     * masuk sebagai siapa — dan tombol unduh di sebelah nama pengguna
      * mencampur identitas dengan tindakan. Tempatnya ikut turun ke badan
      * halaman.
      */
     public function test_tombol_tindakan_berada_di_badan_bukan_di_kop(): void
     {
         $tindakan = [
-            '/rekap' => 'Export Rekap',
+            '/rekap' => 'Unduh Rekap',
             '/das' => 'Tambah DAS',
             '/juru' => 'Tambah Juru',
             '/wilayah' => 'Tambah Wilayah',

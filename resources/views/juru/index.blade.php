@@ -35,7 +35,7 @@
         <div class="grid gap-3 sm:grid-cols-3">
             <div class="sm:col-span-2">
                 <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-teks-lembut">Pencarian</label>
-                <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama, telepon, atau username" class="{{ $kelasInput }}">
+                <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama, telepon, atau nama pengguna" class="{{ $kelasInput }}">
             </div>
             <div>
                 <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-teks-lembut">DAS</label>
@@ -49,7 +49,7 @@
         </div>
         <div class="mt-3.5 flex items-center gap-2">
             <button type="submit" class="rounded-xl bg-cari px-4 py-2 text-[13px] font-bold text-cari-teks transition hover:bg-cari-sorot">
-                Terapkan Filter
+                Terapkan Penyaring
             </button>
             @if ($adaFilter)
                 <a href="{{ route('juru.index') }}" class="rounded-xl px-3 py-2 text-[13px] font-semibold text-teks-samar transition hover:bg-permukaan-sedang hover:text-teks-sedang">

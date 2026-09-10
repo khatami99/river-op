@@ -31,7 +31,7 @@
           class="rounded-2xl bg-permukaan p-4 ring-1 ring-garis/70">
         <label class="mb-1 block text-[12px] font-bold uppercase tracking-wider text-teks-lembut">Pencarian</label>
         <div class="flex flex-wrap items-center gap-2">
-            <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama atau username"
+            <input type="text" name="cari" value="{{ $filter['cari'] }}" placeholder="Nama atau nama pengguna"
                    class="{{ $ki }} max-w-md flex-1">
             <button type="submit" class="rounded-xl bg-cari px-4 py-2 text-[13px] font-bold text-cari-teks transition hover:bg-cari-sorot">Cari</button>
             @if ($filter['cari'])

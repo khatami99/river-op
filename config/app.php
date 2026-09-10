@@ -78,9 +78,12 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    // Bawaannya 'id', bukan 'en'. Bila server dinas kelak dipasang dengan
+    // .env baru yang lupa menyetel APP_LOCALE, sistem tetap berbahasa
+    // Indonesia — bukan diam-diam kembali menampilkan pesan Inggris.
+    'locale' => env('APP_LOCALE', 'id'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'id'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 

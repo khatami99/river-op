@@ -278,10 +278,6 @@ class WilayahSungaiWebController extends Controller
             ],
             'deskripsi' => ['nullable', 'string'],
             'kabupaten_nama' => ['nullable', 'string', 'max:500'],
-        ], [], [
-            'nama_sungai' => 'nama wilayah sungai',
-            'kode_sungai' => 'kode',
-            'kabupaten_nama' => 'kabupaten',
         ]);
     }
 }

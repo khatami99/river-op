@@ -93,7 +93,7 @@
                 @csrf
 
                 <div>
-                    <label for="username" class="block text-[13px] font-semibold text-teks-sedang">Username</label>
+                    <label for="username" class="block text-[13px] font-semibold text-teks-sedang">Nama Pengguna</label>
                     <input id="username" name="username" type="text" required autofocus
                            value="{{ old('username') }}" autocomplete="username"
                            class="mt-1.5 block w-full rounded-xl border-0 bg-permukaan-lembut px-3.5 py-2.5 text-sm text-teks-tegas
@@ -102,7 +102,7 @@
                 </div>
 
                 <div>
-                    <label for="password" class="block text-[13px] font-semibold text-teks-sedang">Password</label>
+                    <label for="password" class="block text-[13px] font-semibold text-teks-sedang">Kata Sandi</label>
                     <input id="password" name="password" type="password" required autocomplete="current-password"
                            class="mt-1.5 block w-full rounded-xl border-0 bg-permukaan-lembut px-3.5 py-2.5 text-sm text-teks-tegas
                                   ring-1 ring-inset ring-garis transition placeholder:text-teks-samar

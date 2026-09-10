@@ -274,14 +274,11 @@ class DasWebController extends Controller
                     ->where('wilayah_sungai_id', $request->input('wilayah_sungai_id')),
             ],
         ], [
-            'kabupaten_ids.*.exists' => 'Kabupaten yang dipilih tidak disinggung wilayah sungai ini. Tambahkan lebih dulu pada data wilayah sungainya.',
-            'juru_ids.*.exists' => 'Ada juru yang sudah tidak terdaftar lagi. Muat ulang halaman ini lalu pilih kembali.',
-        ], [
-            'nama_das' => 'nama DAS',
-            'kode_das' => 'kode DAS',
-            'wilayah_sungai_id' => 'wilayah sungai',
-            'kabupaten_ids' => 'kabupaten',
-            'juru_ids' => 'juru',
+            'kabupaten_ids.*.exists' => 'Kabupaten yang dipilih tidak disinggung wilayah sungai ini. Tambahkan lebih dahulu pada data wilayah sungainya.',
+            'juru_ids.*.exists' => 'Terdapat juru yang sudah tidak terdaftar. Muat ulang halaman ini, lalu pilih kembali.',
         ]);
+        // Nama kolom tidak lagi ditulis di sini. Seluruhnya terkumpul pada
+        // lang/id/validation.php bagian 'attributes', supaya satu nama tidak
+        // muncul berbeda-beda di dua formulir yang berlainan.
     }
 }
