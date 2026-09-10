@@ -140,7 +140,8 @@
             <input id="juru_ids" name="juru_ids" type="text" class="{{ $ki }}"
                    value="{{ $juruTerpilih->join(', ') }}"
                    data-chip
-                   data-chip-petunjuk="Ketik nama juru&hellip;"
+                   data-chip-petunjuk="Ketik nama juru, atau klik untuk melihat semuanya&hellip;"
+                   data-chip-kosong="Belum ada juru sungai yang terdaftar di sistem." 
                    data-chip-peringatan="{nama} akan menjadi juru tanpa DAS. Selama begitu, laporan yang dikirim tidak masuk Rekapitulasi mana pun."
                    data-chip-pilihan="{{ $daftarJuru->map(fn ($j) => [
                         'nilai' => (string) $j->id,

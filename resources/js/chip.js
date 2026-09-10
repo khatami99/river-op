@@ -26,6 +26,7 @@
  *   data-chip-baru         bila ada, nilai yang belum dikenal boleh dibuat
  *   data-chip-petunjuk     tulisan pemandu di kolom ketik
  *   data-chip-peringatan   kalimat peringatan; {nama} diganti daftar yang dicopot
+ *   data-chip-kosong       kalimat saat memang belum ada apa pun terdaftar
  */
 
 const KELAS_KOTAK = 'flex min-h-[46px] w-full flex-wrap items-center gap-1.5 rounded-xl bg-permukaan-lembut px-2 py-1.5 ring-1 ring-inset ring-garis transition focus-within:bg-permukaan focus-within:ring-2 focus-within:ring-sungai-500';
@@ -184,18 +185,18 @@ function pasangChip(kolom) {
         const dicari = samakan(ketik.value);
         saran.replaceChildren();
 
-        if (dicari === '') {
-            tutupSaran();
-            return;
-        }
-
         pilihan
-            .filter((p) => samakan(p.label).includes(dicari))
+            .filter((p) => dicari === '' || samakan(p.label).includes(dicari))
             .filter((p) => ! terpilih.some((t) => samakan(t) === samakan(p.nilai)))
             .forEach((p, urutan) => {
                 // Baris pertama disorot supaya Enter langsung memilih yang
                 // sudah ada — jalan tercepat justru menuju data yang benar.
-                const baris = buatBaris(p.nilai, urutan === 0);
+                //
+                // Kecuali saat kolomnya masih kosong: di situ panelnya terbuka
+                // karena diklik, bukan karena dicari, dan menyorot baris teratas
+                // berarti Enter yang tidak disengaja memilih nama pertama
+                // menurut abjad.
+                const baris = buatBaris(p.nilai, dicari !== '' && urutan === 0);
 
                 const label = document.createElement('span');
                 label.textContent = p.label;
@@ -213,7 +214,7 @@ function pasangChip(kolom) {
                 saran.append(baris);
             });
 
-        if (bolehBaru) {
+        if (bolehBaru && dicari !== '') {
             const persis = perNilai.has(dicari);
             const sudahDipakai = terpilih.some((t) => samakan(t) === dicari);
 
@@ -238,9 +239,21 @@ function pasangChip(kolom) {
         }
 
         if (saran.childElementCount === 0) {
+            // Tiga sebab kosong yang berbeda, dan menyamakannya jadi "tidak
+            // ada yang cocok" akan menyesatkan: yang satu berarti salah ketik,
+            // yang lain berarti sudah selesai, yang lain lagi berarti datanya
+            // memang belum pernah dibuat.
             const kosong = document.createElement('p');
             kosong.className = 'px-3 py-2.5 text-[13px] text-teks-samar';
-            kosong.textContent = 'Tidak ada yang cocok.';
+
+            if (dicari !== '') {
+                kosong.textContent = 'Tidak ada yang cocok.';
+            } else if (pilihan.length === 0) {
+                kosong.textContent = kolom.dataset.chipKosong || 'Belum ada yang terdaftar.';
+            } else {
+                kosong.textContent = 'Semuanya sudah dipilih.';
+            }
+
             saran.append(kosong);
         }
 
@@ -260,6 +273,12 @@ function pasangChip(kolom) {
     };
 
     ketik.addEventListener('input', gambarSaran);
+
+    // Panel terbuka begitu kolomnya disentuh, tanpa perlu mengetik apa pun.
+    // Tanpa ini isi daftarnya harus ditebak lebih dulu — pengguna tidak bisa
+    // tahu siapa saja yang terdaftar sebelum kebetulan mengetik huruf yang
+    // benar.
+    ketik.addEventListener('focus', gambarSaran);
 
     ketik.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
