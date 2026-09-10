@@ -43,19 +43,59 @@
             </select>
         </x-kolom>
 
+        {{-- Kabupaten, dibatasi oleh wilayah sungai yang dipilih di atas.
+
+             Kalimantan Selatan punya tiga belas kabupaten dan kota, dan
+             menyodorkan ketiga belasnya di sini berarti tiga belas baris yang
+             harus dibaca satu per satu untuk mencentang satu atau dua — dan
+             tidak ada yang menghalangi DAS di Batulicin dicentang Tabalong.
+             Yang tampil karena itu hanya kabupaten milik wilayah sungainya.
+
+             Satu blok per wilayah sungai digambar sekaligus di sini, dan yang
+             tidak terpakai disembunyikan sekaligus dimatikan. Dimatikan itu
+             yang penting: kotak yang disabled tidak ikut terkirim, sehingga
+             berpindah wilayah sungai tidak menyeret kabupaten lama ikut
+             tersimpan. Blok yang benar sudah terbuka sejak dari server, jadi
+             tanpa JavaScript pun formulir ini masih terisi dengan benar; yang
+             hilang cuma kemampuan berganti daftar tanpa memuat ulang. --}}
         <x-kolom label="Kabupaten" nama="kabupaten_ids"
                  petunjuk="Boleh lebih dari satu, karena batas DAS mengikuti punggung bukit dan tidak selalu berhenti di batas kabupaten. Boleh juga dikosongkan bila belum diketahui.">
-            @php $terpilih = collect(old('kabupaten_ids', $das->exists ? $das->kabupaten->pluck('id')->all() : []))->map(fn ($v) => (string) $v); @endphp
-            <div class="grid gap-2 sm:grid-cols-2">
-                @foreach ($daftarKabupaten as $k)
-                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-sedang ring-1 ring-inset ring-garis transition hover:bg-permukaan hover:ring-info-teks/40">
-                        <input type="checkbox" name="kabupaten_ids[]" value="{{ $k->id }}"
-                               @checked($terpilih->contains((string) $k->id))
-                               class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
-                        {{ $k->nama }}
-                    </label>
-                @endforeach
-            </div>
+            @php
+                $terpilih = collect(old('kabupaten_ids', $das->exists ? $das->kabupaten->pluck('id')->all() : []))
+                    ->map(fn ($v) => (string) $v);
+                $wsTerpilih = (string) old('wilayah_sungai_id', $das->wilayah_sungai_id);
+                $kabar = 'rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13px] text-teks-samar ring-1 ring-inset ring-garis';
+            @endphp
+
+            <p data-kabupaten-ws="" @unless ($wsTerpilih === '') hidden @endunless class="{{ $kabar }}">
+                Pilih wilayah sungai lebih dulu — kabupaten yang tersedia mengikuti wilayah sungainya.
+            </p>
+
+            @foreach ($daftarWilayah as $w)
+                @php $aktif = $wsTerpilih === (string) $w->id; @endphp
+                <div data-kabupaten-ws="{{ $w->id }}" @unless ($aktif) hidden @endunless>
+                    @if ($w->kabupaten->isEmpty())
+                        <p class="{{ $kabar }}">
+                            {{ $w->nama_sungai }} belum ditentukan kabupatennya.
+                            <a href="{{ route('wilayah.edit', $w) }}" class="font-semibold text-info-teks underline underline-offset-2">
+                                Tentukan di sana lebih dulu
+                            </a>.
+                        </p>
+                    @else
+                        <div class="grid gap-2 sm:grid-cols-2">
+                            @foreach ($w->kabupaten as $k)
+                                <label class="flex cursor-pointer items-center gap-2.5 rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-sedang ring-1 ring-inset ring-garis transition hover:bg-permukaan hover:ring-info-teks/40">
+                                    <input type="checkbox" name="kabupaten_ids[]" value="{{ $k->id }}"
+                                           @checked($terpilih->contains((string) $k->id))
+                                           @unless ($aktif) disabled @endunless
+                                           class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
+                                    {{ $k->nama }}
+                                </label>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endforeach
         </x-kolom>
 
         <x-kolom label="Deskripsi" nama="deskripsi">

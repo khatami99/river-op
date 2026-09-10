@@ -27,6 +27,31 @@
                    value="{{ old('kode_sungai', $wilayah->kode_sungai) }}" placeholder="04.10.B" required>
         </x-kolom>
 
+        {{-- Kabupaten yang disinggung wilayah sungai ini.
+
+             Bukan sekadar keterangan: inilah daftar yang nanti ditawarkan
+             kepada DAS di bawahnya. Wilayah sungai adalah gabungan DAS-nya,
+             jadi sebuah DAS mustahil berada di kabupaten yang tidak ada di
+             sini — dan dengan dibatasi begini, kekeliruan itu tidak bisa
+             diketik sama sekali, bukan sekadar tidak dianjurkan. --}}
+        <x-kolom label="Kabupaten yang Dilalui" nama="kabupaten_ids"
+                 petunjuk="Centang semua kabupaten yang disinggung wilayah sungai ini. Hanya yang tercentang di sini yang bisa dipilih pada DAS di bawahnya, jadi lebih baik kelebihan satu daripada kurang.">
+            @php
+                $terpilih = collect(old('kabupaten_ids', $wilayah->exists ? $wilayah->kabupaten->pluck('id')->all() : []))
+                    ->map(fn ($v) => (string) $v);
+            @endphp
+            <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($daftarKabupaten as $k)
+                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl bg-permukaan-lembut px-3.5 py-2.5 text-[13.5px] text-teks-sedang ring-1 ring-inset ring-garis transition hover:bg-permukaan hover:ring-info-teks/40">
+                        <input type="checkbox" name="kabupaten_ids[]" value="{{ $k->id }}"
+                               @checked($terpilih->contains((string) $k->id))
+                               class="h-4 w-4 rounded border-garis-kuat text-info-teks focus:ring-sungai-500/30">
+                        {{ $k->nama }}
+                    </label>
+                @endforeach
+            </div>
+        </x-kolom>
+
         <x-kolom label="Deskripsi" nama="deskripsi">
             <textarea id="deskripsi" name="deskripsi" rows="3" class="{{ $ki }}"
                       placeholder="Keterangan singkat mengenai wilayah sungai ini">{{ old('deskripsi', $wilayah->deskripsi) }}</textarea>

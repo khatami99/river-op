@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class WilayahSungaiWebController extends Controller
@@ -123,6 +126,7 @@ class WilayahSungaiWebController extends Controller
     {
         return view('wilayah.form', [
             'wilayah' => new WilayahSungai(['aktif' => true]),
+            'daftarKabupaten' => Kabupaten::where('aktif', true)->orderBy('nama')->get(),
         ]);
     }
 
@@ -131,15 +135,19 @@ class WilayahSungaiWebController extends Controller
         $data = $this->validasi($request);
         $data['aktif'] = $request->boolean('aktif');
 
-        WilayahSungai::create($data);
+        $wilayah = WilayahSungai::create(Arr::except($data, 'kabupaten_ids'));
+        $wilayah->kabupaten()->sync($data['kabupaten_ids'] ?? []);
 
         return redirect()->route('wilayah.index')->with('sukses', 'Wilayah sungai berhasil ditambahkan.');
     }
 
     public function edit(WilayahSungai $wilayah)
     {
+        $wilayah->load('kabupaten');
+
         return view('wilayah.form', [
             'wilayah' => $wilayah,
+            'daftarKabupaten' => Kabupaten::where('aktif', true)->orderBy('nama')->get(),
         ]);
     }
 
@@ -148,9 +156,60 @@ class WilayahSungaiWebController extends Controller
         $data = $this->validasi($request, $wilayah);
         $data['aktif'] = $request->boolean('aktif');
 
-        $wilayah->update($data);
+        $wilayah->load('kabupaten');
+        $pilihan = array_map('intval', $data['kabupaten_ids'] ?? []);
+
+        if ($keberatan = $this->kabupatenMasihDipakai($wilayah, $pilihan)) {
+            return back()->withInput()->withErrors(['kabupaten_ids' => $keberatan]);
+        }
+
+        $wilayah->update(Arr::except($data, 'kabupaten_ids'));
+        $wilayah->kabupaten()->sync($pilihan);
 
         return redirect()->route('wilayah.index')->with('sukses', 'Data wilayah sungai diperbarui.');
+    }
+
+    /**
+     * Menahan pencabutan kabupaten yang masih dipegang DAS di bawahnya.
+     *
+     * Pilihan sikapnya ada tiga: menolak, ikut mencabut dari DAS-nya, atau
+     * membiarkan data saling bertentangan. Yang dipakai adalah menolak, sebab
+     * kabupaten pada DAS dikumpulkan sedikit demi sedikit oleh orang yang tahu
+     * lapangan, dan satu klik keliru di layar wilayah sungai tidak boleh
+     * menghapusnya diam-diam. DAS yang menghalangi disebut namanya supaya
+     * admin tahu persis apa yang harus dibereskan lebih dulu.
+     */
+    private function kabupatenMasihDipakai(WilayahSungai $wilayah, array $pilihan): ?string
+    {
+        $dicabut = array_diff($wilayah->kabupaten->pluck('id')->all(), $pilihan);
+
+        if ($dicabut === []) {
+            return null;
+        }
+
+        $bentrok = DB::table('das_kabupaten')
+            ->join('das', 'das_kabupaten.das_id', '=', 'das.id')
+            ->join('kabupaten', 'das_kabupaten.kabupaten_id', '=', 'kabupaten.id')
+            ->where('das.wilayah_sungai_id', $wilayah->id)
+            ->whereIn('das_kabupaten.kabupaten_id', $dicabut)
+            ->whereNull('das.deleted_at')
+            ->orderBy('das.nama_das')
+            ->get(['kabupaten.nama as kabupaten', 'das.nama_das as das'])
+            ->groupBy('kabupaten');
+
+        if ($bentrok->isEmpty()) {
+            return null;
+        }
+
+        $kalimat = $bentrok->map(function ($baris, $kabupaten) {
+            $nama = $baris->pluck('das');
+            $sisa = $nama->count() - 2;
+
+            return $kabupaten . ' masih dipakai ' . $nama->take(2)->join(', ')
+                . ($sisa > 0 ? " dan {$sisa} DAS lain" : '');
+        })->join('; ');
+
+        return $kalimat . '. Ubah kabupaten pada DAS itu lebih dulu.';
     }
 
     public function destroy(WilayahSungai $wilayah)
@@ -175,9 +234,12 @@ class WilayahSungaiWebController extends Controller
                 Rule::unique('wilayah_sungai', 'kode_sungai')->ignore($wilayah?->id)->whereNull('deleted_at'),
             ],
             'deskripsi' => ['nullable', 'string'],
+            'kabupaten_ids' => ['nullable', 'array'],
+            'kabupaten_ids.*' => ['integer', 'exists:kabupaten,id'],
         ], [], [
             'nama_sungai' => 'nama wilayah sungai',
             'kode_sungai' => 'kode',
+            'kabupaten_ids' => 'kabupaten',
         ]);
     }
 }

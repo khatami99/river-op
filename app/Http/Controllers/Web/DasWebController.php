@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Das;
-use App\Models\Kabupaten;
 use App\Models\WilayahSungai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,8 +105,7 @@ class DasWebController extends Controller
     {
         return view('das.form', [
             'das' => new Das(['aktif' => true]),
-            'daftarWilayah' => WilayahSungai::where('aktif', true)->orderBy('nama_sungai')->get(),
-            'daftarKabupaten' => Kabupaten::where('aktif', true)->orderBy('nama')->get(),
+            'daftarWilayah' => $this->wilayahBesertaKabupaten(),
         ]);
     }
 
@@ -128,8 +126,7 @@ class DasWebController extends Controller
 
         return view('das.form', [
             'das' => $das,
-            'daftarWilayah' => WilayahSungai::where('aktif', true)->orderBy('nama_sungai')->get(),
-            'daftarKabupaten' => Kabupaten::where('aktif', true)->orderBy('nama')->get(),
+            'daftarWilayah' => $this->wilayahBesertaKabupaten(),
         ]);
     }
 
@@ -142,58 +139,6 @@ class DasWebController extends Controller
         $das->kabupaten()->sync($data['kabupaten_ids'] ?? []);
 
         return redirect()->route('das.index')->with('sukses', 'Data DAS diperbarui.');
-    }
-
-    /**
-     * Pengisian kabupaten untuk seluruh DAS dalam satu layar.
-     *
-     * Kabupaten ikut tercetak pada blangko OP yang diserahkan ke dinas, dan
-     * saat ini hampir seluruhnya kosong. Mengisinya lewat formulir edit
-     * berarti 62 kali buka, centang, simpan — pekerjaan yang tidak akan
-     * pernah selesai.
-     *
-     * Centang, bukan pilihan tunggal: satu DAS bisa membentang di dua
-     * kabupaten.
-     */
-    public function kabupaten()
-    {
-        return view('das.kabupaten', [
-            'daftarDas' => Das::with('kabupaten')->orderBy('nama_das')->get(),
-            'daftarKabupaten' => Kabupaten::orderBy('nama')->get(),
-        ]);
-    }
-
-    public function simpanKabupaten(Request $request)
-    {
-        $terpilih = (array) $request->input('kabupaten', []);
-        $sah = Kabupaten::pluck('id')->all();
-        $berubah = 0;
-
-        DB::transaction(function () use ($terpilih, $sah, &$berubah) {
-            foreach (Das::with('kabupaten')->get() as $das) {
-                // Hanya id kabupaten yang benar-benar ada yang diterima; sisanya
-                // dibuang, sebab isian ini datang dari formulir.
-                $baru = array_values(array_intersect(
-                    array_map('intval', (array) ($terpilih[$das->id] ?? [])),
-                    $sah
-                ));
-
-                $lama = $das->kabupaten->pluck('id')->sort()->values()->all();
-                sort($baru);
-
-                if ($lama !== $baru) {
-                    $das->kabupaten()->sync($baru);
-                    $berubah++;
-                }
-            }
-        });
-
-        return redirect()->route('das.kabupaten')->with(
-            'sukses',
-            $berubah === 0
-                ? 'Tidak ada perubahan kabupaten.'
-                : "Kabupaten diperbarui pada {$berubah} DAS."
-        );
     }
 
     public function destroy(Das $das)
@@ -209,6 +154,22 @@ class DasWebController extends Controller
         return redirect()->route('das.index')->with('sukses', 'DAS dihapus.');
     }
 
+    /**
+     * Wilayah sungai beserta kabupaten yang disinggungnya.
+     *
+     * Kabupatennya ikut karena formulir DAS menggambar satu blok kotak
+     * centang untuk tiap wilayah sungai sekaligus, lalu membuka yang sesuai
+     * pilihan. Tanpa dimuat di sini, penggambaran itu akan menembak basis
+     * data sekali untuk setiap wilayah sungai.
+     */
+    private function wilayahBesertaKabupaten()
+    {
+        return WilayahSungai::with('kabupaten')
+            ->where('aktif', true)
+            ->orderBy('nama_sungai')
+            ->get();
+    }
+
     private function validasi(Request $request, ?Das $das = null): array
     {
         return $request->validate([
@@ -222,8 +183,20 @@ class DasWebController extends Controller
             'koordinat_lat' => ['nullable', 'numeric', 'between:-90,90', 'required_with:koordinat_lng'],
             'koordinat_lng' => ['nullable', 'numeric', 'between:-180,180', 'required_with:koordinat_lat'],
             'kabupaten_ids' => ['nullable', 'array'],
-            'kabupaten_ids.*' => ['integer', 'exists:kabupaten,id'],
-        ], [], [
+
+            // Bukan sekadar "kabupaten ini ada", melainkan "kabupaten ini
+            // disinggung wilayah sungai yang dipilih". Di layar aturan itu
+            // sudah dijaga dengan menyembunyikan pilihan yang tidak berlaku,
+            // tetapi penjagaan di layar hanya berlaku bagi orang yang memakai
+            // layar — pengiriman yang dirakit sendiri melewatinya begitu saja.
+            'kabupaten_ids.*' => [
+                'integer',
+                Rule::exists('wilayah_sungai_kabupaten', 'kabupaten_id')
+                    ->where('wilayah_sungai_id', $request->input('wilayah_sungai_id')),
+            ],
+        ], [
+            'kabupaten_ids.*.exists' => 'Kabupaten yang dipilih tidak disinggung wilayah sungai ini. Tambahkan lebih dulu pada data wilayah sungainya.',
+        ], [
             'nama_das' => 'nama DAS',
             'kode_das' => 'kode DAS',
             'wilayah_sungai_id' => 'wilayah sungai',

@@ -7,14 +7,6 @@
 
 @section('aksi-header')
     @if (auth('staf')->user()?->isAdmin())
-        <a href="{{ route('das.kabupaten') }}"
-           class="mr-2 inline-flex shrink-0 items-center gap-2 rounded-xl bg-permukaan-sedang px-4 py-2.5 text-[13px] font-bold text-teks-sedang transition hover:bg-permukaan-kuat">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.4-2.7A1 1 0 013 16.4V5.6a1 1 0 011.4-.9L9 7m0 13l6-3m-6 3V7m6 10l4.6 2.3a1 1 0 001.4-.9V7.6a1 1 0 00-.6-.9L15 4m0 13V4M9 7l6-3"/>
-            </svg>
-            Kabupaten
-        </a>
-
         <a href="{{ route('das.create') }}"
            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-aksi px-4 py-2.5 text-[13px] font-bold text-aksi-teks shadow-lg shadow-aksi/25 transition hover:bg-aksi-sorot">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
