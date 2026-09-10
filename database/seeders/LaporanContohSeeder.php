@@ -31,6 +31,37 @@ class LaporanContohSeeder extends Seeder
             return;
         }
 
+        // Penjaga kedua, dan inilah yang sebenarnya menyelamatkan.
+        //
+        // Penjaga di atas hanya bekerja bila APP_ENV memang tertulis
+        // 'production', dan server dinas belum tentu disetel demikian —
+        // Laravel sendiri memberi bawaan 'local' pada .env.example. Sekali
+        // perintah ini salah jalan di server sungguhan, seluruh laporan
+        // lapangan lenyap: pekerjaan berbulan-bulan yang tidak bisa diulang,
+        // sebab keadaan bangunannya sudah berubah sejak diperiksa.
+        //
+        // Karena itu keberadaan laporan dijadikan penghalang tersendiri, dan
+        // jawabannya dibuat 'tidak' secara bawaan. Pada mode tanpa interaksi —
+        // penjadwalan, skrip pemasangan, jalur otomatis apa pun — pertanyaan
+        // ini terjawab 'tidak' sendiri, sehingga tidak ada yang terhapus tanpa
+        // ada manusia yang benar-benar mengetiknya.
+        $jumlah = DB::table('laporan_op')->count();
+
+        if ($jumlah > 0) {
+            $this->command->warn("Basis data ini sudah memuat {$jumlah} laporan.");
+
+            $lanjut = $this->command->confirm(
+                "HAPUS seluruh {$jumlah} laporan itu dan ganti dengan data contoh?",
+                false
+            );
+
+            if (! $lanjut) {
+                $this->command->info('Dibatalkan. Tidak ada satu pun laporan yang dihapus.');
+
+                return;
+            }
+        }
+
         DB::table('temuan_kondisi')->delete();
         DB::table('item_inspeksi')->delete();
         DB::table('laporan_op')->delete();
