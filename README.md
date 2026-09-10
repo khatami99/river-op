@@ -10,6 +10,17 @@ Satu aplikasi Laravel melayani dua konsumen:
 
 ---
 
+## Dokumen lain
+
+| | |
+|---|---|
+| [PANDUAN-ADMIN.md](PANDUAN-ADMIN.md) | Untuk staf dinas yang memakai sistem, bukan yang membangunnya |
+| [PANDUAN-DEMO.md](PANDUAN-DEMO.md) | Untuk yang memperagakan sistem di hadapan pimpinan |
+| [TEROWONGAN.md](TEROWONGAN.md) | Menyiarkan sistem dari laptop sendiri lewat Cloudflare Tunnel |
+| [TODO.md](TODO.md) | Yang sudah selesai, yang belum, dan risiko yang harus diketahui pemelihara |
+
+---
+
 ## Tech Stack
 
 - **Framework:** Laravel 12 (PHP 8.2+)
@@ -103,11 +114,12 @@ Diakses staf dinas melalui browser. Juru sungai **tidak** memakai halaman ini.
 | Dashboard | `/dashboard` | Ringkasan periode, progres pelaporan, daftar juru yang belum melapor |
 | Laporan OP | `/laporan` | Filter bulan, tahun, sungai, juru, dan pencarian |
 | Detail laporan | `/laporan/{id}` | Tampilan gaya blangko OP beserta galeri foto |
-| Export | `/laporan/export` | Unduh CSV mengikuti filter yang sedang aktif |
+| Unduh Excel | `/laporan/export` | Berkas `.xlsx` mengikuti penyaring yang sedang aktif |
 | Juru sungai | `/juru` | Daftar juru dan kalender kepatuhan 12 bulan |
 | DAS | `/das` | Peta DAS di atas, daftar berpaginasi di bawahnya |
 | Wilayah sungai | `/wilayah` | Wilayah sungai beserta DAS di bawahnya |
 | Rekapitulasi | `/rekap` | Rekap per DAS, daftar juru belum melapor, export |
+| Batas Wilayah | `/batas` | Memasukkan poligon batas DAS dan WS dari berkas shapefile/GeoJSON |
 | Sinkronisasi | `/sinkronisasi` | Keadaan antrean di tiap HP juru, termasuk yang belum pernah melapor |
 | Log Aktivitas | `/log` | Jejak perubahan data master oleh staf, khusus admin |
 | Pengguna | `/staf` | Manajemen akun staf dinas — hanya admin |
@@ -152,6 +164,15 @@ Dipakai aplikasi Android. Autentikasi memakai token Sanctum.
 |--------|----------|-----------|------|
 | POST | `/api/laporan/sync` | Sync batch laporan dari HP | ✅ |
 | POST | `/api/laporan/upload-foto` | Unggah satu foto, mengembalikan URL | ✅ |
+| POST | `/api/sinkronisasi/status` | HP mengabarkan keadaan antreannya sendiri | ✅ |
+
+Seluruh rute API dijaga `auth:sanctum` **dan** `juru.aktif`. Yang kedua menolak
+token milik juru yang sudah dinonaktifkan dinas — tanpa itu, menonaktifkan juru
+tidak mengerjakan apa pun terhadap HP yang sudah memegang token.
+
+Permintaan tak terautentikasi ke `api/*` selalu dijawab **401**, tidak pernah
+dialihkan ke halaman login web. Klien yang mengikuti pengalihan akan menerima
+HTML berkode 200 dan menyangka permintaannya berhasil.
 
 ---
 
@@ -242,7 +263,8 @@ Setiap temuan menyimpan sampai tiga foto: `foto`, `foto_2`, dan `foto_3`.
 ## Sistem Warna Dashboard
 
 Palet diturunkan dari logo aplikasi dan logo Provinsi Kalimantan Selatan.
-Token didefinisikan di `resources/css/app.css`.
+Token didefinisikan di `resources/css/app.css`, dan nilai yang sama dipakai
+aplikasi Android di `app/src/main/res/values/colors.xml`.
 
 | Token | Peran | Asal |
 |-------|-------|------|
@@ -263,9 +285,15 @@ Token didefinisikan di `resources/css/app.css`.
 
 ### Belum dikerjakan
 
-Yang tersisa tinggal **poligon batas DAS dan wilayah sungai**, dan itu terhenti
-bukan karena kodenya melainkan karena berkas geospasialnya belum ada — perlu
-shapefile atau GeoJSON resmi. Selain itu notifikasi ke juru dan deployment.
+**Deployment.** Sistem masih berjalan di laptop pengembang. Untuk keperluan
+sementara, `TEROWONGAN.md` menjelaskan cara menyiarkannya lewat Cloudflare
+Tunnel tanpa biaya.
+
+**Data.** Kodenya sudah siap, isinya yang belum: dari 62 DAS, 46 belum
+berkoordinat, 61 belum berkabupaten, dan 56 belum berjuru. Poligon batas
+wilayah juga belum ada satu pun — halaman pengunggahnya sudah jadi, berkas
+resminya yang masih harus diminta ke BWS Kalimantan III atau BPDAS Barito.
+
 Rincian beserta alasannya ada di [TODO.md](TODO.md).
 
 **Export blangko OP resmi sudah ada, dalam dua bentuk.** Halaman detail laporan
@@ -280,15 +308,24 @@ mengetahui laporan yang gagal terkirim, sebab laporan itu memang tidak pernah
 sampai. Aplikasi juru mengabarkan keadaan antreannya sendiri lewat
 `POST /api/sinkronisasi/status` pada setiap akhir percobaan sinkronisasi.
 
-**Peta DAS** dan **peta lokasi bangunan pada detail laporan** sudah ada,
-memakai Leaflet dan OpenStreetMap tanpa kunci API maupun tagihan. Yang belum:
+**Seluruh peta memakai Leaflet dan OpenStreetMap**, tanpa kunci API maupun
+tagihan: peta DAS, peta lokasi bangunan pada detail laporan, dan peta sebaran
+seluruh bangunan yang dapat disaring per DAS, jenis bangunan, dan periode.
 
-- **Peta sebaran laporan**, yaitu seluruh bangunan dari seluruh laporan dalam
-  satu peta yang dapat disaring. Prasyaratnya sudah terpenuhi sejak aplikasi
-  Android menangkap GPS.
-- **Batas wilayah DAS dan WS**, memerlukan shapefile atau GeoJSON resmi.
-  Batas tidak digambar sendiri karena batas yang keliru lebih berbahaya
-  daripada tidak ada peta.
+**Batas wilayah dapat dimasukkan sendiri** lewat Master Data → Batas Wilayah,
+menerima `.zip` shapefile apa adanya dari BWS atau berkas `.geojson`. Berkas
+berkoordinat UTM ditolak beserta petunjuk perbaikannya dengan QGIS —
+menerimanya berarti seluruh batas tergambar di tempat yang salah tanpa ada yang
+menyadarinya. Batas tidak pernah digambar sendiri.
+
+**Cadangan berjalan tiap hari pukul 01.00** lewat `riverop:cadangkan`, berisi
+dump basis data dan seluruh foto. Ditulis dengan PHP, bukan memanggil
+`mysqldump`, supaya tidak bergantung pada berkas yang belum tentu ada di server
+dinas. Perlu satu entri cron; tanpa itu tidak ada galat apa pun, cadangannya
+sekadar tidak pernah dibuat.
+
+**Seluruh pesan sistem berbahasa Indonesia**, termasuk pesan kesalahan bawaan
+Laravel, dan dijaga `BahasaIndonesiaTest`. Terjemahannya di `lang/id/`.
 
 ---
 
@@ -328,7 +365,18 @@ routes/
 
 - Jalankan `npm run build` di server; asset hasil build tidak ikut ke repositori.
 - Pastikan `php artisan storage:link` sudah dijalankan agar foto dapat diakses.
-- Set `APP_URL` sesuai domain produksi, lalu sesuaikan `baseUrl` pada
-  `RetrofitClient` di aplikasi Android.
-- Gunakan HTTPS di produksi karena aplikasi Android mengirim token pada
-  setiap permintaan.
+- Set `APP_URL` sesuai domain produksi. Alamat server pada aplikasi Android
+  **tidak lagi diedit di kode** — ia dibaca dari `local.properties` saat build.
+- `APP_ENV=production` dan **`APP_DEBUG=false`**. Dengan debug menyala, setiap
+  galat menampilkan jejak kode beserta seluruh isi `.env`, termasuk sandi basis
+  data, kepada siapa pun yang membuka halamannya.
+- `APP_LOCALE=id` dan `APP_FALLBACK_LOCALE=id`. Bila terlewat, sebagian pesan
+  kembali berbahasa Inggris tanpa galat apa pun.
+- Pasang entri cron agar cadangan harian berjalan:
+  `* * * * * cd /jalur/ke/river-op && php artisan schedule:run >> /dev/null 2>&1`
+- Gunakan HTTPS. Aplikasi Android mengirim token pada setiap permintaan, dan
+  build rilisnya menolak dibangun dengan alamat non-`https`.
+- Di balik proxy atau CDN, `trustProxies` sudah disetel di `bootstrap/app.php`.
+  Tanpa itu Laravel menuliskan alamat aset sebagai `http://` pada halaman yang
+  dilayani `https://`, dan peramban memblokir seluruhnya — dasbor terbuka tanpa
+  gaya dan tanpa tombol yang berfungsi, tanpa pesan galat apa pun.
